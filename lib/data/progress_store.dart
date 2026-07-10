@@ -202,6 +202,25 @@ class ProgressStore extends ChangeNotifier {
   double get readerProgress =>
       totalChapters == 0 ? 0 : readChapters.length / totalChapters;
 
+  /// Chapters unlock strictly in order: the first is always open, and each
+  /// subsequent chapter opens once the previous one is finished. This gives a
+  /// clear sense of progression through the timeline.
+  bool isChapterUnlockedAt(int index) {
+    if (index <= 0) return true;
+    if (index >= ChaptersData.chapters.length) return false;
+    return readChapters.contains(ChaptersData.chapters[index - 1].id);
+  }
+
+  bool isChapterUnlocked(String id) => isChapterUnlockedAt(ChaptersData.indexOf(id));
+
+  /// 1-based position of the next chapter the reader should tackle.
+  int get nextChapterIndex {
+    for (var i = 0; i < ChaptersData.chapters.length; i++) {
+      if (!readChapters.contains(ChaptersData.chapters[i].id)) return i;
+    }
+    return ChaptersData.chapters.length - 1;
+  }
+
   double get codexProgress =>
       totalFacts == 0 ? 0 : unlockedFacts.length / totalFacts;
 

@@ -93,6 +93,8 @@ class _BootScreenState extends State<BootScreen> {
         ? 'assets/loading/loading_landscape.png'
         : 'assets/loading/loading_portrait.png';
 
+    final screenW = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFE9BF),
       body: Stack(
@@ -104,6 +106,22 @@ class _BootScreenState extends State<BootScreen> {
             gaplessPlayback: true,
             errorBuilder: (_, _, _) => Container(color: const Color(0xFFFFE9BF)),
           ),
+          // Game logo, horizontally centered near the top in both orientations.
+          Align(
+            alignment: isLandscape ? Alignment.topCenter : const Alignment(0, -0.72),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: EdgeInsets.only(top: isLandscape ? 10 : 24),
+                child: Image.asset(
+                  'assets/branding/game_name.png',
+                  width: isLandscape ? screenW * 0.42 : screenW * 0.78,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                ),
+              ),
+            ),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: SafeArea(
@@ -111,9 +129,7 @@ class _BootScreenState extends State<BootScreen> {
                 padding: EdgeInsets.only(bottom: isLandscape ? 18 : 54),
                 child: _LoadingBar(
                   progress: _progress,
-                  width: isLandscape
-                      ? MediaQuery.of(context).size.width * 0.38
-                      : MediaQuery.of(context).size.width * 0.74,
+                  width: isLandscape ? screenW * 0.42 : screenW * 0.74,
                 ),
               ),
             ),
@@ -209,32 +225,40 @@ class _LoadingLabelState extends State<_LoadingLabel> with SingleTickerProviderS
       animation: _ctrl,
       builder: (context, _) {
         final phase = (_ctrl.value * 3).floor() % 3;
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: Color(0xFF6E3A1D),
-                fontWeight: FontWeight.w900,
-                fontSize: 15,
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(width: 3),
-            for (int i = 0; i < 3; i++)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 1.5),
-                child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6E3A1D).withValues(alpha: i <= phase ? 1.0 : 0.25),
-                    shape: BoxShape.circle,
-                  ),
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.32),
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 15,
+                  letterSpacing: 0.6,
+                  shadows: [Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(0, 1))],
                 ),
               ),
-          ],
+              const SizedBox(width: 5),
+              for (int i = 0; i < 3; i++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: i <= phase ? 1.0 : 0.3),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

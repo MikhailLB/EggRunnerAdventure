@@ -74,6 +74,12 @@ class AppStrings {
     'home_greeting': 'Hi, I\'m Henrietta.',
     'home_intro': 'A modern hen with 150 million years of family history. Ready to travel the timeline with me?',
     'home_cta_chapters': 'Read the Chronicles',
+    'home_continue': 'Continue reading',
+    'home_explore': 'Explore',
+    'menu_chapters_sub': 'Read the illustrated timeline',
+    'menu_daily_sub': 'A new fact every day',
+    'menu_facts_sub': 'Your chicken-fact collection',
+    'menu_trophies_sub': 'Milestones and rewards',
     'home_cta_daily': 'Claim your daily fact',
     'home_cta_daily_done': 'Come back tomorrow',
     'home_progress_reader': 'Reader progress',
@@ -102,6 +108,11 @@ class AppStrings {
     'chapters_prev': 'Previous page',
     'chapters_finish': 'Finish chapter',
     'loading': 'Loading',
+    'chapters_act1': 'Act I · Deep Time',
+    'chapters_act2': 'Act II · Meeting Humans',
+    'chapters_act3': 'Act III · The Modern World',
+    'chapters_locked': 'Finish the previous chapter to unlock',
+    'chapters_locked_short': 'Locked',
     'chapters_reward_title': 'Chapter unlocked!',
     'chapters_reward_xp': 'You earned {xp} XP.',
     'chapters_reward_close': 'Continue',
@@ -244,6 +255,38 @@ class AppStrings {
     'chapter_modern_p2': 'We\'ve been to space. In 1989, a shuttle mission carried chicken embryos into orbit to study zero-gravity development. Astronaut John Glenn later called us "the most well-travelled birds in history".',
     'chapter_modern_p3': 'We dream. Yes, seriously. Chickens have REM sleep, and studies with tiny EEG caps show that our brains produce dream-like activity, especially after a busy day of foraging. What do we dream of? Probably corn.',
     'chapter_modern_p4': 'And we\'re not done. Geneticists are already sequencing every major breed, restoring endangered heritage lines, and studying the deep dinosaur genes that could — if switched on — give some future chicken descendant a fine tail of scales again. My family story, it turns out, is far from finished.',
+
+    // Chapters — The Incredible Egg
+    'chapter_egg_title': 'The Incredible Egg',
+    'chapter_egg_period': 'Science spotlight',
+    'chapter_egg_subtitle': 'The clever package that made it all possible.',
+    'chapter_egg_p1': 'Time for a science break! Before we meet the humans, let me show you my family\'s proudest invention: the egg. Animals were laying hard-shelled "amniotic" eggs for over 300 million years — long before the first dinosaur roared. That egg was a revolution: it let animals raise their young on dry land instead of in water.',
+    'chapter_egg_p2': 'An egg is a complete life-support pod. The yolk is the food pantry. The clear white (albumen) is a shock-absorbing water supply. A pocket of air at the blunt end gives the chick its first breath. And the shell? It looks solid, but it is dotted with up to 17,000 microscopic pores so oxygen can seep in and carbon dioxide can escape.',
+    'chapter_egg_p3': 'A hen turns her eggs gently and keeps them at a cosy 37.5°C. In just 21 days a single cell becomes a fully formed chick — with a heart, eyes, feathers and a special "egg tooth" to chip its way out. Not bad for something you can hold in one hand!',
+
+    // Chapters — The Silk Road
+    'chapter_silkroad_title': 'A Long Journey',
+    'chapter_silkroad_period': '1000 BCE – 500 CE, Asia',
+    'chapter_silkroad_subtitle': 'How my family clucked its way across a continent.',
+    'chapter_silkroad_p1': 'From the first farms of the Indus, my relatives became world travellers. Merchants discovered that a chicken was the perfect travelling companion: small, cheap to feed, and she produced fresh eggs along the way. Who needs a refrigerator?',
+    'chapter_silkroad_p2': 'Along the great trade routes — later nicknamed the Silk Road — chickens spread east into China and Korea and south across the islands of the Pacific. Polynesian voyagers even carried them thousands of kilometres by canoe to settle the most remote islands on Earth.',
+    'chapter_silkroad_p3': 'Everywhere they landed, people fell in love with them. Different lands shaped different birds: silky-feathered fowls in China, spirited game birds in Southeast Asia, tiny ornamental bantams. My family tree was branching out beautifully.',
+
+    // Chapters — Darwin's Favourite Birds
+    'chapter_darwin_title': 'Darwin\'s Favourite Birds',
+    'chapter_darwin_period': '1850s, England',
+    'chapter_darwin_subtitle': 'How chickens helped explain all of life.',
+    'chapter_darwin_p1': 'Here is one that makes me proud. When Charles Darwin was working out his theory of evolution, he did not only study finches on faraway islands — he studied chickens and pigeons right at home in England.',
+    'chapter_darwin_p2': 'The Victorians were mad for fancy breeds — a craze called "hen fever". Darwin noticed that by choosing which birds to breed, people could create wildly different chickens in just a few generations: giant Cochins, crested Polish, fluffy Silkies. If humans could reshape a bird so quickly, he reasoned, imagine what nature could do over millions of years.',
+    'chapter_darwin_p3': 'So my funny-looking cousins became living proof for one of the biggest ideas in all of science. Darwin wrote about domestic fowl in his famous books. Not bad for a barnyard bird, eh?',
+
+    // Chapters — The Dinosaur Within
+    'chapter_future_title': 'The Dinosaur Within',
+    'chapter_future_period': 'Tomorrow',
+    'chapter_future_subtitle': 'Could a chicken become a dinosaur again?',
+    'chapter_future_p1': 'We have travelled 150 million years together — but my story is not over. Today scientists read my DNA to understand exactly how dinosaurs became birds. And some of them are asking a wild question: could we switch those ancient genes back on?',
+    'chapter_future_p2': 'It is real science. Researchers have already grown chicken embryos with more dinosaur-like snouts instead of beaks, and leg bones closer to those of Archaeopteryx. The playful nickname for this work is the "chickenosaurus". Do not worry — nobody is hatching raptors; it is simply a way to read the instructions hidden in my genes.',
+    'chapter_future_p3': 'Every time you crack an egg you are holding a living dinosaur descendant — one that survived an asteroid, crossed oceans, sat beside emperors and helped explain life itself. From a tiny survivor on a smoking log to 25 billion friends worldwide: what a journey. Thank you for walking the timeline with me. — Henrietta',
 
     // Facts
     'fact_trex_cousin_title': 'A T. rex Cousin',

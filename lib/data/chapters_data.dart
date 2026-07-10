@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../models/chapter.dart';
 
-/// The complete Feathered Origins storyline, in chronological order.
+/// The complete Egg Runner Adventure storyline, in chronological order.
 ///
 /// The narrative deliberately blends established palaeontology with playful
 /// storytelling around Henrietta Rex — a fictional narrator who guides the
 /// reader through her ancestors' journey. Only translation keys live here;
 /// the actual prose lives in `l10n/app_strings.dart` so it can be localised.
+///
+/// Chapters are grouped into three "Acts" of five for a clear sense of
+/// progression, and unlock sequentially (finish one to open the next).
 class ChaptersData {
   static const List<Chapter> chapters = <Chapter>[
+    // ===== ACT I — DEEP TIME =====
     Chapter(
       id: 'ch_meet',
-      era: ChapterEra.mesozoic,
+      era: ChapterEra.modern,
       titleKey: 'chapter_meet_title',
       periodKey: 'chapter_meet_period',
       subtitleKey: 'chapter_meet_subtitle',
@@ -24,7 +28,7 @@ class ChaptersData {
         accent: Color(0xFFD64545),
         ink: Color(0xFF3E2A1F),
       ),
-      symbol: ChapterSymbol.archaeopteryx,
+      symbol: ChapterSymbol.globe,
       xpReward: 20,
       image: 'assets/chapters/ch_meet.png',
     ),
@@ -83,6 +87,26 @@ class ChaptersData {
       image: 'assets/chapters/ch_cenozoic.png',
     ),
     Chapter(
+      id: 'ch_egg',
+      era: ChapterEra.cenozoic,
+      titleKey: 'chapter_egg_title',
+      periodKey: 'chapter_egg_period',
+      subtitleKey: 'chapter_egg_subtitle',
+      pageKeys: ['chapter_egg_p1', 'chapter_egg_p2', 'chapter_egg_p3'],
+      factKeys: ['fact_pores', 'fact_color_vision'],
+      palette: ChapterPalette(
+        top: Color(0xFFFFF7D6),
+        bottom: Color(0xFFFFD24D),
+        accent: Color(0xFFE08A00),
+        ink: Color(0xFF4A3210),
+      ),
+      symbol: ChapterSymbol.fossilFeather,
+      xpReward: 35,
+      image: 'assets/chapters/ch_egg.png',
+    ),
+
+    // ===== ACT II — MEETING HUMANS =====
+    Chapter(
       id: 'ch_jungle',
       era: ChapterEra.ancient,
       titleKey: 'chapter_jungle_title',
@@ -117,6 +141,24 @@ class ChaptersData {
       symbol: ChapterSymbol.wheatBundle,
       xpReward: 35,
       image: 'assets/chapters/ch_indus.png',
+    ),
+    Chapter(
+      id: 'ch_silkroad',
+      era: ChapterEra.ancient,
+      titleKey: 'chapter_silkroad_title',
+      periodKey: 'chapter_silkroad_period',
+      subtitleKey: 'chapter_silkroad_subtitle',
+      pageKeys: ['chapter_silkroad_p1', 'chapter_silkroad_p2', 'chapter_silkroad_p3'],
+      factKeys: ['fact_sounds'],
+      palette: ChapterPalette(
+        top: Color(0xFFFFEFC7),
+        bottom: Color(0xFFE0A040),
+        accent: Color(0xFF9C3B1B),
+        ink: Color(0xFF3A2410),
+      ),
+      symbol: ChapterSymbol.sailingShip,
+      xpReward: 40,
+      image: 'assets/chapters/ch_silkroad.png',
     ),
     Chapter(
       id: 'ch_classical',
@@ -154,6 +196,8 @@ class ChaptersData {
       xpReward: 40,
       image: 'assets/chapters/ch_medieval.png',
     ),
+
+    // ===== ACT III — INTO THE MODERN WORLD =====
     Chapter(
       id: 'ch_colonial',
       era: ChapterEra.colonial,
@@ -171,6 +215,24 @@ class ChaptersData {
       symbol: ChapterSymbol.sailingShip,
       xpReward: 40,
       image: 'assets/chapters/ch_colonial.png',
+    ),
+    Chapter(
+      id: 'ch_darwin',
+      era: ChapterEra.industrial,
+      titleKey: 'chapter_darwin_title',
+      periodKey: 'chapter_darwin_period',
+      subtitleKey: 'chapter_darwin_subtitle',
+      pageKeys: ['chapter_darwin_p1', 'chapter_darwin_p2', 'chapter_darwin_p3'],
+      factKeys: ['fact_face_recognition'],
+      palette: ChapterPalette(
+        top: Color(0xFFEDE6D2),
+        bottom: Color(0xFFA98D5E),
+        accent: Color(0xFF3E5A3A),
+        ink: Color(0xFF2A2416),
+      ),
+      symbol: ChapterSymbol.laurelWreath,
+      xpReward: 45,
+      image: 'assets/chapters/ch_darwin.png',
     ),
     Chapter(
       id: 'ch_industrial',
@@ -205,14 +267,37 @@ class ChaptersData {
         ink: Color(0xFF0F2743),
       ),
       symbol: ChapterSymbol.globe,
-      xpReward: 60,
+      xpReward: 55,
       image: 'assets/chapters/ch_modern.png',
+    ),
+    Chapter(
+      id: 'ch_future',
+      era: ChapterEra.modern,
+      titleKey: 'chapter_future_title',
+      periodKey: 'chapter_future_period',
+      subtitleKey: 'chapter_future_subtitle',
+      pageKeys: ['chapter_future_p1', 'chapter_future_p2', 'chapter_future_p3'],
+      factKeys: ['fact_math'],
+      palette: ChapterPalette(
+        top: Color(0xFFE6F7FB),
+        bottom: Color(0xFF57C8D6),
+        accent: Color(0xFF1B7A8C),
+        ink: Color(0xFF0E2E36),
+      ),
+      symbol: ChapterSymbol.gear,
+      xpReward: 70,
+      image: 'assets/chapters/ch_future.png',
     ),
   ];
 
   static Chapter byId(String id) => chapters.firstWhere((c) => c.id == id);
+  static int indexOf(String id) => chapters.indexWhere((c) => c.id == id);
   static int totalXp() => chapters.fold<int>(0, (a, c) => a + c.xpReward);
 
   /// All chapter image assets — used to precache during boot.
   static List<String> allImages() => chapters.map((c) => c.image).toList();
+
+  /// Chapters are grouped into Acts of this size for the Chronicles list.
+  static const int actSize = 5;
+  static int get actCount => (chapters.length + actSize - 1) ~/ actSize;
 }
