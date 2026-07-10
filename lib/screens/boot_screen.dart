@@ -32,6 +32,7 @@ class _BootScreenState extends State<BootScreen> {
   bool _started = false;
   bool _navigating = false;
   late final DateTime _startTime;
+  Timer? _hardDeadline;
   static const Duration _minSplash = Duration(milliseconds: 1600);
 
   @override
@@ -44,6 +45,19 @@ class _BootScreenState extends State<BootScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    // Hard deadline: even if precache hangs, navigate after 8 s.
+    _hardDeadline = Timer(const Duration(seconds: 8), () {
+      if (mounted && !_navigating) {
+        setState(() => _loaded = _assetsToLoad.length);
+        _maybeNavigate();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _hardDeadline?.cancel();
+    super.dispose();
   }
 
   @override
@@ -65,6 +79,7 @@ class _BootScreenState extends State<BootScreen> {
       if (!mounted) return;
       setState(() => _loaded++);
     }
+    _hardDeadline?.cancel();
     _maybeNavigate();
   }
 
