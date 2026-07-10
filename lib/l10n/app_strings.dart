@@ -161,6 +161,9 @@ class AppStrings {
     'settings_about': 'About',
     'settings_about_body': 'Egg Runner Adventure is a popular-science illustrated storybook about the 150-million-year journey of the humble chicken, narrated by Henrietta the hen.',
     'settings_version': 'Version 1.0.0',
+    'settings_legal': 'Legal & Support',
+    'settings_privacy': 'Privacy Policy',
+    'settings_support': 'Support',
 
     // Boot
     'boot_hint': 'Preparing timeline...',
@@ -475,6 +478,9 @@ class AppStrings {
     'settings_about': 'Acerca de',
     'settings_about_body': 'Orígenes con Plumas es un libro ilustrado de divulgación sobre 150 millones de años de la humilde gallina.',
     'settings_version': 'Versión 1.0.0',
+    'settings_legal': 'Legal y soporte',
+    'settings_privacy': 'Política de privacidad',
+    'settings_support': 'Soporte',
     'boot_hint': 'Preparando la línea del tiempo...',
   };
 
@@ -557,6 +563,9 @@ class AppStrings {
     'settings_about': 'À propos',
     'settings_about_body': 'Origines à Plumes est un livre illustré sur 150 millions d\'années d\'évolution.',
     'settings_version': 'Version 1.0.0',
+    'settings_legal': 'Mentions & assistance',
+    'settings_privacy': 'Politique de confidentialité',
+    'settings_support': 'Assistance',
     'boot_hint': 'Préparation de la chronologie...',
   };
 
@@ -639,6 +648,9 @@ class AppStrings {
     'settings_about': 'Über',
     'settings_about_body': 'Gefiederte Ursprünge ist ein illustriertes Sachbuch über 150 Millionen Jahre Hühnergeschichte.',
     'settings_version': 'Version 1.0.0',
+    'settings_legal': 'Rechtliches & Support',
+    'settings_privacy': 'Datenschutzrichtlinie',
+    'settings_support': 'Support',
     'boot_hint': 'Zeitleiste wird vorbereitet...',
   };
 
@@ -721,6 +733,9 @@ class AppStrings {
     'settings_about': 'Sobre',
     'settings_about_body': 'Origens Emplumadas é um livro ilustrado sobre 150 milhões de anos das galinhas.',
     'settings_version': 'Versão 1.0.0',
+    'settings_legal': 'Legal e suporte',
+    'settings_privacy': 'Política de Privacidade',
+    'settings_support': 'Suporte',
     'boot_hint': 'Preparando a linha do tempo...',
   };
 }

@@ -5,12 +5,22 @@ import '../data/progress_store.dart';
 import '../l10n/app_l10n.dart';
 import '../l10n/app_strings.dart';
 import '../widgets/parchment_background.dart';
+import 'web_page_screen.dart';
 
-/// Settings hub: language switcher, reset progress, and About section.
+/// Settings hub: language switcher, reset progress, legal/support and About.
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key, required this.localeController});
 
   final LocaleController localeController;
+
+  static const String privacyUrl = 'https://eggrunneradventure.com/privacy-policy.html';
+  static const String supportUrl = 'https://eggrunneradventure.com/support.html';
+
+  void _openWeb(BuildContext context, String title, String url) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => WebPageScreen(title: title, url: url)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +81,26 @@ class SettingsScreen extends StatelessWidget {
                         foregroundColor: AppColors.rust,
                         side: const BorderSide(color: AppColors.rust, width: 1.6),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              _SectionHeader(text: l10n.t('settings_legal')),
+              const SizedBox(height: 8),
+              _Card(
+                child: Column(
+                  children: [
+                    _LinkRow(
+                      icon: Icons.privacy_tip_rounded,
+                      label: l10n.t('settings_privacy'),
+                      onTap: () => _openWeb(context, l10n.t('settings_privacy'), privacyUrl),
+                    ),
+                    const Divider(height: 18, color: AppColors.divider),
+                    _LinkRow(
+                      icon: Icons.support_agent_rounded,
+                      label: l10n.t('settings_support'),
+                      onTap: () => _openWeb(context, l10n.t('settings_support'), supportUrl),
                     ),
                   ],
                 ),
@@ -168,6 +198,37 @@ class _Card extends StatelessWidget {
         border: Border.all(color: AppColors.divider),
       ),
       child: child,
+    );
+  }
+}
+
+class _LinkRow extends StatelessWidget {
+  const _LinkRow({required this.icon, required this.label, required this.onTap});
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: AppColors.rust),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700, fontSize: 15),
+              ),
+            ),
+            const Icon(Icons.open_in_new_rounded, size: 18, color: AppColors.muted),
+          ],
+        ),
+      ),
     );
   }
 }
