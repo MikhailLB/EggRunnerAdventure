@@ -111,24 +111,45 @@ class _TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: Image.asset(
-            'assets/branding/game_name.png',
-            height: 70,
-            alignment: Alignment.centerLeft,
-            fit: BoxFit.contain,
-            errorBuilder: (_, _, _) => Text(
-              l10n.t('app_title'),
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: AppColors.ink),
-            ),
-          ),
-        ),
+        const Expanded(child: _HomeTitle()),
         IconButton(
           onPressed: () => Navigator.pushNamed(context, Routes.settings),
           icon: const Icon(Icons.settings_rounded, size: 26, color: AppColors.ink),
           tooltip: l10n.t('menu_settings'),
         ),
       ],
+    );
+  }
+}
+
+class _HomeTitle extends StatelessWidget {
+  const _HomeTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: const TextSpan(
+        children: [
+          TextSpan(
+            text: 'Egg Runner ',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF6E3A1D),
+              letterSpacing: 0.2,
+            ),
+          ),
+          TextSpan(
+            text: 'Adventure',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFFE8612A),
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

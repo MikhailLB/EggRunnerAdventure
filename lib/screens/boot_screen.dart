@@ -121,19 +121,14 @@ class _BootScreenState extends State<BootScreen> {
             gaplessPlayback: true,
             errorBuilder: (_, _, _) => Container(color: const Color(0xFFFFE9BF)),
           ),
-          // Game logo, horizontally centered near the top in both orientations.
+          // Game title, horizontally centered near the top in both orientations.
           Align(
             alignment: isLandscape ? Alignment.topCenter : const Alignment(0, -0.72),
             child: SafeArea(
               bottom: false,
               child: Padding(
                 padding: EdgeInsets.only(top: isLandscape ? 10 : 24),
-                child: Image.asset(
-                  'assets/branding/game_name.png',
-                  width: isLandscape ? screenW * 0.42 : screenW * 0.78,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                ),
+                child: _GameTitle(fontSize: isLandscape ? screenW * 0.045 : screenW * 0.085),
               ),
             ),
           ),
@@ -206,6 +201,58 @@ class _LoadingBar extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _LoadingLabel(),
+      ],
+    );
+  }
+}
+
+/// Stylised text logo for the game title shown on the boot screen.
+class _GameTitle extends StatelessWidget {
+  const _GameTitle({required this.fontSize});
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _stroke('Egg Runner', fontSize),
+        _stroke('Adventure', fontSize * 0.72),
+      ],
+    );
+  }
+
+  Widget _stroke(String text, double size) {
+    return Stack(
+      children: [
+        // Outline / shadow
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: size,
+            fontWeight: FontWeight.w900,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = size * 0.12
+              ..color = const Color(0xFF6E3A1D),
+            height: 1.1,
+          ),
+        ),
+        // Fill
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: size,
+            fontWeight: FontWeight.w900,
+            color: const Color(0xFFFFF8E7),
+            height: 1.1,
+            shadows: const [
+              Shadow(color: Color(0xFFFF8A2E), offset: Offset(2, 3), blurRadius: 0),
+            ],
+          ),
+        ),
       ],
     );
   }
