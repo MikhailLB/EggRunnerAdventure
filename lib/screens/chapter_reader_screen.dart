@@ -5,12 +5,11 @@ import '../data/chapters_data.dart';
 import '../data/progress_store.dart';
 import '../l10n/app_l10n.dart';
 import '../models/chapter.dart';
-import '../widgets/chapter_illustration.dart';
 
 /// Immersive page-turn reader for a single chapter.
 ///
-/// The upper part is a painted illustration in the chapter palette; the lower
-/// part is a scrollable text panel with page indicator and prev/next controls.
+/// The upper part is the chapter's full illustration; the lower part is a
+/// scrollable text panel with a page indicator and prev/next controls.
 class ChapterReaderScreen extends StatefulWidget {
   const ChapterReaderScreen({super.key, required this.chapterId});
 
@@ -85,119 +84,126 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final palette = chapter.palette;
+    final topInset = MediaQuery.of(context).padding.top;
+    // Illustration height scales with the screen but stays within sensible bounds.
+    final illoHeight = (MediaQuery.of(context).size.height * 0.34).clamp(200.0, 320.0);
 
     return Scaffold(
       backgroundColor: palette.top,
       body: Column(
         children: [
-          _TopIllustration(chapter: chapter),
+          _TopIllustration(chapter: chapter, height: illoHeight, topInset: topInset),
           Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(top: -22),
-              decoration: BoxDecoration(
-                color: AppColors.parchment,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 16, offset: const Offset(0, -4)),
-                ],
-              ),
-              padding: const EdgeInsets.fromLTRB(22, 22, 22, 12),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: palette.accent.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      l10n.t(chapter.periodKey),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: palette.accent,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
+            child: Transform.translate(
+              offset: const Offset(0, -22),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.parchment,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 16, offset: const Offset(0, -4)),
+                  ],
+                ),
+                padding: const EdgeInsets.fromLTRB(22, 20, 22, 12),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: palette.accent.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        l10n.t(chapter.periodKey),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: palette.accent,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.t(chapter.titleKey),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.ink,
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.t(chapter.titleKey),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.ink,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.t(chapter.subtitleKey),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: AppColors.muted, fontSize: 13, fontStyle: FontStyle.italic),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: PageView.builder(
-                      controller: _pageCtrl,
-                      itemCount: chapter.pageKeys.length,
-                      onPageChanged: (i) => setState(() => _currentPage = i),
-                      itemBuilder: (context, i) {
-                        return SingleChildScrollView(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Text(
-                            l10n.t(chapter.pageKeys[i]),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              height: 1.55,
-                              color: AppColors.ink,
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.t(chapter.subtitleKey),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: AppColors.muted, fontSize: 13, fontStyle: FontStyle.italic),
+                    ),
+                    const SizedBox(height: 14),
+                    Expanded(
+                      child: PageView.builder(
+                        controller: _pageCtrl,
+                        itemCount: chapter.pageKeys.length,
+                        onPageChanged: (i) => setState(() => _currentPage = i),
+                        itemBuilder: (context, i) {
+                          return SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Text(
+                              l10n.t(chapter.pageKeys[i]),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                height: 1.55,
+                                color: AppColors.ink,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    _PageIndicator(
+                      current: _currentPage,
+                      total: chapter.pageKeys.length,
+                      accent: palette.accent,
+                      label: l10n.t('chapters_page_of', {
+                        'current': (_currentPage + 1).toString(),
+                        'total': chapter.pageKeys.length.toString(),
+                      }),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: _currentPage == 0 ? null : _prev,
+                            icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                            label: Text(l10n.t('chapters_prev'), overflow: TextOverflow.ellipsis),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: FilledButton.icon(
+                            onPressed: _next,
+                            style: FilledButton.styleFrom(backgroundColor: palette.accent),
+                            icon: Icon(
+                              _currentPage == chapter.pageKeys.length - 1
+                                  ? Icons.check_rounded
+                                  : Icons.arrow_forward_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              _currentPage == chapter.pageKeys.length - 1
+                                  ? l10n.t('chapters_finish')
+                                  : l10n.t('chapters_next'),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
-                  ),
-                  _PageIndicator(
-                    current: _currentPage,
-                    total: chapter.pageKeys.length,
-                    accent: palette.accent,
-                    label: l10n.t('chapters_page_of', {
-                      'current': (_currentPage + 1).toString(),
-                      'total': chapter.pageKeys.length.toString(),
-                    }),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: _currentPage == 0 ? null : _prev,
-                          icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                          label: Text(l10n.t('chapters_prev')),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: FilledButton.icon(
-                          onPressed: _next,
-                          style: FilledButton.styleFrom(backgroundColor: palette.accent),
-                          icon: Icon(
-                            _currentPage == chapter.pageKeys.length - 1
-                                ? Icons.check_rounded
-                                : Icons.arrow_forward_rounded,
-                            size: 18,
-                          ),
-                          label: Text(
-                            _currentPage == chapter.pageKeys.length - 1
-                                ? l10n.t('chapters_finish')
-                                : l10n.t('chapters_next'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                ],
+                    const SizedBox(height: 6),
+                  ],
+                ),
               ),
             ),
           ),
@@ -208,27 +214,50 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 }
 
 class _TopIllustration extends StatelessWidget {
-  const _TopIllustration({required this.chapter});
+  const _TopIllustration({required this.chapter, required this.height, required this.topInset});
   final Chapter chapter;
+  final double height;
+  final double topInset;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox(
-          height: 240,
-          width: double.infinity,
-          child: ChapterIllustration(chapter: chapter, height: 240),
-        ),
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 6,
-          left: 6,
-          child: _RoundIconButton(
-            icon: Icons.arrow_back_rounded,
-            onTap: () => Navigator.pop(context),
+    return SizedBox(
+      height: height,
+      width: double.infinity,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            chapter.image,
+            fit: BoxFit.cover,
+            errorBuilder: (_, _, _) => Container(color: chapter.palette.bottom),
           ),
-        ),
-      ],
+          // Subtle bottom scrim so the rounded parchment panel blends in.
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 60,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, chapter.palette.top.withValues(alpha: 0.5)],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: topInset + 6,
+            left: 6,
+            child: _RoundIconButton(
+              icon: Icons.arrow_back_rounded,
+              onTap: () => Navigator.pop(context),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -241,8 +270,9 @@ class _RoundIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white.withValues(alpha: 0.85),
+      color: Colors.white.withValues(alpha: 0.9),
       shape: const CircleBorder(),
+      elevation: 2,
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,

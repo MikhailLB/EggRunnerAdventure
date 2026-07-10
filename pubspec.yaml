@@ -37,3 +37,6 @@ flutter:
     - assets/loading/loading_portrait.png
     - assets/loading/loading_landscape.png
     - assets/icon/app_icon.png
+    - assets/branding/game_name.png
+    - assets/mascot/henrietta.png
+    - assets/chapters/

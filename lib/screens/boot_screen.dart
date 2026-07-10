@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../app/routes.dart';
-import '../data/progress_store.dart';
+import '../data/chapters_data.dart';
 import '../l10n/app_l10n.dart';
 
 /// Splash / boot screen.
 ///
-/// Behaviour mirrors the loading experience in LavaPickRun: the screen tracks
-/// device orientation live and swaps between the portrait and landscape
-/// artwork. A four-stage bar fills over ~3.5s, then we navigate to home and
-/// lock the app back to portrait for the reader experience.
+/// Behaviour mirrors the loading experience in LavaPickRun: the screen adapts
+/// to device orientation and swaps between portrait and landscape artwork.
+///
+/// Crucially, the progress bar reflects *real* loading work — we precache
+/// every chapter illustration and the mascot before entering the app, and the
+/// bar advances as each asset finishes decoding. Navigation only happens once
+/// everything is ready (and a small minimum time has passed for polish).
 class BootScreen extends StatefulWidget {
   const BootScreen({super.key});
 
@@ -19,49 +22,68 @@ class BootScreen extends StatefulWidget {
   State<BootScreen> createState() => _BootScreenState();
 }
 
-class _BootScreenState extends State<BootScreen> with SingleTickerProviderStateMixin {
-  late final AnimationController _progressCtrl;
-  final List<Timer> _timers = [];
+class _BootScreenState extends State<BootScreen> {
+  final List<String> _assetsToLoad = [
+    'assets/mascot/henrietta.png',
+    ...ChaptersData.allImages(),
+  ];
+
+  int _loaded = 0;
+  bool _started = false;
   bool _navigating = false;
+  late final DateTime _startTime;
+  static const Duration _minSplash = Duration(milliseconds: 1600);
 
   @override
   void initState() {
     super.initState();
-    // Boot screen supports both orientations, like requested.
+    _startTime = DateTime.now();
+    // Boot screen supports both orientations, per requirements.
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-
-    _progressCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 3500),
-    )..forward();
-
-    _timers.add(Timer(const Duration(milliseconds: 3600), () {
-      if (!_navigating && mounted) _navigate();
-    }));
-  }
-
-  void _navigate() {
-    _navigating = true;
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    // Small delay so the orientation lock takes effect before navigation.
-    Future.delayed(const Duration(milliseconds: 60), () {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed(Routes.home);
-    });
   }
 
   @override
-  void dispose() {
-    for (final t in _timers) {
-      t.cancel();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_started) {
+      _started = true;
+      _preloadAll();
     }
-    _progressCtrl.dispose();
-    super.dispose();
   }
+
+  Future<void> _preloadAll() async {
+    for (final asset in _assetsToLoad) {
+      try {
+        await precacheImage(AssetImage(asset), context);
+      } catch (_) {
+        // Ignore individual failures — bar still advances so we never hang.
+      }
+      if (!mounted) return;
+      setState(() => _loaded++);
+    }
+    _maybeNavigate();
+  }
+
+  void _maybeNavigate() async {
+    if (_navigating) return;
+    // Respect a minimum splash duration for a smooth reveal.
+    final elapsed = DateTime.now().difference(_startTime);
+    if (elapsed < _minSplash) {
+      await Future<void>.delayed(_minSplash - elapsed);
+    }
+    if (!mounted || _navigating) return;
+    _navigating = true;
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+    if (!mounted) return;
+    Navigator.of(context).pushReplacementNamed(Routes.home);
+  }
+
+  double get _progress => _assetsToLoad.isEmpty ? 1 : _loaded / _assetsToLoad.length;
 
   @override
   Widget build(BuildContext context) {
@@ -86,13 +108,12 @@ class _BootScreenState extends State<BootScreen> with SingleTickerProviderStateM
             alignment: Alignment.bottomCenter,
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.only(bottom: isLandscape ? 20 : 60),
+                padding: EdgeInsets.only(bottom: isLandscape ? 18 : 54),
                 child: _LoadingBar(
-                  animation: _progressCtrl,
-                  hint: _hint(context),
+                  progress: _progress,
                   width: isLandscape
-                      ? MediaQuery.of(context).size.width * 0.35
-                      : MediaQuery.of(context).size.width * 0.72,
+                      ? MediaQuery.of(context).size.width * 0.38
+                      : MediaQuery.of(context).size.width * 0.74,
                 ),
               ),
             ),
@@ -101,24 +122,12 @@ class _BootScreenState extends State<BootScreen> with SingleTickerProviderStateM
       ),
     );
   }
-
-  String _hint(BuildContext context) {
-    // AppL10n is available because we mount localisation delegates before boot.
-    final l10n = Localizations.of<AppL10n>(context, AppL10n);
-    if (l10n == null) return 'Preparing timeline...';
-    return l10n.t('boot_hint');
-  }
 }
 
 class _LoadingBar extends StatelessWidget {
-  const _LoadingBar({
-    required this.animation,
-    required this.hint,
-    required this.width,
-  });
+  const _LoadingBar({required this.progress, required this.width});
 
-  final Animation<double> animation;
-  final String hint;
+  final double progress;
   final double width;
 
   @override
@@ -130,7 +139,7 @@ class _LoadingBar extends StatelessWidget {
           width: width,
           height: 22,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.85),
+            color: Colors.white.withValues(alpha: 0.88),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: const Color(0xFF6E3A1D), width: 2.5),
             boxShadow: [
@@ -141,49 +150,93 @@ class _LoadingBar extends StatelessWidget {
             padding: const EdgeInsets.all(3),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: AnimatedBuilder(
-                animation: animation,
-                builder: (context, _) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        flex: (animation.value * 100).round(),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFFFF8A2E), Color(0xFFFFCB47), Color(0xFF7EE05B)],
-                            ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TweenAnimationBuilder<double>(
+                  duration: const Duration(milliseconds: 350),
+                  curve: Curves.easeOut,
+                  tween: Tween(begin: 0, end: progress.clamp(0.0, 1.0)),
+                  builder: (context, value, _) {
+                    return FractionallySizedBox(
+                      widthFactor: value <= 0 ? 0.001 : value,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFFFF8A2E), Color(0xFFFFCB47), Color(0xFF7EE05B)],
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex: 100 - (animation.value * 100).round(),
-                        child: const SizedBox.shrink(),
-                      ),
-                    ],
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
         ),
         const SizedBox(height: 12),
-        Text(
-          hint,
-          style: const TextStyle(
-            color: Color(0xFF6E3A1D),
-            fontWeight: FontWeight.w800,
-            fontSize: 13,
-            letterSpacing: 0.4,
-          ),
-        ),
+        _LoadingLabel(),
       ],
     );
   }
 }
 
-/// A convenience wrapper we use before ProgressStore is available. The class
-/// is exported so the app root can call it during warm-up.
-class BootBridge {
-  static Future<void> ensureStore() => ProgressStore.init();
+/// "Loading" with three dots that animate in sequence.
+class _LoadingLabel extends StatefulWidget {
+  @override
+  State<_LoadingLabel> createState() => _LoadingLabelState();
+}
+
+class _LoadingLabelState extends State<_LoadingLabel> with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..repeat();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = Localizations.of<AppL10n>(context, AppL10n);
+    final label = l10n?.t('loading') ?? 'Loading';
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (context, _) {
+        final phase = (_ctrl.value * 3).floor() % 3;
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(0xFF6E3A1D),
+                fontWeight: FontWeight.w900,
+                fontSize: 15,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(width: 3),
+            for (int i = 0; i < 3; i++)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 1.5),
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF6E3A1D).withValues(alpha: i <= phase ? 1.0 : 0.25),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
 }

@@ -8,10 +8,13 @@ import '../l10n/app_l10n.dart';
 import '../models/chapter.dart';
 import '../widgets/parchment_background.dart';
 
-/// Vertical timeline of the eleven evolutionary chapters. Each row is a
-/// mini-card with era colours, subtitle and a "read" ribbon when finished.
+/// Scrollable list of the eleven illustrated evolutionary chapters. Each row
+/// is a rich card showing the chapter's illustration, era, title and reward.
 class ChaptersScreen extends StatelessWidget {
-  const ChaptersScreen({super.key});
+  const ChaptersScreen({super.key, this.embedded = false});
+
+  /// When embedded in the bottom-nav shell we drop the AppBar back button.
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,10 @@ class ChaptersScreen extends StatelessWidget {
     final store = ProgressStore.instance;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.t('chapters_title'))),
+      appBar: AppBar(
+        title: Text(l10n.t('chapters_title')),
+        automaticallyImplyLeading: !embedded,
+      ),
       extendBodyBehindAppBar: true,
       body: ParchmentBackground(
         child: SafeArea(
@@ -27,12 +33,12 @@ class ChaptersScreen extends StatelessWidget {
             animation: store,
             builder: (context, _) {
               return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 60, 20, 30),
+                padding: const EdgeInsets.fromLTRB(16, 56, 16, 24),
                 itemCount: ChaptersData.chapters.length + 1,
                 itemBuilder: (context, i) {
                   if (i == 0) {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 18),
+                      padding: const EdgeInsets.fromLTRB(4, 6, 4, 16),
                       child: Text(
                         l10n.t('chapters_subtitle'),
                         style: const TextStyle(
@@ -45,12 +51,9 @@ class ChaptersScreen extends StatelessWidget {
                   }
                   final chapter = ChaptersData.chapters[i - 1];
                   final isRead = store.readChapters.contains(chapter.id);
-                  return _ChapterRow(
-                    index: i,
-                    chapter: chapter,
-                    read: isRead,
-                    l10n: l10n,
-                    isLast: i == ChaptersData.chapters.length,
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: _ChapterCard(index: i, chapter: chapter, read: isRead, l10n: l10n),
                   );
                 },
               );
@@ -62,85 +65,15 @@ class ChaptersScreen extends StatelessWidget {
   }
 }
 
-class _ChapterRow extends StatelessWidget {
-  const _ChapterRow({
+class _ChapterCard extends StatelessWidget {
+  const _ChapterCard({
     required this.index,
     required this.chapter,
     required this.read,
     required this.l10n,
-    required this.isLast,
   });
 
   final int index;
-  final Chapter chapter;
-  final bool read;
-  final AppL10n l10n;
-  final bool isLast;
-
-  @override
-  Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Column(
-            children: [
-              _TimelineDot(active: read, palette: chapter.palette, index: index),
-              if (!isLast)
-                Expanded(
-                  child: Container(
-                    width: 3,
-                    color: read
-                        ? chapter.palette.accent.withValues(alpha: 0.5)
-                        : AppColors.divider,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: _ChapterCard(chapter: chapter, read: read, l10n: l10n),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TimelineDot extends StatelessWidget {
-  const _TimelineDot({required this.active, required this.palette, required this.index});
-  final bool active;
-  final ChapterPalette palette;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 34,
-      height: 34,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [palette.accent, palette.bottom],
-        ),
-        border: Border.all(color: Colors.white, width: 3),
-        boxShadow: [
-          BoxShadow(color: palette.accent.withValues(alpha: 0.35), blurRadius: 6, offset: const Offset(0, 2)),
-        ],
-      ),
-      alignment: Alignment.center,
-      child: active
-          ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
-          : Text('$index', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 12)),
-    );
-  }
-}
-
-class _ChapterCard extends StatelessWidget {
-  const _ChapterCard({required this.chapter, required this.read, required this.l10n});
   final Chapter chapter;
   final bool read;
   final AppL10n l10n;
@@ -150,86 +83,157 @@ class _ChapterCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         onTap: () => Navigator.pushNamed(context, Routes.reader, arguments: chapter.id),
         child: Ink(
           decoration: BoxDecoration(
             color: AppColors.card,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(color: chapter.palette.accent.withValues(alpha: 0.35), width: 1.4),
             boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 3)),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 12, offset: const Offset(0, 4)),
             ],
           ),
-          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              // Illustration banner.
+              Stack(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: chapter.palette.accent.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      l10n.t(chapter.periodKey),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: chapter.palette.accent,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.4,
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(23)),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Image.asset(
+                        chapter.image,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => Container(color: chapter.palette.bottom),
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  // Number badge.
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [chapter.palette.accent, chapter.palette.bottom]),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2.4),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 6),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text('$index',
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                    ),
+                  ),
+                  // Read ribbon.
                   if (read)
-                    Row(
-                      children: [
-                        const Icon(Icons.check_circle_rounded, color: AppColors.meadow, size: 16),
-                        const SizedBox(width: 4),
-                        Text(
-                          l10n.t('chapters_read'),
-                          style: const TextStyle(color: AppColors.meadow, fontWeight: FontWeight.w800, fontSize: 11),
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.meadow,
+                          borderRadius: BorderRadius.circular(999),
+                          boxShadow: [
+                            BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 6),
+                          ],
                         ),
-                      ],
-                    )
-                  else
-                    Row(
-                      children: [
-                        Icon(Icons.circle_outlined, color: AppColors.muted, size: 14),
-                        const SizedBox(width: 4),
-                        Text(
-                          l10n.t('chapters_unread'),
-                          style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700, fontSize: 11),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.check_rounded, color: Colors.white, size: 14),
+                            const SizedBox(width: 3),
+                            Text(l10n.t('chapters_read'),
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11)),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                 ],
               ),
-              const SizedBox(height: 10),
-              Text(
-                l10n.t(chapter.titleKey),
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.ink),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.t(chapter.subtitleKey),
-                style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.4),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Icon(Icons.auto_awesome_rounded, size: 14, color: chapter.palette.accent),
-                  const SizedBox(width: 4),
-                  Text(
-                    '+${chapter.xpReward} XP',
-                    style: TextStyle(color: chapter.palette.accent, fontWeight: FontWeight.w800, fontSize: 12),
-                  ),
-                  const Spacer(),
-                  Icon(Icons.arrow_forward_ios_rounded, size: 14, color: chapter.palette.accent),
-                ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.schedule_rounded, size: 13, color: chapter.palette.accent),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            l10n.t(chapter.periodKey),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: chapter.palette.accent,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.t(chapter.titleKey),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.ink),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.t(chapter.subtitleKey),
+                      style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.35),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: chapter.palette.accent.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.auto_awesome_rounded, size: 13, color: chapter.palette.accent),
+                              const SizedBox(width: 4),
+                              Text('+${chapter.xpReward} XP',
+                                  style: TextStyle(color: chapter.palette.accent, fontWeight: FontWeight.w800, fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: chapter.palette.accent,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                read ? l10n.t('chapters_reread') : l10n.t('chapters_start'),
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(Icons.arrow_forward_rounded, size: 14, color: Colors.white),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

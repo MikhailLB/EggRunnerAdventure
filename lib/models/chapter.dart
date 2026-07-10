@@ -17,6 +17,7 @@ class Chapter {
     required this.palette,
     required this.symbol,
     required this.xpReward,
+    required this.image,
   });
 
   final String id;
@@ -34,6 +35,9 @@ class Chapter {
   final ChapterPalette palette;
   final ChapterSymbol symbol;
   final int xpReward;
+
+  /// Full illustration asset for this chapter.
+  final String image;
 }
 
 enum ChapterEra { mesozoic, extinction, cenozoic, ancient, classical, medieval, colonial, industrial, modern }

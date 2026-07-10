@@ -6,12 +6,8 @@ import '../l10n/app_l10n.dart';
 import '../l10n/app_strings.dart';
 import '../screens/boot_screen.dart';
 import '../screens/chapter_reader_screen.dart';
-import '../screens/chapters_screen.dart';
-import '../screens/codex_screen.dart';
-import '../screens/daily_reward_screen.dart';
-import '../screens/home_screen.dart';
+import '../screens/main_shell.dart';
 import '../screens/settings_screen.dart';
-import '../screens/trophies_screen.dart';
 import 'routes.dart';
 import 'theme.dart';
 
@@ -44,7 +40,7 @@ class _FeatheredOriginsAppState extends State<FeatheredOriginsApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Feathered Origins',
+      title: 'Egg Runner Adventure',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
       locale: _localeController.locale,
@@ -60,18 +56,10 @@ class _FeatheredOriginsAppState extends State<FeatheredOriginsApp> {
         Widget page;
         switch (settings.name) {
           case Routes.home:
-            page = const HomeScreen();
-          case Routes.chapters:
-            page = const ChaptersScreen();
+            page = const MainShell();
           case Routes.reader:
             final id = settings.arguments as String? ?? 'ch_meet';
             page = ChapterReaderScreen(chapterId: id);
-          case Routes.daily:
-            page = const DailyRewardScreen();
-          case Routes.codex:
-            page = const CodexScreen();
-          case Routes.trophies:
-            page = const TrophiesScreen();
           case Routes.settings:
             page = SettingsScreen(localeController: _localeController);
           case Routes.boot:

@@ -10,14 +10,19 @@ import '../widgets/parchment_background.dart';
 /// Grid of collectible facts. Unlocked cards flip open on tap; locked ones
 /// show only the category and a hint.
 class CodexScreen extends StatelessWidget {
-  const CodexScreen({super.key});
+  const CodexScreen({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final store = ProgressStore.instance;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.t('codex_title'))),
+      appBar: AppBar(
+        title: Text(l10n.t('codex_title')),
+        automaticallyImplyLeading: !embedded,
+      ),
       extendBodyBehindAppBar: true,
       body: ParchmentBackground(
         tint: AppColors.meadow,

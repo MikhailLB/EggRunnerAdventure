@@ -10,7 +10,9 @@ import '../widgets/xp_gauge.dart';
 
 /// List of trophies with rarity ribbons and real-time progress bars.
 class TrophiesScreen extends StatelessWidget {
-  const TrophiesScreen({super.key});
+  const TrophiesScreen({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,10 @@ class TrophiesScreen extends StatelessWidget {
     final store = ProgressStore.instance;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.t('trophies_title'))),
+      appBar: AppBar(
+        title: Text(l10n.t('trophies_title')),
+        automaticallyImplyLeading: !embedded,
+      ),
       extendBodyBehindAppBar: true,
       body: ParchmentBackground(
         tint: AppColors.sky,

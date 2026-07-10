@@ -58,7 +58,7 @@ class AppStrings {
 
   static const Map<String, String> _en = <String, String>{
     // App
-    'app_title': 'Feathered Origins',
+    'app_title': 'Egg Runner Adventure',
     'app_tagline': 'The illustrated story of chicken evolution',
     'author_line': 'Narrated by Henrietta Rex, 3rd of her name',
 
@@ -96,9 +96,12 @@ class AppStrings {
     'chapters_page_of': 'Page {current} of {total}',
     'chapters_read': 'Read',
     'chapters_unread': 'Unread',
+    'chapters_start': 'Start',
+    'chapters_reread': 'Re-read',
     'chapters_next': 'Next page',
     'chapters_prev': 'Previous page',
     'chapters_finish': 'Finish chapter',
+    'loading': 'Loading',
     'chapters_reward_title': 'Chapter unlocked!',
     'chapters_reward_xp': 'You earned {xp} XP.',
     'chapters_reward_close': 'Continue',
@@ -145,7 +148,7 @@ class AppStrings {
     'settings_reset_confirm_yes': 'Yes, reset',
     'settings_reset_confirm_no': 'Cancel',
     'settings_about': 'About',
-    'settings_about_body': 'Feathered Origins is a popular-science illustrated storybook about the 150-million-year journey of the humble chicken.',
+    'settings_about_body': 'Egg Runner Adventure is a popular-science illustrated storybook about the 150-million-year journey of the humble chicken, narrated by Henrietta the hen.',
     'settings_version': 'Version 1.0.0',
 
     // Boot
@@ -309,6 +312,24 @@ class AppStrings {
     'fact_math_title': 'Little Mathematicians',
     'fact_math_body': 'Chicks as young as five days old have been shown to perform simple addition and subtraction in laboratory experiments.',
 
+    'fact_wishbone_title': 'Make a Wish',
+    'fact_wishbone_body': 'The wishbone you pull at dinner is the furcula — a fused collarbone. Predatory dinosaurs like Velociraptor had one too, and it helps power the wingbeat in birds.',
+
+    'fact_flight_record_title': 'The Longest Flight',
+    'fact_flight_record_body': 'Chickens can fly, just not far. The longest recorded chicken flight lasted 13 seconds and covered about 91 metres (301 feet).',
+
+    'fact_comb_title': 'The Living Radiator',
+    'fact_comb_body': 'A chicken\'s comb and wattles aren\'t just for show — they shed body heat to keep her cool, and their bright red colour signals good health to the flock.',
+
+    'fact_earlobe_title': 'Read the Earlobes',
+    'fact_earlobe_body': 'You can often guess an egg\'s shell colour from a hen\'s earlobes: white lobes usually mean white eggs, red lobes usually mean brown eggs.',
+
+    'fact_rooster_clock_title': 'A Clock Inside',
+    'fact_rooster_clock_body': 'A 2013 study showed roosters crow at dawn thanks to an internal circadian clock — even in constant dim light, they still crow roughly every 24 hours.',
+
+    'fact_pecking_order_title': 'The Real Pecking Order',
+    'fact_pecking_order_body': 'The phrase comes from real chicken society. Norwegian scientist Thorleif Schjelderup-Ebbe described the strict social ladder of a flock in the 1920s.',
+
     // Achievements
     'ach_origin_title': 'Origin Story',
     'ach_origin_desc': 'Finish your first chapter.',
@@ -335,7 +356,7 @@ class AppStrings {
   // === Spanish ============================================================
 
   static const Map<String, String> _es = <String, String>{
-    'app_title': 'Orígenes con Plumas',
+    'app_title': 'Egg Runner Adventure',
     'app_tagline': 'La historia ilustrada de la evolución de la gallina',
     'author_line': 'Narrado por Henrietta Rex, tercera de su nombre',
     'menu_home': 'Inicio',
@@ -365,6 +386,9 @@ class AppStrings {
     'chapters_page_of': 'Página {current} de {total}',
     'chapters_read': 'Leído',
     'chapters_unread': 'Sin leer',
+    'chapters_start': 'Empezar',
+    'chapters_reread': 'Releer',
+    'loading': 'Cargando',
     'chapters_next': 'Siguiente',
     'chapters_prev': 'Anterior',
     'chapters_finish': 'Terminar capítulo',
@@ -414,7 +438,7 @@ class AppStrings {
   // === French =============================================================
 
   static const Map<String, String> _fr = <String, String>{
-    'app_title': 'Origines à Plumes',
+    'app_title': 'Egg Runner Adventure',
     'app_tagline': 'L\'histoire illustrée de l\'évolution de la poule',
     'author_line': 'Raconté par Henrietta Rex, troisième du nom',
     'menu_home': 'Accueil',
@@ -444,6 +468,9 @@ class AppStrings {
     'chapters_page_of': 'Page {current} sur {total}',
     'chapters_read': 'Lu',
     'chapters_unread': 'Non lu',
+    'chapters_start': 'Lire',
+    'chapters_reread': 'Relire',
+    'loading': 'Chargement',
     'chapters_next': 'Suivant',
     'chapters_prev': 'Précédent',
     'chapters_finish': 'Terminer',
@@ -493,7 +520,7 @@ class AppStrings {
   // === German =============================================================
 
   static const Map<String, String> _de = <String, String>{
-    'app_title': 'Gefiederte Ursprünge',
+    'app_title': 'Egg Runner Adventure',
     'app_tagline': 'Die illustrierte Geschichte der Huhn-Evolution',
     'author_line': 'Erzählt von Henrietta Rex, der Dritten ihres Namens',
     'menu_home': 'Start',
@@ -523,6 +550,9 @@ class AppStrings {
     'chapters_page_of': 'Seite {current} von {total}',
     'chapters_read': 'Gelesen',
     'chapters_unread': 'Ungelesen',
+    'chapters_start': 'Start',
+    'chapters_reread': 'Erneut lesen',
+    'loading': 'Laden',
     'chapters_next': 'Weiter',
     'chapters_prev': 'Zurück',
     'chapters_finish': 'Abschließen',
@@ -572,7 +602,7 @@ class AppStrings {
   // === Portuguese =========================================================
 
   static const Map<String, String> _pt = <String, String>{
-    'app_title': 'Origens Emplumadas',
+    'app_title': 'Egg Runner Adventure',
     'app_tagline': 'A história ilustrada da evolução da galinha',
     'author_line': 'Narrado por Henrietta Rex, a terceira do seu nome',
     'menu_home': 'Início',
@@ -602,6 +632,9 @@ class AppStrings {
     'chapters_page_of': 'Página {current} de {total}',
     'chapters_read': 'Lido',
     'chapters_unread': 'Não lido',
+    'chapters_start': 'Começar',
+    'chapters_reread': 'Reler',
+    'loading': 'Carregando',
     'chapters_next': 'Próxima',
     'chapters_prev': 'Anterior',
     'chapters_finish': 'Terminar',

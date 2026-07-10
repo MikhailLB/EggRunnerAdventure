@@ -158,6 +158,48 @@ class FactsData {
       category: FactCategory.behavior,
       emoji: '🧮',
     ),
+    ChickenFact(
+      id: 'fact_wishbone',
+      titleKey: 'fact_wishbone_title',
+      bodyKey: 'fact_wishbone_body',
+      category: FactCategory.biology,
+      emoji: '🦴',
+    ),
+    ChickenFact(
+      id: 'fact_flight_record',
+      titleKey: 'fact_flight_record_title',
+      bodyKey: 'fact_flight_record_body',
+      category: FactCategory.behavior,
+      emoji: '✈️',
+    ),
+    ChickenFact(
+      id: 'fact_comb',
+      titleKey: 'fact_comb_title',
+      bodyKey: 'fact_comb_body',
+      category: FactCategory.biology,
+      emoji: '❤️',
+    ),
+    ChickenFact(
+      id: 'fact_earlobe',
+      titleKey: 'fact_earlobe_title',
+      bodyKey: 'fact_earlobe_body',
+      category: FactCategory.genetics,
+      emoji: '👂',
+    ),
+    ChickenFact(
+      id: 'fact_rooster_clock',
+      titleKey: 'fact_rooster_clock_title',
+      bodyKey: 'fact_rooster_clock_body',
+      category: FactCategory.behavior,
+      emoji: '🌅',
+    ),
+    ChickenFact(
+      id: 'fact_pecking_order',
+      titleKey: 'fact_pecking_order_title',
+      bodyKey: 'fact_pecking_order_body',
+      category: FactCategory.behavior,
+      emoji: '👑',
+    ),
   ];
 
   static ChickenFact byId(String id) => facts.firstWhere((f) => f.id == id);

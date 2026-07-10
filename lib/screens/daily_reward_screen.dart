@@ -14,7 +14,9 @@ import '../widgets/parchment_background.dart';
 /// to reveal a card. If they've already claimed today, we show the same fact
 /// with a "come back tomorrow" note.
 class DailyRewardScreen extends StatefulWidget {
-  const DailyRewardScreen({super.key});
+  const DailyRewardScreen({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   State<DailyRewardScreen> createState() => _DailyRewardScreenState();
@@ -58,7 +60,10 @@ class _DailyRewardScreenState extends State<DailyRewardScreen> with SingleTicker
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.t('daily_title'))),
+      appBar: AppBar(
+        title: Text(l10n.t('daily_title')),
+        automaticallyImplyLeading: !widget.embedded,
+      ),
       extendBodyBehindAppBar: true,
       body: ParchmentBackground(
         tint: AppColors.yolk,

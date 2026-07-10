@@ -1,4 +1,4 @@
-# Feathered Origins
+# Egg Runner Adventure
 
 *The illustrated science story of chicken evolution — narrated by Henrietta Rex.*
 
@@ -35,8 +35,10 @@ Following the LavaPickRun pattern:
 ## Tech
 
 - Flutter 3.41 / Dart 3.11
-- No external art dependencies — chapter illustrations are painted with
-  `CustomPainter` so the app ships tiny.
+- Rich hand-authored illustrations for the mascot and all 11 chapters.
+- Persistent bottom-navigation shell (`IndexedStack`) across the 5 modes.
+- Boot screen precaches every illustration and drives the loading bar from
+  real asset-decode progress (bar only completes when the app is truly ready).
 - Persistence via `shared_preferences`.
 - In-memory localisation table (no ARB codegen) so long-form chapter prose
   stays easy to edit and translate.
