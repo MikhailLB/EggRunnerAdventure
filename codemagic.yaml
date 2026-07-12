@@ -30,7 +30,7 @@ workflows:
         script: pod install
         working_directory: ios
 
-      - name: Set up keychain & code signing
+      - name: Code signing & Build IPA
         script: |
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
@@ -38,9 +38,6 @@ workflows:
             --create
           keychain add-certificates
           xcode-project use-profiles
-
-      - name: Build IPA
-        script: |
           flutter build ipa --release \
             --export-options-plist=$CM_EXPORT_OPTIONS_PLIST
 
