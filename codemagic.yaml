@@ -39,7 +39,7 @@ workflows:
           keychain add-certificates
           xcode-project use-profiles
           flutter build ipa --release \
-            --export-options-plist=$CM_EXPORT_OPTIONS_PLIST
+            --export-options-plist=/Users/builder/export_options.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
