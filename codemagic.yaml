@@ -33,15 +33,20 @@ workflows:
       - name: Code signing & Build IPA
         script: |
           keychain initialize
+          # Create a distribution certificate if none exists, then the profile.
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --platform IOS \
-            --create
+            --create \
+            --verbose
           keychain add-certificates
+          echo "=== Provisioning profiles on disk ==="
+          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/" 2>/dev/null || true
+          ls -la "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles/" 2>/dev/null || true
           # Compile Dart/Flutter unsigned first — this can rewrite the
           # Xcode project, so apply provisioning profiles AFTER it.
           flutter build ios --release --no-codesign
-          xcode-project use-profiles
+          xcode-project use-profiles --code-signing-setup-verbose-logging
           xcode-project build-ipa \
             --workspace "ios/Runner.xcworkspace" \
             --scheme "Runner"
