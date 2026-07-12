@@ -8,6 +8,8 @@ workflows:
       app_store_connect: Egg Runner Adventure Codemagic
 
     environment:
+      groups:
+        - code-signing
       flutter: 3.41.7
       xcode: latest
       cocoapods: default
@@ -33,20 +35,17 @@ workflows:
       - name: Code signing & Build IPA
         script: |
           keychain initialize
-          # Create a distribution certificate if none exists, then the profile.
+          # Create a distribution certificate (using CERTIFICATE_PRIVATE_KEY)
+          # if none exists, then the App Store provisioning profile.
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --platform IOS \
-            --create \
-            --verbose
+            --create
           keychain add-certificates
-          echo "=== Provisioning profiles on disk ==="
-          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/" 2>/dev/null || true
-          ls -la "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles/" 2>/dev/null || true
           # Compile Dart/Flutter unsigned first — this can rewrite the
           # Xcode project, so apply provisioning profiles AFTER it.
           flutter build ios --release --no-codesign
-          xcode-project use-profiles --code-signing-setup-verbose-logging
+          xcode-project use-profiles
           xcode-project build-ipa \
             --workspace "ios/Runner.xcworkspace" \
             --scheme "Runner"
