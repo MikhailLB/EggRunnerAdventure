@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app/app.dart';
-import 'data/progress_store.dart';
 import 'hatchway/config/era_hatch_config.dart';
 import 'hatchway/hatch_coordinator.dart';
 import 'hatchway/infra/airway_probe.dart';
@@ -15,17 +14,19 @@ import 'hatchway/infra/hatch_exchange.dart';
 import 'hatchway/infra/nest_vault.dart';
 import 'hatchway/infra/roost_agent.dart';
 
-/// Entrypoint. Warms up local persistence and sets a friendly system-UI
-/// overlay before mounting the material app. Orientation is left flexible
-/// so the boot screen can render in both portrait and landscape; screens
-/// downstream lock to portrait themselves.
+/// Entrypoint. Warms up the gray-flow services and sets a friendly system-UI
+/// overlay before mounting the app. Orientation is left flexible so the boot
+/// screen can render in both portrait and landscape.
+///
+/// TEMPLATE: initialise your white-part game (storage/audio/etc.) here, before
+/// runApp — never inside the gray flow.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final vault = NestVault();
   final agent = RoostAgent();
   await Future.wait<void>(<Future<void>>[
-    ProgressStore.init(),
+    // TODO: add your game init futures here (e.g. StorageService.init()).
     vault.initialize(),
     agent.prepare(),
   ]);

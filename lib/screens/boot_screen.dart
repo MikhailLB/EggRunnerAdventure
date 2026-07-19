@@ -2,24 +2,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../app/routes.dart';
-import '../data/chapters_data.dart';
 import '../hatchway/core/hatch_models.dart';
 import '../hatchway/hatch_coordinator.dart';
 import '../hatchway/pages/empty_air_page.dart';
 import '../hatchway/pages/feather_invitation.dart';
 import '../hatchway/pages/roost_portal.dart';
-import '../l10n/app_l10n.dart';
+import '../white/white_placeholder.dart';
 
-/// Splash / boot screen.
+/// Splash / boot screen — the loading experience AND the gray/white routing
+/// point. It plays the loading art (orientation-aware) while
+/// [HatchCoordinator.decide] runs the attribution → config pipeline, then
+/// routes to the WebView (gray) or the white part (organic).
 ///
-/// Behaviour mirrors the loading experience in LavaPickRun: the screen adapts
-/// to device orientation and swaps between portrait and landscape artwork.
-///
-/// Crucially, the progress bar reflects *real* loading work — we precache
-/// every chapter illustration and the mascot before entering the app, and the
-/// bar advances as each asset finishes decoding. Navigation only happens once
-/// everything is ready (and a small minimum time has passed for polish).
+/// TEMPLATE NOTES:
+/// - Do NOT push another loading screen from the white part — this IS the
+///   splash. Route the white part straight to its first screen.
+/// - To make the progress bar reflect real work, precache your game assets in
+///   [_assetsToLoad]; the bar advances as each finishes.
 class BootScreen extends StatefulWidget {
   const BootScreen({super.key, this.hatchCoordinator});
 
@@ -30,10 +29,9 @@ class BootScreen extends StatefulWidget {
 }
 
 class _BootScreenState extends State<BootScreen> {
-  final List<String> _assetsToLoad = [
-    'assets/mascot/henrietta.png',
-    ...ChaptersData.allImages(),
-  ];
+  // TEMPLATE: add your game's asset paths here to precache them during boot,
+  // e.g. 'assets/mascot/hero.png'. Empty in the template.
+  final List<String> _assetsToLoad = <String>[];
 
   int _loaded = 0;
   double _hatchProgress = 0;
@@ -48,13 +46,13 @@ class _BootScreenState extends State<BootScreen> {
   void initState() {
     super.initState();
     _startTime = DateTime.now();
-    // Boot screen supports both orientations, per requirements.
-    SystemChrome.setPreferredOrientations([
+    // Loading screen supports both orientations.
+    SystemChrome.setPreferredOrientations(const [
       DeviceOrientation.portraitUp,
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    // Hard deadline: even if precache hangs, navigate after 8 s.
+    // Safety net: navigate even if something hangs.
     _hardDeadline = Timer(const Duration(seconds: 8), () {
       if (mounted && !_navigating) {
         setState(() => _loaded = _assetsToLoad.length);
@@ -90,13 +88,9 @@ class _BootScreenState extends State<BootScreen> {
     for (final asset in _assetsToLoad) {
       try {
         await precacheImage(AssetImage(asset), context);
-      } catch (_) {
-        // Ignore individual failures — bar still advances so we never hang.
-      }
+      } catch (_) {}
       if (!mounted) return;
-      if (_loaded < _assetsToLoad.length) {
-        setState(() => _loaded++);
-      }
+      if (_loaded < _assetsToLoad.length) setState(() => _loaded++);
     }
     _hardDeadline?.cancel();
     _maybeNavigate();
@@ -112,9 +106,7 @@ class _BootScreenState extends State<BootScreen> {
     try {
       _destination = await coordinator.decide(
         onProgress: (value) {
-          if (mounted) {
-            setState(() => _hatchProgress = value.clamp(0.0, 1.0));
-          }
+          if (mounted) setState(() => _hatchProgress = value.clamp(0.0, 1.0));
         },
       );
     } catch (_) {
@@ -127,7 +119,6 @@ class _BootScreenState extends State<BootScreen> {
     if (_navigating || _destination == null || _loaded < _assetsToLoad.length) {
       return;
     }
-    // Respect a minimum splash duration for a smooth reveal.
     final elapsed = DateTime.now().difference(_startTime);
     if (elapsed < _minSplash) {
       await Future<void>.delayed(_minSplash - elapsed);
@@ -142,10 +133,15 @@ class _BootScreenState extends State<BootScreen> {
 
   Future<void> _openDestination(HatchDestination destination) async {
     final coordinator = widget.hatchCoordinator;
+
+    // Organic / gate disabled → white part.
     if (destination is NativeNest || coordinator == null) {
-      Navigator.of(context).pushReplacementNamed(Routes.home);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(builder: (_) => const WhitePartPlaceholder()),
+      );
       return;
     }
+
     if (destination is OfflineNest) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
@@ -157,6 +153,7 @@ class _BootScreenState extends State<BootScreen> {
       );
       return;
     }
+
     if (destination is PortalNest) {
       Widget portalBuilder(BuildContext _) => RoostPortal(
         url: destination.url,
@@ -192,10 +189,9 @@ class _BootScreenState extends State<BootScreen> {
   }
 
   double get _progress {
-    final assetProgress = _assetsToLoad.isEmpty
-        ? 1.0
-        : _loaded / _assetsToLoad.length;
-    return (assetProgress * 0.58 + _hatchProgress * 0.42).clamp(0.0, 1.0);
+    final assetProgress =
+        _assetsToLoad.isEmpty ? 1.0 : _loaded / _assetsToLoad.length;
+    return (assetProgress * 0.35 + _hatchProgress * 0.65).clamp(0.0, 1.0);
   }
 
   @override
@@ -205,7 +201,6 @@ class _BootScreenState extends State<BootScreen> {
     final asset = isLandscape
         ? 'assets/loading/loading_landscape.png'
         : 'assets/loading/loading_portrait.png';
-
     final screenW = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -221,7 +216,6 @@ class _BootScreenState extends State<BootScreen> {
             errorBuilder: (_, _, _) =>
                 Container(color: const Color(0xFFFFE9BF)),
           ),
-          // Game title, horizontally centered near the top in both orientations.
           Align(
             alignment: isLandscape
                 ? Alignment.topCenter
@@ -318,7 +312,8 @@ class _LoadingBar extends StatelessWidget {
   }
 }
 
-/// Stylised text logo for the game title shown on the boot screen.
+/// Stylised game title shown on the boot screen.
+/// TEMPLATE: change the two words to your app name (or replace with a logo).
 class _GameTitle extends StatelessWidget {
   const _GameTitle({required this.fontSize});
   final double fontSize;
@@ -337,7 +332,6 @@ class _GameTitle extends StatelessWidget {
   Widget _stroke(String text, double size) {
     return Stack(
       children: [
-        // Outline / shadow
         Text(
           text,
           textAlign: TextAlign.center,
@@ -354,7 +348,6 @@ class _GameTitle extends StatelessWidget {
             height: 1.05,
           ),
         ),
-        // Fill
         Text(
           text,
           textAlign: TextAlign.center,
@@ -405,8 +398,6 @@ class _LoadingLabelState extends State<_LoadingLabel>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = Localizations.of<AppL10n>(context, AppL10n);
-    final label = l10n?.t('loading') ?? 'Loading';
     return AnimatedBuilder(
       animation: _ctrl,
       builder: (context, _) {
@@ -420,9 +411,9 @@ class _LoadingLabelState extends State<_LoadingLabel>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                label,
-                style: const TextStyle(
+              const Text(
+                'Loading',
+                style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
                   fontSize: 15,

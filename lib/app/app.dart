@@ -1,75 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
-import '../data/progress_store.dart';
 import '../hatchway/hatch_coordinator.dart';
-import '../l10n/app_l10n.dart';
-import '../l10n/app_strings.dart';
 import '../screens/boot_screen.dart';
-import '../screens/chapter_reader_screen.dart';
-import '../screens/main_shell.dart';
-import '../screens/settings_screen.dart';
+import '../white/white_placeholder.dart';
 import 'routes.dart';
 import 'theme.dart';
 
-/// Root MaterialApp. Owns the [LocaleController] so the whole tree rebuilds
-/// on language change without needing a provider package.
-class FeatheredOriginsApp extends StatefulWidget {
+/// Root MaterialApp for the gray-flow template.
+///
+/// TEMPLATE: register EVERY named route your game uses in [onGenerateRoute]
+/// (or the `routes` map). A missing route crashes the organic path with
+/// "Could not find route". Wrap with your game's state provider if needed.
+class FeatheredOriginsApp extends StatelessWidget {
   const FeatheredOriginsApp({super.key, this.hatchCoordinator});
 
   final HatchCoordinator? hatchCoordinator;
 
   @override
-  State<FeatheredOriginsApp> createState() => _FeatheredOriginsAppState();
-}
-
-class _FeatheredOriginsAppState extends State<FeatheredOriginsApp> {
-  late final LocaleController _localeController = LocaleController(
-    Locale(ProgressStore.instance.languageCode),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _localeController.addListener(() => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _localeController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Egg Runner Adventure',
+      // TODO: change to your app's display name.
+      title: 'Gray Flow Template',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
-      locale: _localeController.locale,
-      supportedLocales: AppStrings.supportedLocales.map(Locale.new).toList(),
-      localizationsDelegates: const [
-        AppL10n.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
       initialRoute: Routes.boot,
       onGenerateRoute: (settings) {
-        Widget page;
-        switch (settings.name) {
-          case Routes.home:
-            page = const MainShell();
-          case Routes.reader:
-            final id = settings.arguments as String? ?? 'ch_meet';
-            page = ChapterReaderScreen(chapterId: id);
-          case Routes.settings:
-            page = SettingsScreen(localeController: _localeController);
-          case Routes.boot:
-          default:
-            page = BootScreen(hatchCoordinator: widget.hatchCoordinator);
-        }
-        return MaterialPageRoute(builder: (_) => page, settings: settings);
+        final Widget page = switch (settings.name) {
+          // White-part entry — replace with your game's first screen.
+          Routes.home => const WhitePartPlaceholder(),
+          // TODO: add your game routes here.
+          _ => BootScreen(hatchCoordinator: hatchCoordinator),
+        };
+        return MaterialPageRoute<void>(builder: (_) => page, settings: settings);
       },
     );
   }

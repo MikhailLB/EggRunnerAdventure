@@ -62,17 +62,20 @@ String unfold(List<int> encoded) {
 }
 
 void main() {
+  // TEMPLATE: fill these, then paste the printed arrays into
+  // lib/hatchway/config/era_hatch_config.dart. Change `_nestSalt` in
+  // lib/hatchway/core/feather_codec.dart FIRST so the arrays are unique.
   const values = <String, String>{
-    'config': 'https://eggrunneradventure.com/config.php',
-    'privacy': 'https://eggrunneradventure.com/privacy-policy.html',
-    'support': 'https://eggrunneradventure.com/support.html',
-    'gcd': 'https://gcdsdk.appsflyer.com/install_data/v4.0/',
+    'config': 'https://YOURDOMAIN.com/config.php',
+    'privacy': 'https://YOURDOMAIN.com/privacy-policy.html',
+    'support': 'https://YOURDOMAIN.com/support.html',
+    'gcd': 'https://gcdsdk.appsflyer.com/install_data/v5.0/',
     'webkit': '605.1.15',
     'safari': '18.6',
     'safariTail': '604.1',
-    'appsFlyerDevKey': '',
-    'firebaseProjectNumber': '',
-    'oneLinkHost': '',
+    'appsFlyerDevKey': '', // paste your AppsFlyer dev key
+    'firebaseProjectNumber': '', // GCM_SENDER_ID from GoogleService-Info
+    'oneLinkHost': '', // optional
   };
 
   for (final entry in values.entries) {

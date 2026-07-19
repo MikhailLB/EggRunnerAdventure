@@ -1,245 +1,56 @@
 import '../core/feather_codec.dart';
 
+/// ════════════════════════════════════════════════════════════
+/// ⚠️  TEMPLATE — fill every credential before shipping.
+/// ════════════════════════════════════════════════════════════
+///
+/// All secrets are stored as obfuscated byte arrays (never plaintext):
+///   1. Put your plaintext values into tool/encode_era_values.dart.
+///   2. Change the cipher salt in lib/hatchway/core/feather_codec.dart
+///      (`_nestSalt`) to something unique for THIS app.
+///   3. Run `dart run tool/encode_era_values.dart`.
+///   4. Paste the printed byte arrays below. The VERIFY block must
+///      round-trip EXACTLY (a stray/missing byte silently corrupts the
+///      URL — that bug cost real debugging time; always re-verify).
+///
+/// The gray gate stays disabled (white part only) until `endpoint`,
+/// `appsFlyerKey` and `firebaseProjectNumber` are all non-empty.
 abstract final class EraHatchConfig {
-  static const String appTitle = 'Egg Runner Adventure';
-  static const String bundleId =
-      'com.eggrunneradventure.eggrunneradventuregame';
-  static const String iosStoreId = '6789471673';
+  // TODO: your app identity.
+  static const String appTitle = 'Gray Flow Template';
+  static const String bundleId = 'com.example.grayflow';
 
-  static const int pushSnoozeSeconds = 259200;
+  /// iOS App Store numeric id (used for GCD + store_id). TODO: replace.
+  static const String iosStoreId = '0000000000';
+
+  static const int pushSnoozeSeconds = 259200; // 3 days
   static const int organicRecheckSeconds = 6;
 
-  static const List<int> _endpoint = <int>[
-    118,
-    79,
-    247,
-    184,
-    89,
-    211,
-    154,
-    208,
-    21,
-    170,
-    242,
-    81,
-    179,
-    219,
-    175,
-    222,
-    224,
-    191,
-    133,
-    56,
-    137,
-    129,
-    193,
-    31,
-    32,
-    7,
-    199,
-    231,
-    171,
-    175,
-    173,
-    9,
-    247,
-    179,
-    201,
-    218,
-    208,
-    98,
-    178,
-    60,
-    190,
-  ];
-  static const List<int> _privacy = <int>[
-    118,
-    79,
-    247,
-    184,
-    89,
-    211,
-    154,
-    208,
-    21,
-    170,
-    242,
-    81,
-    179,
-    219,
-    175,
-    222,
-    224,
-    191,
-    133,
-    56,
-    137,
-    129,
-    193,
-    31,
-    32,
-    7,
-    199,
-    231,
-    171,
-    175,
-    173,
-    22,
-    250,
-    174,
-    217,
-    210,
-    204,
-    173,
-    111,
-    68,
-    189,
-    55,
-    61,
-    178,
-    12,
-    180,
-    112,
-    213,
-    45,
-    223,
-  ];
-  static const List<int> _support = <int>[
-    118,
-    79,
-    247,
-    184,
-    89,
-    211,
-    154,
-    208,
-    21,
-    170,
-    242,
-    81,
-    179,
-    219,
-    175,
-    222,
-    224,
-    191,
-    133,
-    56,
-    137,
-    129,
-    193,
-    31,
-    32,
-    7,
-    199,
-    231,
-    171,
-    175,
-    173,
-    25,
-    253,
-    181,
-    211,
-    224,
-    219,
-    168,
-    112,
-    60,
-    194,
-    56,
-    64,
-  ];
+  // ── Encoded secrets (paste from tool/encode_era_values.dart) ──────────
+  // TODO: config endpoint, e.g. https://yourdomain.com/config.php
+  static const List<int> _endpoint = <int>[];
+  // TODO: privacy policy URL
+  static const List<int> _privacy = <int>[];
+  // TODO: support URL
+  static const List<int> _support = <int>[];
+  // TODO: AppsFlyer Dev Key
+  static const List<int> _appsFlyerKey = <int>[];
+  // TODO: Firebase project number (GCM_SENDER_ID)
+  static const List<int> _firebaseProject = <int>[];
+
+  // AppsFlyer GCD base — generic, safe to keep across projects.
   static const List<int> _gcd = <int>[
-    118,
-    79,
-    247,
-    184,
-    89,
-    211,
-    154,
-    208,
-    23,
-    166,
-    239,
-    82,
-    162,
-    216,
-    111,
-    218,
-    222,
-    206,
-    148,
-    40,
-    144,
-    140,
-    178,
-    28,
-    220,
-    5,
-    8,
-    241,
-    107,
-    171,
-    236,
-    25,
-    252,
-    166,
-    207,
-    221,
-    200,
-    152,
-    163,
-    72,
-    175,
-    250,
-    74,
-    131,
-    193,
-    182,
-    55,
+    118, 79, 247, 184, 89, 211, 154, 208, 23, 166, 239, 82, 162, 216, 111,
+    218, 222, 206, 148, 40, 144, 140, 178, 28, 220, 5, 8, 241, 107, 171, 236,
+    25, 252, 166, 207, 221, 200, 152, 163, 72, 175, 250, 74, 131, 193, 182, 55,
   ];
+
+  // User-Agent version fragments — vary per project (see gray_user_agent).
   static const List<int> _webkit = <int>[68, 11, 184, 118, 23, 199, 156, 214];
   static const List<int> _safari = <int>[63, 19, 177, 126];
   static const List<int> _safariTail = <int>[68, 11, 183, 118, 23];
 
-  static const List<int> _appsFlyerKey = <int>[
-    130,
-    80,
-    229,
-    173,
-    75,
-    239,
-    189,
-    216,
-    32,
-    178,
-    239,
-    89,
-    134,
-    220,
-    143,
-    173,
-    164,
-    183,
-    100,
-    6,
-    136,
-    120,
-  ];
-  static const List<int> _firebaseProject = <int>[
-    63,
-    19,
-    183,
-    124,
-    25,
-    208,
-    156,
-    214,
-    226,
-    121,
-    195,
-  ];
-  // Optional — not required to enable the gray gate.
+  // OneLink is OPTIONAL — it must NEVER be part of the gate-enable check.
   static const List<int> _oneLinkHost = <int>[];
 
   static String get endpoint => unfoldFeathers(_endpoint);
@@ -256,7 +67,8 @@ abstract final class EraHatchConfig {
   static String get storeToken => 'id$iosStoreId';
 
   /// Gate needs config endpoint + AF key + Firebase project number.
-  /// OneLink host is optional and must NOT block attribution / config POST.
+  /// ⚠️ Do NOT add optional fields (e.g. OneLink) here — a missing optional
+  /// value would silently disable the whole gray flow.
   static bool get grayCredentialsReady =>
       endpoint.isNotEmpty &&
       appsFlyerKey.isNotEmpty &&

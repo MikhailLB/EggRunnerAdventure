@@ -1,5 +1,5 @@
 name: egg_runner_adventure
-description: "Egg Runner Adventure - The illustrated science story of chicken evolution."
+description: "Gray-flow iOS template — replace name/description and wire your white-part game."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -9,8 +9,6 @@ environment:
 
 dependencies:
   flutter:
-    sdk: flutter
-  flutter_localizations:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
@@ -59,7 +57,6 @@ flutter:
     - assets/loading/loading_portrait.png
     - assets/loading/loading_landscape.png
     - assets/icon/app_icon.png
-    - assets/branding/game_name.png
-    - assets/mascot/henrietta.png
-    - assets/chapters/
+    # Gray-flow foreground screens (permit / no-wifi). Replace artwork per app.
     - assets/chicken_18_additional_assets/
+    # TODO: add your white-part game assets below.
