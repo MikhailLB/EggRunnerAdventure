@@ -67,7 +67,7 @@ Detailed doc: `.cursor/rules/gray_flow_guide.md` §"What Is This Project?".
 | Configure the WebView safe-area CSS injection | `.cursor/rules/webview_safe_area_injection.mdc` |
 | Set the User-Agent (slot vs crash suffix) | `.cursor/rules/gray_user_agent.mdc` |
 | Wire the custom screen background assets | `.cursor/rules/custom_screens.md` |
-| Add Microsoft Clarity analytics (drop-off, offer reachability, deposit/auth funnel, push permission) | `.cursor/rules/clarity_analytics.mdc` |
+| Add Microsoft Clarity analytics (OPTIONAL — only if the user asks; if unsure, ask first) | `.cursor/rules/clarity_analytics.mdc` |
 | Avoid the exact bugs hit last time (offline/retry/rotation/webview/gate/creds) | `.cursor/rules/gray_flow_lessons.md` |
 | Verify a release is ready to ship | `.cursor/FINAL_CHECKLIST.md` |
 

@@ -70,7 +70,8 @@ Companion rules, all in `.cursor/rules/`:
 - `webview_safe_area_injection.mdc` — safe-area CSS injection safety
 - `gray_user_agent.mdc` — User-Agent contract (slot vs crash)
 - `custom_screens.md` — screen background assets
-- `clarity_analytics.mdc` — Microsoft Clarity funnel
+- `clarity_analytics.mdc` — Microsoft Clarity funnel (OPTIONAL — add only if
+  the user asks; if unsure, ask before adding analytics)
 
 ---
 

@@ -6,6 +6,21 @@ alwaysApply: false
 
 # Clarity analytics for the gray flow (iOS)
 
+## ⚠️ OPTIONAL — only add Clarity when the user asks for it
+
+Clarity is **not** part of the default gray flow. Add it **only if the user
+explicitly requests analytics / session tracking**. It is not required for the
+app to work and it is another SDK + a unique `projectId` to manage.
+
+- If the user asked for it → follow this rule.
+- If the brief does NOT mention analytics / Clarity / tracking-of-drop-off →
+  **do not add it**, and do not scaffold any `insight.dart` / `ClarityWidget`.
+- If you are unsure whether it's wanted → **STOP and ask** one question, e.g.:
+  > Do you want Microsoft Clarity analytics (session replay + drop-off/funnel
+  > events) added, or ship without it? It needs its own Clarity projectId.
+
+Everything below applies ONLY after the user has opted in.
+
 ## 0. Why we add this (read first)
 
 The business problem: **minus-EV traffic** — we don't know *where* a paid
