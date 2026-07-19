@@ -23,6 +23,34 @@ look" index that points into it.
 > **👉 Building a NEW app? Follow `.cursor/DEV_PLAYBOOK.md`** — a copy-paste,
 > stage-by-stage flow (fill your inputs, tick each stage, verify at the end).
 
+---
+
+## 0. Operating protocol (the two pipelines: START_HERE + DEV_PLAYBOOK)
+
+**These two files ARE the pipeline.** `START_HERE.md` is the map + invariants;
+`DEV_PLAYBOOK.md` is the ordered stages. When a developer works with you (the
+agent), drive the build through the playbook like this:
+
+1. **You own the stage order.** Track which `DEV_PLAYBOOK` stage is active. When
+   the dev says **"идём дальше" / "next" / "go on"**, advance to the next stage
+   and run it — the dev should NOT have to re-paste prompts.
+2. **Gate on inputs.** Before running a stage, check every input it needs (see
+   the INPUTS block). If anything required is **missing or a placeholder, STOP
+   and ask for exactly that value** — never scaffold with a guess or a stub.
+3. **Self-verify every stage before advancing.** At the end of each stage run
+   its "Done when" checks yourself: read the relevant `rules/*` and
+   `gray_flow_lessons.md`, confirm your own code matches, run `flutter analyze`,
+   render screens, or make the real request the stage asks for. Report each
+   check as **OK `<file:line>`** or **FOUND → fixed**.
+4. **Do not mark a stage done until its checks pass.** If a check fails, fix it,
+   re-verify, then continue.
+5. **Announce transitions.** Say which stage just passed and which is next, so
+   the dev can simply reply "next".
+
+> TL;DR for the dev: paste the INPUTS once, then just say **"идём дальше"** each
+> time. Cursor advances the stage, asks for any missing data, verifies its own
+> work against the rules, and only then moves on.
+
 > **This template's structure differs from generic gray-flow docs below:**
 > - Routing lives in **`HatchCoordinator.decide`** (not a single
 >   `BootScreen._boot`). `BootScreen` is the splash UI + it calls `decide`.

@@ -6,6 +6,9 @@
 
 > Как работать с Cursor эффективно:
 > - Один скоуп за проход. Не «сделай всё сразу».
+> - После вводных достаточно говорить **«идём дальше»** — агент сам берёт
+>   следующий этап, запрашивает недостающие данные и верифицирует свой код
+>   (протокол описан в `@.cursor/START_HERE.md` §0).
 > - Прикрепляй правила через `@` (напр. `@.cursor/rules/gray_flow_lessons.md`).
 > - Всегда заставляй агента **сверяться с правилами и проверять свой код**.
 > - Источник правды — код. Если правило и код расходятся, верь коду.
@@ -27,7 +30,7 @@
 - AppsFlyer dev key:           ★
 - Firebase project number:     ★ (GCM_SENDER_ID)
 - GoogleService-Info.plist:    ★ (положен в ios/Runner/)
-- NSE bundle id suffix:        ★ .EggMediaNotification
+- NSE bundle id suffix:        ★ .NotificationService
 - Apple Team id:               ★
 - Game theme:                  ★ slot | crash   (влияет на UA-суффикс)
 - Screen artwork:              ★ loading V/H, notifications V/H, nowifi V/H, icon 1024²
