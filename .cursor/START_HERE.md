@@ -20,6 +20,9 @@ look" index that points into it.
 > real bugs hit while building an app from this template, each with the fix
 > already applied here. Do not regress them.
 
+> **👉 Building a NEW app? Follow `.cursor/DEV_PLAYBOOK.md`** — a copy-paste,
+> stage-by-stage flow (fill your inputs, tick each stage, verify at the end).
+
 > **This template's structure differs from generic gray-flow docs below:**
 > - Routing lives in **`HatchCoordinator.decide`** (not a single
 >   `BootScreen._boot`). `BootScreen` is the splash UI + it calls `decide`.
@@ -53,6 +56,7 @@ Detailed doc: `.cursor/rules/gray_flow_guide.md` §"What Is This Project?".
 
 | You need to… | Read |
 |---|---|
+| Build a new app step by step (inputs → stages → verify) | `.cursor/DEV_PLAYBOOK.md` |
 | Understand the whole architecture end-to-end | `.cursor/rules/gray_flow_guide.md` (top-to-bottom) |
 | Get the concise map of files / classes / API | `.cursor/rules/AGENT.md` |
 | Know the exact config-endpoint request / response | `gray_flow_guide.md` §"Config Request Contract" |
