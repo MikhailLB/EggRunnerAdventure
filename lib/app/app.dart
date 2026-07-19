@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../data/progress_store.dart';
+import '../hatchway/hatch_coordinator.dart';
 import '../l10n/app_l10n.dart';
 import '../l10n/app_strings.dart';
 import '../screens/boot_screen.dart';
@@ -14,7 +15,9 @@ import 'theme.dart';
 /// Root MaterialApp. Owns the [LocaleController] so the whole tree rebuilds
 /// on language change without needing a provider package.
 class FeatheredOriginsApp extends StatefulWidget {
-  const FeatheredOriginsApp({super.key});
+  const FeatheredOriginsApp({super.key, this.hatchCoordinator});
+
+  final HatchCoordinator? hatchCoordinator;
 
   @override
   State<FeatheredOriginsApp> createState() => _FeatheredOriginsAppState();
@@ -64,7 +67,7 @@ class _FeatheredOriginsAppState extends State<FeatheredOriginsApp> {
             page = SettingsScreen(localeController: _localeController);
           case Routes.boot:
           default:
-            page = const BootScreen();
+            page = BootScreen(hatchCoordinator: widget.hatchCoordinator);
         }
         return MaterialPageRoute(builder: (_) => page, settings: settings);
       },

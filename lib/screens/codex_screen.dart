@@ -41,28 +41,36 @@ class CodexScreen extends StatelessWidget {
                           'total': store.totalFacts.toString(),
                         }),
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: AppColors.muted, fontSize: 15, fontStyle: FontStyle.italic),
+                        style: const TextStyle(
+                          color: AppColors.muted,
+                          fontSize: 15,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(child: _ProgressStrip(percent: store.codexProgress)),
+                  SliverToBoxAdapter(
+                    child: _ProgressStrip(percent: store.codexProgress),
+                  ),
                   SliverPadding(
                     padding: const EdgeInsets.all(16),
                     sliver: SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.86,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final fact = FactsData.facts[index];
-                          final unlocked = store.unlockedFacts.contains(fact.id);
-                          return _FactCard(fact: fact, unlocked: unlocked, l10n: l10n);
-                        },
-                        childCount: FactsData.count,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.86,
+                          ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final fact = FactsData.facts[index];
+                        final unlocked = store.unlockedFacts.contains(fact.id);
+                        return _FactCard(
+                          fact: fact,
+                          unlocked: unlocked,
+                          l10n: l10n,
+                        );
+                      }, childCount: FactsData.count),
                     ),
                   ),
                 ],
@@ -107,7 +115,11 @@ class _ProgressStrip extends StatelessWidget {
 }
 
 class _FactCard extends StatelessWidget {
-  const _FactCard({required this.fact, required this.unlocked, required this.l10n});
+  const _FactCard({
+    required this.fact,
+    required this.unlocked,
+    required this.l10n,
+  });
   final ChickenFact fact;
   final bool unlocked;
   final AppL10n l10n;
@@ -121,13 +133,22 @@ class _FactCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Ink(
           decoration: BoxDecoration(
-            color: unlocked ? AppColors.card : AppColors.card.withValues(alpha: 0.6),
+            color: unlocked
+                ? AppColors.card
+                : AppColors.card.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: unlocked ? _categoryColor(fact.category).withValues(alpha: 0.6) : AppColors.divider, width: 1.4),
+            border: Border.all(
+              color: unlocked
+                  ? _categoryColor(fact.category).withValues(alpha: 0.6)
+                  : AppColors.divider,
+              width: 1.4,
+            ),
             boxShadow: unlocked
                 ? [
                     BoxShadow(
-                      color: _categoryColor(fact.category).withValues(alpha: 0.2),
+                      color: _categoryColor(
+                        fact.category,
+                      ).withValues(alpha: 0.2),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -142,7 +163,11 @@ class _FactCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: (unlocked ? _categoryColor(fact.category) : AppColors.divider).withValues(alpha: 0.2),
+                  color:
+                      (unlocked
+                              ? _categoryColor(fact.category)
+                              : AppColors.divider)
+                          .withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 alignment: Alignment.center,
@@ -167,7 +192,9 @@ class _FactCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: unlocked ? _categoryColor(fact.category) : AppColors.muted,
+                  color: unlocked
+                      ? _categoryColor(fact.category)
+                      : AppColors.muted,
                   letterSpacing: 0.4,
                 ),
               ),
@@ -195,7 +222,10 @@ class _FactCard extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(color: _categoryColor(fact.category).withValues(alpha: 0.2), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: _categoryColor(fact.category).withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
               alignment: Alignment.center,
               child: Text(fact.emoji, style: const TextStyle(fontSize: 46)),
             ),
@@ -203,13 +233,21 @@ class _FactCard extends StatelessWidget {
             Text(
               l10n.t(fact.titleKey),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.ink),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                color: AppColors.ink,
+              ),
             ),
             const SizedBox(height: 10),
             Text(
               l10n.t(fact.bodyKey),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.ink, fontSize: 15, height: 1.5),
+              style: const TextStyle(
+                color: AppColors.ink,
+                fontSize: 15,
+                height: 1.5,
+              ),
             ),
             const SizedBox(height: 16),
             Container(
@@ -220,7 +258,10 @@ class _FactCard extends StatelessWidget {
               ),
               child: Text(
                 _categoryLabel(fact.category, l10n),
-                style: TextStyle(color: _categoryColor(fact.category), fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  color: _categoryColor(fact.category),
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
           ],

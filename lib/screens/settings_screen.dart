@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app/theme.dart';
 import '../data/progress_store.dart';
+import '../hatchway/config/era_hatch_config.dart';
 import '../l10n/app_l10n.dart';
 import '../l10n/app_strings.dart';
 import '../widgets/parchment_background.dart';
@@ -13,12 +14,14 @@ class SettingsScreen extends StatelessWidget {
 
   final LocaleController localeController;
 
-  static const String privacyUrl = 'https://eggrunneradventure.com/privacy-policy.html';
-  static const String supportUrl = 'https://eggrunneradventure.com/support.html';
+  static String get privacyUrl => EraHatchConfig.privacyUrl;
+  static String get supportUrl => EraHatchConfig.supportUrl;
 
   void _openWeb(BuildContext context, String title, String url) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => WebPageScreen(title: title, url: url)),
+      MaterialPageRoute(
+        builder: (_) => WebPageScreen(title: title, url: url),
+      ),
     );
   }
 
@@ -43,7 +46,11 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       l10n.t('settings_language_hint'),
-                      style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.4),
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Wrap(
@@ -70,7 +77,11 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       l10n.t('settings_reset_hint'),
-                      style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.4),
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     OutlinedButton.icon(
@@ -79,7 +90,10 @@ class SettingsScreen extends StatelessWidget {
                       label: Text(l10n.t('settings_reset')),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.rust,
-                        side: const BorderSide(color: AppColors.rust, width: 1.6),
+                        side: const BorderSide(
+                          color: AppColors.rust,
+                          width: 1.6,
+                        ),
                       ),
                     ),
                   ],
@@ -94,13 +108,21 @@ class SettingsScreen extends StatelessWidget {
                     _LinkRow(
                       icon: Icons.privacy_tip_rounded,
                       label: l10n.t('settings_privacy'),
-                      onTap: () => _openWeb(context, l10n.t('settings_privacy'), privacyUrl),
+                      onTap: () => _openWeb(
+                        context,
+                        l10n.t('settings_privacy'),
+                        privacyUrl,
+                      ),
                     ),
                     const Divider(height: 18, color: AppColors.divider),
                     _LinkRow(
                       icon: Icons.support_agent_rounded,
                       label: l10n.t('settings_support'),
-                      onTap: () => _openWeb(context, l10n.t('settings_support'), supportUrl),
+                      onTap: () => _openWeb(
+                        context,
+                        l10n.t('settings_support'),
+                        supportUrl,
+                      ),
                     ),
                   ],
                 ),
@@ -114,16 +136,27 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       l10n.t('settings_about_body'),
-                      style: const TextStyle(color: AppColors.ink, height: 1.5, fontSize: 14),
+                      style: const TextStyle(
+                        color: AppColors.ink,
+                        height: 1.5,
+                        fontSize: 14,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.muted),
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          size: 16,
+                          color: AppColors.muted,
+                        ),
                         const SizedBox(width: 6),
                         Text(
                           l10n.t('settings_version'),
-                          style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            color: AppColors.muted,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -203,7 +236,11 @@ class _Card extends StatelessWidget {
 }
 
 class _LinkRow extends StatelessWidget {
-  const _LinkRow({required this.icon, required this.label, required this.onTap});
+  const _LinkRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -222,10 +259,18 @@ class _LinkRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700, fontSize: 15),
+                style: const TextStyle(
+                  color: AppColors.ink,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
               ),
             ),
-            const Icon(Icons.open_in_new_rounded, size: 18, color: AppColors.muted),
+            const Icon(
+              Icons.open_in_new_rounded,
+              size: 18,
+              color: AppColors.muted,
+            ),
           ],
         ),
       ),
@@ -234,7 +279,11 @@ class _LinkRow extends StatelessWidget {
 }
 
 class _LangChip extends StatelessWidget {
-  const _LangChip({required this.code, required this.selected, required this.onTap});
+  const _LangChip({
+    required this.code,
+    required this.selected,
+    required this.onTap,
+  });
   final String code;
   final bool selected;
   final VoidCallback onTap;
@@ -251,7 +300,10 @@ class _LangChip extends StatelessWidget {
           decoration: BoxDecoration(
             color: selected ? AppColors.rust : AppColors.parchment,
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: selected ? AppColors.rust : AppColors.divider, width: 1.4),
+            border: Border.all(
+              color: selected ? AppColors.rust : AppColors.divider,
+              width: 1.4,
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

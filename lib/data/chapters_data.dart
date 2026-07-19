@@ -30,7 +30,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.globe,
       xpReward: 20,
-      image: 'assets/chapters/ch_meet.png',
+      image: 'assets/chapters/ch_meet.webp',
     ),
     Chapter(
       id: 'ch_thunder',
@@ -38,7 +38,12 @@ class ChaptersData {
       titleKey: 'chapter_thunder_title',
       periodKey: 'chapter_thunder_period',
       subtitleKey: 'chapter_thunder_subtitle',
-      pageKeys: ['chapter_thunder_p1', 'chapter_thunder_p2', 'chapter_thunder_p3', 'chapter_thunder_p4'],
+      pageKeys: [
+        'chapter_thunder_p1',
+        'chapter_thunder_p2',
+        'chapter_thunder_p3',
+        'chapter_thunder_p4',
+      ],
       factKeys: ['fact_archaeopteryx', 'fact_feathered_dinos'],
       palette: ChapterPalette(
         top: Color(0xFFDDF3E4),
@@ -48,7 +53,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.archaeopteryx,
       xpReward: 30,
-      image: 'assets/chapters/ch_thunder.png',
+      image: 'assets/chapters/ch_thunder.webp',
     ),
     Chapter(
       id: 'ch_extinction',
@@ -56,7 +61,11 @@ class ChaptersData {
       titleKey: 'chapter_extinction_title',
       periodKey: 'chapter_extinction_period',
       subtitleKey: 'chapter_extinction_subtitle',
-      pageKeys: ['chapter_extinction_p1', 'chapter_extinction_p2', 'chapter_extinction_p3'],
+      pageKeys: [
+        'chapter_extinction_p1',
+        'chapter_extinction_p2',
+        'chapter_extinction_p3',
+      ],
       factKeys: ['fact_survivors'],
       palette: ChapterPalette(
         top: Color(0xFFFFE0B2),
@@ -66,7 +75,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.asteroid,
       xpReward: 30,
-      image: 'assets/chapters/ch_extinction.png',
+      image: 'assets/chapters/ch_extinction.webp',
     ),
     Chapter(
       id: 'ch_cenozoic',
@@ -74,7 +83,11 @@ class ChaptersData {
       titleKey: 'chapter_cenozoic_title',
       periodKey: 'chapter_cenozoic_period',
       subtitleKey: 'chapter_cenozoic_subtitle',
-      pageKeys: ['chapter_cenozoic_p1', 'chapter_cenozoic_p2', 'chapter_cenozoic_p3'],
+      pageKeys: [
+        'chapter_cenozoic_p1',
+        'chapter_cenozoic_p2',
+        'chapter_cenozoic_p3',
+      ],
       factKeys: ['fact_galliformes'],
       palette: ChapterPalette(
         top: Color(0xFFD9F0FF),
@@ -84,7 +97,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.fossilFeather,
       xpReward: 30,
-      image: 'assets/chapters/ch_cenozoic.png',
+      image: 'assets/chapters/ch_cenozoic.webp',
     ),
     Chapter(
       id: 'ch_egg',
@@ -102,7 +115,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.fossilFeather,
       xpReward: 35,
-      image: 'assets/chapters/ch_egg.png',
+      image: 'assets/chapters/ch_egg.webp',
     ),
 
     // ===== ACT II — MEETING HUMANS =====
@@ -112,8 +125,18 @@ class ChaptersData {
       titleKey: 'chapter_jungle_title',
       periodKey: 'chapter_jungle_period',
       subtitleKey: 'chapter_jungle_subtitle',
-      pageKeys: ['chapter_jungle_p1', 'chapter_jungle_p2', 'chapter_jungle_p3', 'chapter_jungle_p4'],
-      factKeys: ['fact_junglefowl', 'fact_species_count', 'fact_flight_record', 'fact_comb'],
+      pageKeys: [
+        'chapter_jungle_p1',
+        'chapter_jungle_p2',
+        'chapter_jungle_p3',
+        'chapter_jungle_p4',
+      ],
+      factKeys: [
+        'fact_junglefowl',
+        'fact_species_count',
+        'fact_flight_record',
+        'fact_comb',
+      ],
       palette: ChapterPalette(
         top: Color(0xFFE8FBD8),
         bottom: Color(0xFF2E8B57),
@@ -122,7 +145,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.jungleTree,
       xpReward: 35,
-      image: 'assets/chapters/ch_jungle.png',
+      image: 'assets/chapters/ch_jungle.webp',
     ),
     Chapter(
       id: 'ch_indus',
@@ -140,7 +163,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.wheatBundle,
       xpReward: 35,
-      image: 'assets/chapters/ch_indus.png',
+      image: 'assets/chapters/ch_indus.webp',
     ),
     Chapter(
       id: 'ch_silkroad',
@@ -148,7 +171,11 @@ class ChaptersData {
       titleKey: 'chapter_silkroad_title',
       periodKey: 'chapter_silkroad_period',
       subtitleKey: 'chapter_silkroad_subtitle',
-      pageKeys: ['chapter_silkroad_p1', 'chapter_silkroad_p2', 'chapter_silkroad_p3'],
+      pageKeys: [
+        'chapter_silkroad_p1',
+        'chapter_silkroad_p2',
+        'chapter_silkroad_p3',
+      ],
       factKeys: ['fact_sounds'],
       palette: ChapterPalette(
         top: Color(0xFFFFEFC7),
@@ -158,7 +185,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.sailingShip,
       xpReward: 40,
-      image: 'assets/chapters/ch_silkroad.png',
+      image: 'assets/chapters/ch_silkroad.webp',
     ),
     Chapter(
       id: 'ch_classical',
@@ -166,7 +193,11 @@ class ChaptersData {
       titleKey: 'chapter_classical_title',
       periodKey: 'chapter_classical_period',
       subtitleKey: 'chapter_classical_subtitle',
-      pageKeys: ['chapter_classical_p1', 'chapter_classical_p2', 'chapter_classical_p3'],
+      pageKeys: [
+        'chapter_classical_p1',
+        'chapter_classical_p2',
+        'chapter_classical_p3',
+      ],
       factKeys: ['fact_oracle', 'fact_egyptian_incubator'],
       palette: ChapterPalette(
         top: Color(0xFFF5EFD3),
@@ -176,7 +207,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.laurelWreath,
       xpReward: 40,
-      image: 'assets/chapters/ch_classical.png',
+      image: 'assets/chapters/ch_classical.webp',
     ),
     Chapter(
       id: 'ch_medieval',
@@ -184,7 +215,11 @@ class ChaptersData {
       titleKey: 'chapter_medieval_title',
       periodKey: 'chapter_medieval_period',
       subtitleKey: 'chapter_medieval_subtitle',
-      pageKeys: ['chapter_medieval_p1', 'chapter_medieval_p2', 'chapter_medieval_p3'],
+      pageKeys: [
+        'chapter_medieval_p1',
+        'chapter_medieval_p2',
+        'chapter_medieval_p3',
+      ],
       factKeys: ['fact_rooster_cross', 'fact_rooster_clock'],
       palette: ChapterPalette(
         top: Color(0xFFEDE1D1),
@@ -194,7 +229,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.medievalCoop,
       xpReward: 40,
-      image: 'assets/chapters/ch_medieval.png',
+      image: 'assets/chapters/ch_medieval.webp',
     ),
 
     // ===== ACT III — INTO THE MODERN WORLD =====
@@ -204,7 +239,11 @@ class ChaptersData {
       titleKey: 'chapter_colonial_title',
       periodKey: 'chapter_colonial_period',
       subtitleKey: 'chapter_colonial_subtitle',
-      pageKeys: ['chapter_colonial_p1', 'chapter_colonial_p2', 'chapter_colonial_p3'],
+      pageKeys: [
+        'chapter_colonial_p1',
+        'chapter_colonial_p2',
+        'chapter_colonial_p3',
+      ],
       factKeys: ['fact_new_world'],
       palette: ChapterPalette(
         top: Color(0xFFDCEEF9),
@@ -214,7 +253,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.sailingShip,
       xpReward: 40,
-      image: 'assets/chapters/ch_colonial.png',
+      image: 'assets/chapters/ch_colonial.webp',
     ),
     Chapter(
       id: 'ch_darwin',
@@ -232,7 +271,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.laurelWreath,
       xpReward: 45,
-      image: 'assets/chapters/ch_darwin.png',
+      image: 'assets/chapters/ch_darwin.webp',
     ),
     Chapter(
       id: 'ch_industrial',
@@ -240,7 +279,11 @@ class ChaptersData {
       titleKey: 'chapter_industrial_title',
       periodKey: 'chapter_industrial_period',
       subtitleKey: 'chapter_industrial_subtitle',
-      pageKeys: ['chapter_industrial_p1', 'chapter_industrial_p2', 'chapter_industrial_p3'],
+      pageKeys: [
+        'chapter_industrial_p1',
+        'chapter_industrial_p2',
+        'chapter_industrial_p3',
+      ],
       factKeys: ['fact_leghorn', 'fact_chicken_of_tomorrow', 'fact_earlobe'],
       palette: ChapterPalette(
         top: Color(0xFFDDE7EB),
@@ -250,7 +293,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.gear,
       xpReward: 45,
-      image: 'assets/chapters/ch_industrial.png',
+      image: 'assets/chapters/ch_industrial.webp',
     ),
     Chapter(
       id: 'ch_modern',
@@ -258,8 +301,18 @@ class ChaptersData {
       titleKey: 'chapter_modern_title',
       periodKey: 'chapter_modern_period',
       subtitleKey: 'chapter_modern_subtitle',
-      pageKeys: ['chapter_modern_p1', 'chapter_modern_p2', 'chapter_modern_p3', 'chapter_modern_p4'],
-      factKeys: ['fact_25_billion', 'fact_space_egg', 'fact_dream', 'fact_pecking_order'],
+      pageKeys: [
+        'chapter_modern_p1',
+        'chapter_modern_p2',
+        'chapter_modern_p3',
+        'chapter_modern_p4',
+      ],
+      factKeys: [
+        'fact_25_billion',
+        'fact_space_egg',
+        'fact_dream',
+        'fact_pecking_order',
+      ],
       palette: ChapterPalette(
         top: Color(0xFFE9F6FF),
         bottom: Color(0xFF69B7FF),
@@ -268,7 +321,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.globe,
       xpReward: 55,
-      image: 'assets/chapters/ch_modern.png',
+      image: 'assets/chapters/ch_modern.webp',
     ),
     Chapter(
       id: 'ch_future',
@@ -286,7 +339,7 @@ class ChaptersData {
       ),
       symbol: ChapterSymbol.gear,
       xpReward: 70,
-      image: 'assets/chapters/ch_future.png',
+      image: 'assets/chapters/ch_future.webp',
     ),
   ];
 

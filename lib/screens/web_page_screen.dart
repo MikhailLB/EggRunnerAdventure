@@ -74,7 +74,9 @@ class _WebPageScreenState extends State<WebPageScreen> {
               )
             : null,
       ),
-      body: _error ? _ErrorState(onRetry: _reload) : WebViewWidget(controller: _controller),
+      body: _error
+          ? _ErrorState(onRetry: _reload)
+          : WebViewWidget(controller: _controller),
     );
   }
 }
@@ -91,12 +93,20 @@ class _ErrorState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, size: 56, color: AppColors.muted),
+            const Icon(
+              Icons.wifi_off_rounded,
+              size: 56,
+              color: AppColors.muted,
+            ),
             const SizedBox(height: 16),
             const Text(
               'Could not load the page.\nPlease check your connection.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.muted, fontSize: 15, height: 1.4),
+              style: TextStyle(
+                color: AppColors.muted,
+                fontSize: 15,
+                height: 1.4,
+              ),
             ),
             const SizedBox(height: 18),
             FilledButton.icon(

@@ -4,6 +4,11 @@ import 'package:flutter/services.dart';
 
 import '../app/routes.dart';
 import '../data/chapters_data.dart';
+import '../hatchway/core/hatch_models.dart';
+import '../hatchway/hatch_coordinator.dart';
+import '../hatchway/pages/empty_air_page.dart';
+import '../hatchway/pages/feather_invitation.dart';
+import '../hatchway/pages/roost_portal.dart';
 import '../l10n/app_l10n.dart';
 
 /// Splash / boot screen.
@@ -16,7 +21,9 @@ import '../l10n/app_l10n.dart';
 /// bar advances as each asset finishes decoding. Navigation only happens once
 /// everything is ready (and a small minimum time has passed for polish).
 class BootScreen extends StatefulWidget {
-  const BootScreen({super.key});
+  const BootScreen({super.key, this.hatchCoordinator});
+
+  final HatchCoordinator? hatchCoordinator;
 
   @override
   State<BootScreen> createState() => _BootScreenState();
@@ -29,6 +36,8 @@ class _BootScreenState extends State<BootScreen> {
   ];
 
   int _loaded = 0;
+  double _hatchProgress = 0;
+  HatchDestination? _destination;
   bool _started = false;
   bool _navigating = false;
   late final DateTime _startTime;
@@ -65,8 +74,16 @@ class _BootScreenState extends State<BootScreen> {
     super.didChangeDependencies();
     if (!_started) {
       _started = true;
-      _preloadAll();
+      _beginLaunchWork();
     }
+  }
+
+  Future<void> _beginLaunchWork() async {
+    await Future.wait<void>(<Future<void>>[
+      _preloadAll(),
+      _resolveHatchDestination(),
+    ]);
+    _maybeNavigate();
   }
 
   Future<void> _preloadAll() async {
@@ -77,14 +94,39 @@ class _BootScreenState extends State<BootScreen> {
         // Ignore individual failures — bar still advances so we never hang.
       }
       if (!mounted) return;
-      setState(() => _loaded++);
+      if (_loaded < _assetsToLoad.length) {
+        setState(() => _loaded++);
+      }
     }
     _hardDeadline?.cancel();
     _maybeNavigate();
   }
 
+  Future<void> _resolveHatchDestination() async {
+    final coordinator = widget.hatchCoordinator;
+    if (coordinator == null) {
+      _destination = const NativeNest();
+      _hatchProgress = 1;
+      return;
+    }
+    try {
+      _destination = await coordinator.decide(
+        onProgress: (value) {
+          if (mounted) {
+            setState(() => _hatchProgress = value.clamp(0.0, 1.0));
+          }
+        },
+      );
+    } catch (_) {
+      _destination = const NativeNest();
+    }
+    if (mounted) setState(() => _hatchProgress = 1);
+  }
+
   void _maybeNavigate() async {
-    if (_navigating) return;
+    if (_navigating || _destination == null || _loaded < _assetsToLoad.length) {
+      return;
+    }
     // Respect a minimum splash duration for a smooth reveal.
     final elapsed = DateTime.now().difference(_startTime);
     if (elapsed < _minSplash) {
@@ -95,10 +137,66 @@ class _BootScreenState extends State<BootScreen> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await Future<void>.delayed(const Duration(milliseconds: 60));
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed(Routes.home);
+    await _openDestination(_destination!);
   }
 
-  double get _progress => _assetsToLoad.isEmpty ? 1 : _loaded / _assetsToLoad.length;
+  Future<void> _openDestination(HatchDestination destination) async {
+    final coordinator = widget.hatchCoordinator;
+    if (destination is NativeNest || coordinator == null) {
+      Navigator.of(context).pushReplacementNamed(Routes.home);
+      return;
+    }
+    if (destination is OfflineNest) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (_) => EmptyAirPage(
+            probe: coordinator.probe,
+            retryBuilder: (_) => BootScreen(hatchCoordinator: coordinator),
+          ),
+        ),
+      );
+      return;
+    }
+    if (destination is PortalNest) {
+      Widget portalBuilder(BuildContext _) => RoostPortal(
+        url: destination.url,
+        coldLaunch: destination.coldLaunch,
+        vault: coordinator.vault,
+        probe: coordinator.probe,
+        notifications: coordinator.notifications,
+        agent: coordinator.agent,
+      );
+
+      void openPortal() {
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute<void>(builder: portalBuilder));
+      }
+
+      if (coordinator.vault.shouldShowPushInvite &&
+          await coordinator.notifications.canOfferPermission()) {
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(
+            builder: (_) => FeatherInvitation(
+              vault: coordinator.vault,
+              notifications: coordinator.notifications,
+              nextBuilder: portalBuilder,
+            ),
+          ),
+        );
+      } else {
+        openPortal();
+      }
+    }
+  }
+
+  double get _progress {
+    final assetProgress = _assetsToLoad.isEmpty
+        ? 1.0
+        : _loaded / _assetsToLoad.length;
+    return (assetProgress * 0.58 + _hatchProgress * 0.42).clamp(0.0, 1.0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,17 +216,23 @@ class _BootScreenState extends State<BootScreen> {
           Image.asset(
             asset,
             fit: BoxFit.cover,
+            filterQuality: FilterQuality.high,
             gaplessPlayback: true,
-            errorBuilder: (_, _, _) => Container(color: const Color(0xFFFFE9BF)),
+            errorBuilder: (_, _, _) =>
+                Container(color: const Color(0xFFFFE9BF)),
           ),
           // Game title, horizontally centered near the top in both orientations.
           Align(
-            alignment: isLandscape ? Alignment.topCenter : const Alignment(0, -0.72),
+            alignment: isLandscape
+                ? Alignment.topCenter
+                : const Alignment(0, -0.72),
             child: SafeArea(
               bottom: false,
               child: Padding(
                 padding: EdgeInsets.only(top: isLandscape ? 10 : 24),
-                child: _GameTitle(fontSize: isLandscape ? screenW * 0.045 : screenW * 0.085),
+                child: _GameTitle(
+                  fontSize: isLandscape ? screenW * 0.045 : screenW * 0.085,
+                ),
               ),
             ),
           ),
@@ -169,7 +273,11 @@ class _LoadingBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: const Color(0xFF6E3A1D), width: 2.5),
             boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, 3)),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
             ],
           ),
           child: Padding(
@@ -188,7 +296,11 @@ class _LoadingBar extends StatelessWidget {
                       child: Container(
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Color(0xFFFF8A2E), Color(0xFFFFCB47), Color(0xFF7EE05B)],
+                            colors: [
+                              Color(0xFFFF8A2E),
+                              Color(0xFFFFCB47),
+                              Color(0xFF7EE05B),
+                            ],
                           ),
                         ),
                       ),
@@ -230,28 +342,36 @@ class _GameTitle extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: TextStyle(
+            fontFamily: 'Baloo2',
             fontSize: size,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.5,
             foreground: Paint()
               ..style = PaintingStyle.stroke
-              ..strokeWidth = size * 0.12
+              ..strokeWidth = size * 0.14
+              ..strokeJoin = StrokeJoin.round
               ..color = const Color(0xFF6E3A1D),
-            height: 1.1,
+            height: 1.05,
           ),
         ),
         // Fill
         Text(
           text,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: size,
-            fontWeight: FontWeight.w900,
-            color: const Color(0xFFFFF8E7),
-            height: 1.1,
-            shadows: const [
-              Shadow(color: Color(0xFFFF8A2E), offset: Offset(2, 3), blurRadius: 0),
+          style: const TextStyle(
+            fontFamily: 'Baloo2',
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.5,
+            color: Color(0xFFFFF8E7),
+            height: 1.05,
+            shadows: [
+              Shadow(
+                color: Color(0xFFFF8A2E),
+                offset: Offset(1.5, 2.5),
+                blurRadius: 0,
+              ),
             ],
-          ),
+          ).copyWith(fontSize: size),
         ),
       ],
     );
@@ -264,13 +384,17 @@ class _LoadingLabel extends StatefulWidget {
   State<_LoadingLabel> createState() => _LoadingLabelState();
 }
 
-class _LoadingLabelState extends State<_LoadingLabel> with SingleTickerProviderStateMixin {
+class _LoadingLabelState extends State<_LoadingLabel>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
 
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..repeat();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
   }
 
   @override
@@ -303,7 +427,13 @@ class _LoadingLabelState extends State<_LoadingLabel> with SingleTickerProviderS
                   fontWeight: FontWeight.w900,
                   fontSize: 15,
                   letterSpacing: 0.6,
-                  shadows: [Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(0, 1))],
+                  shadows: [
+                    Shadow(
+                      color: Colors.black45,
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 5),
@@ -314,7 +444,9 @@ class _LoadingLabelState extends State<_LoadingLabel> with SingleTickerProviderS
                     width: 6,
                     height: 6,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: i <= phase ? 1.0 : 0.3),
+                      color: Colors.white.withValues(
+                        alpha: i <= phase ? 1.0 : 0.3,
+                      ),
                       shape: BoxShape.circle,
                     ),
                   ),

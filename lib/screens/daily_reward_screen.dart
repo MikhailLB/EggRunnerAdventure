@@ -22,7 +22,8 @@ class DailyRewardScreen extends StatefulWidget {
   State<DailyRewardScreen> createState() => _DailyRewardScreenState();
 }
 
-class _DailyRewardScreenState extends State<DailyRewardScreen> with SingleTickerProviderStateMixin {
+class _DailyRewardScreenState extends State<DailyRewardScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _shake;
   DailyReward? _revealed;
   bool _alreadyClaimed = false;
@@ -31,11 +32,16 @@ class _DailyRewardScreenState extends State<DailyRewardScreen> with SingleTicker
   @override
   void initState() {
     super.initState();
-    _shake = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat(reverse: true);
+    _shake = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat(reverse: true);
     _alreadyClaimed = !ProgressStore.instance.canClaimDaily;
     if (_alreadyClaimed) {
       // Show the same fact selected today.
-      final doy = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
+      final doy = DateTime.now()
+          .difference(DateTime(DateTime.now().year, 1, 1))
+          .inDays;
       final streak = ProgressStore.instance.dailyStreak;
       _todayFact = FactsData.facts[(doy + streak) % FactsData.count];
     }
@@ -76,19 +82,31 @@ class _DailyRewardScreenState extends State<DailyRewardScreen> with SingleTicker
                 Text(
                   l10n.t('daily_subtitle'),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: AppColors.muted, fontSize: 15, fontStyle: FontStyle.italic),
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
                 const SizedBox(height: 12),
-                _StreakChip(streak: ProgressStore.instance.dailyStreak, l10n: l10n),
+                _StreakChip(
+                  streak: ProgressStore.instance.dailyStreak,
+                  l10n: l10n,
+                ),
                 const SizedBox(height: 22),
                 Expanded(
                   child: Center(
                     child: _todayFact == null
-                        ? _MysteryEgg(controller: _shake, onTap: _claim, l10n: l10n)
+                        ? _MysteryEgg(
+                            controller: _shake,
+                            onTap: _claim,
+                            l10n: l10n,
+                          )
                         : _RewardCard(
                             fact: _todayFact!,
                             reward: _revealed,
-                            alreadyClaimed: _alreadyClaimed && _revealed == null,
+                            alreadyClaimed:
+                                _alreadyClaimed && _revealed == null,
                             l10n: l10n,
                           ),
                   ),
@@ -120,11 +138,18 @@ class _StreakChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.local_fire_department_rounded, size: 20, color: AppColors.rust),
+            const Icon(
+              Icons.local_fire_department_rounded,
+              size: 20,
+              color: AppColors.rust,
+            ),
             const SizedBox(width: 6),
             Text(
               '${l10n.t('daily_streak')}: $streak ${l10n.t('daily_days')}',
-              style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.ink),
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                color: AppColors.ink,
+              ),
             ),
           ],
         ),
@@ -134,7 +159,11 @@ class _StreakChip extends StatelessWidget {
 }
 
 class _MysteryEgg extends StatelessWidget {
-  const _MysteryEgg({required this.controller, required this.onTap, required this.l10n});
+  const _MysteryEgg({
+    required this.controller,
+    required this.onTap,
+    required this.l10n,
+  });
   final AnimationController controller;
   final VoidCallback onTap;
   final AppL10n l10n;
@@ -182,9 +211,15 @@ class _EggPainter extends CustomPainter {
       Offset(w / 2, h / 2),
       w * 0.55,
       Paint()
-        ..shader = RadialGradient(colors: [AppColors.sunrise.withValues(alpha: 0.6), Colors.transparent]).createShader(
-          Rect.fromCircle(center: Offset(w / 2, h / 2), radius: w * 0.55),
-        ),
+        ..shader =
+            RadialGradient(
+              colors: [
+                AppColors.sunrise.withValues(alpha: 0.6),
+                Colors.transparent,
+              ],
+            ).createShader(
+              Rect.fromCircle(center: Offset(w / 2, h / 2), radius: w * 0.55),
+            ),
     );
 
     final path = Path()
@@ -214,7 +249,10 @@ class _EggPainter extends CustomPainter {
     final speckle = Paint()..color = AppColors.rust.withValues(alpha: 0.35);
     for (int i = 0; i < 30; i++) {
       canvas.drawCircle(
-        Offset(w * (0.20 + rng.nextDouble() * 0.6), h * (0.15 + rng.nextDouble() * 0.75)),
+        Offset(
+          w * (0.20 + rng.nextDouble() * 0.6),
+          h * (0.15 + rng.nextDouble() * 0.75),
+        ),
         1.5 + rng.nextDouble() * 2,
         speckle,
       );
@@ -264,9 +302,16 @@ class _RewardCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppColors.sunrise.withValues(alpha: 0.6), width: 1.4),
+              border: Border.all(
+                color: AppColors.sunrise.withValues(alpha: 0.6),
+                width: 1.4,
+              ),
               boxShadow: [
-                BoxShadow(color: AppColors.sunrise.withValues(alpha: 0.25), blurRadius: 20, offset: const Offset(0, 8)),
+                BoxShadow(
+                  color: AppColors.sunrise.withValues(alpha: 0.25),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
               ],
             ),
             child: Column(
@@ -275,10 +320,15 @@ class _RewardCard extends StatelessWidget {
                   width: 84,
                   height: 84,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: [AppColors.sunrise, AppColors.yolk]),
+                    gradient: const LinearGradient(
+                      colors: [AppColors.sunrise, AppColors.yolk],
+                    ),
                     shape: BoxShape.circle,
                     boxShadow: [
-                      BoxShadow(color: AppColors.sunrise.withValues(alpha: 0.5), blurRadius: 16),
+                      BoxShadow(
+                        color: AppColors.sunrise.withValues(alpha: 0.5),
+                        blurRadius: 16,
+                      ),
                     ],
                   ),
                   alignment: Alignment.center,
@@ -288,31 +338,49 @@ class _RewardCard extends StatelessWidget {
                 Text(
                   l10n.t(fact.titleKey),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.ink),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.ink,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l10n.t(fact.bodyKey),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: AppColors.ink, fontSize: 15, height: 1.5),
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 15,
+                    height: 1.5,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 if (reward != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.meadow.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
                       l10n.t('daily_reward_xp', {'xp': reward!.xp.toString()}),
-                      style: const TextStyle(color: AppColors.meadow, fontWeight: FontWeight.w800, fontSize: 15),
+                      style: const TextStyle(
+                        color: AppColors.meadow,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                 if (alreadyClaimed) ...[
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.divider,
                       borderRadius: BorderRadius.circular(999),
@@ -320,7 +388,11 @@ class _RewardCard extends StatelessWidget {
                     child: Text(
                       l10n.t('daily_already_body'),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: AppColors.muted, fontStyle: FontStyle.italic, fontSize: 13),
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontStyle: FontStyle.italic,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ],

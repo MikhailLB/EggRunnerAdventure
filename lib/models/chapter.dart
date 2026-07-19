@@ -40,7 +40,17 @@ class Chapter {
   final String image;
 }
 
-enum ChapterEra { mesozoic, extinction, cenozoic, ancient, classical, medieval, colonial, industrial, modern }
+enum ChapterEra {
+  mesozoic,
+  extinction,
+  cenozoic,
+  ancient,
+  classical,
+  medieval,
+  colonial,
+  industrial,
+  modern,
+}
 
 @immutable
 class ChapterPalette {

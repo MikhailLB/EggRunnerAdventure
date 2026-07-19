@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCexGpgvE1IPTaBh40i4V_RD6ISJ1AqYP0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>18443715268</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.eggrunneradventure.eggrunneradventuregame</string>
+	<key>PROJECT_ID</key>
+	<string>egg-runner-adventure</string>
+	<key>STORAGE_BUCKET</key>
+	<string>egg-runner-adventure.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:18443715268:ios:907ec246146731b211bf91</string>
+</dict>
+</plist>

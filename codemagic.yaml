@@ -15,13 +15,14 @@ workflows:
       cocoapods: default
       vars:
         BUNDLE_ID: com.eggrunneradventure.eggrunneradventuregame
+        NSE_BUNDLE_ID: com.eggrunneradventure.eggrunneradventuregame.NotificationService
         APP_STORE_APPLE_ID: "6789471673"
 
     triggering:
       events:
         - push
       branch_patterns:
-        - pattern: ios-white-part
+        - pattern: gray-part-ios
           include: true
 
     scripts:
@@ -38,6 +39,10 @@ workflows:
           # Create a distribution certificate (using CERTIFICATE_PRIVATE_KEY)
           # if none exists, then the App Store provisioning profile.
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --platform IOS \
+            --create
+          app-store-connect fetch-signing-files "$NSE_BUNDLE_ID" \
             --type IOS_APP_STORE \
             --platform IOS \
             --create

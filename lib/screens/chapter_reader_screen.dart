@@ -42,7 +42,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   void _next() {
     if (_currentPage < chapter.pageKeys.length - 1) {
-      _pageCtrl.nextPage(duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
+      _pageCtrl.nextPage(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+      );
     } else {
       _finish();
     }
@@ -50,7 +53,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   void _prev() {
     if (_currentPage > 0) {
-      _pageCtrl.previousPage(duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
+      _pageCtrl.previousPage(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+      );
     }
   }
 
@@ -74,7 +80,9 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       builder: (_) => _RewardSheet(
         chapter: chapter,
         title: l10n.t('chapters_reward_title'),
-        subtitle: l10n.t('chapters_reward_xp', {'xp': chapter.xpReward.toString()}),
+        subtitle: l10n.t('chapters_reward_xp', {
+          'xp': chapter.xpReward.toString(),
+        }),
         buttonLabel: l10n.t('chapters_reward_close'),
       ),
     );
@@ -86,29 +94,45 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     final palette = chapter.palette;
     final topInset = MediaQuery.of(context).padding.top;
     // Illustration height scales with the screen but stays within sensible bounds.
-    final illoHeight = (MediaQuery.of(context).size.height * 0.34).clamp(200.0, 320.0);
+    final illoHeight = (MediaQuery.of(context).size.height * 0.34).clamp(
+      200.0,
+      320.0,
+    );
 
     return Scaffold(
       backgroundColor: palette.top,
       body: Column(
         children: [
-          _TopIllustration(chapter: chapter, height: illoHeight, topInset: topInset),
+          _TopIllustration(
+            chapter: chapter,
+            height: illoHeight,
+            topInset: topInset,
+          ),
           Expanded(
             child: Transform.translate(
               offset: const Offset(0, -22),
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.parchment,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
+                  ),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 16, offset: const Offset(0, -4)),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 16,
+                      offset: const Offset(0, -4),
+                    ),
                   ],
                 ),
                 padding: const EdgeInsets.fromLTRB(22, 20, 22, 12),
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: palette.accent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(999),
@@ -138,7 +162,11 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
                     Text(
                       l10n.t(chapter.subtitleKey),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: AppColors.muted, fontSize: 13, fontStyle: FontStyle.italic),
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     Expanded(
@@ -176,15 +204,23 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: _currentPage == 0 ? null : _prev,
-                            icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                            label: Text(l10n.t('chapters_prev'), overflow: TextOverflow.ellipsis),
+                            icon: const Icon(
+                              Icons.arrow_back_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              l10n.t('chapters_prev'),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: FilledButton.icon(
                             onPressed: _next,
-                            style: FilledButton.styleFrom(backgroundColor: palette.accent),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: palette.accent,
+                            ),
                             icon: Icon(
                               _currentPage == chapter.pageKeys.length - 1
                                   ? Icons.check_rounded
@@ -214,7 +250,11 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 }
 
 class _TopIllustration extends StatelessWidget {
-  const _TopIllustration({required this.chapter, required this.height, required this.topInset});
+  const _TopIllustration({
+    required this.chapter,
+    required this.height,
+    required this.topInset,
+  });
   final Chapter chapter;
   final double height;
   final double topInset;
@@ -243,7 +283,10 @@ class _TopIllustration extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, chapter.palette.top.withValues(alpha: 0.5)],
+                  colors: [
+                    Colors.transparent,
+                    chapter.palette.top.withValues(alpha: 0.5),
+                  ],
                 ),
               ),
             ),
@@ -319,7 +362,10 @@ class _PageIndicator extends StatelessWidget {
           }),
         ),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: AppColors.muted, fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.muted, fontSize: 12),
+        ),
       ],
     );
   }
@@ -352,21 +398,39 @@ class _RewardSheet extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [chapter.palette.accent, chapter.palette.bottom]),
+              gradient: LinearGradient(
+                colors: [chapter.palette.accent, chapter.palette.bottom],
+              ),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: const Icon(Icons.star_rounded, color: Colors.white, size: 34),
+            child: const Icon(
+              Icons.star_rounded,
+              color: Colors.white,
+              size: 34,
+            ),
           ),
           const SizedBox(height: 14),
-          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.ink)),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+              color: AppColors.ink,
+            ),
+          ),
           const SizedBox(height: 6),
-          Text(subtitle, style: const TextStyle(color: AppColors.muted, fontSize: 14)),
+          Text(
+            subtitle,
+            style: const TextStyle(color: AppColors.muted, fontSize: 14),
+          ),
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: chapter.palette.accent),
+              style: FilledButton.styleFrom(
+                backgroundColor: chapter.palette.accent,
+              ),
               onPressed: () => Navigator.pop(context),
               child: Text(buttonLabel),
             ),

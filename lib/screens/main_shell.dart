@@ -51,7 +51,11 @@ class _MainShellState extends State<MainShell> {
             decoration: BoxDecoration(
               color: AppColors.card,
               boxShadow: [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.10), blurRadius: 16, offset: const Offset(0, -2)),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.10),
+                  blurRadius: 16,
+                  offset: const Offset(0, -2),
+                ),
               ],
               border: const Border(top: BorderSide(color: AppColors.divider)),
             ),
@@ -136,9 +140,14 @@ class _NavItem extends StatelessWidget {
                 children: [
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
-                      color: selected ? AppColors.rust.withValues(alpha: 0.14) : Colors.transparent,
+                      color: selected
+                          ? AppColors.rust.withValues(alpha: 0.14)
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(icon, color: color, size: 24),

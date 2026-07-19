@@ -53,7 +53,10 @@ class _ParchmentBackgroundState extends State<ParchmentBackground>
               ),
             ),
           ),
-          CustomPaint(painter: _FeatherPainter(_ctrl.value), size: Size.infinite),
+          CustomPaint(
+            painter: _FeatherPainter(_ctrl.value),
+            size: Size.infinite,
+          ),
           child!,
         ],
       ),
@@ -92,8 +95,18 @@ class _FeatherPainter extends CustomPainter {
       for (double s = 0.15; s <= 0.85; s += 0.15) {
         final p = Offset.lerp(Offset(x, y), tip, s)!;
         final barbLen = (len * 0.28) * (1 - (s - 0.5).abs() * 1.4);
-        final barbTip1 = p + Offset(math.cos(perpAngle) * barbLen, math.sin(perpAngle) * barbLen);
-        final barbTip2 = p - Offset(math.cos(perpAngle) * barbLen, math.sin(perpAngle) * barbLen);
+        final barbTip1 =
+            p +
+            Offset(
+              math.cos(perpAngle) * barbLen,
+              math.sin(perpAngle) * barbLen,
+            );
+        final barbTip2 =
+            p -
+            Offset(
+              math.cos(perpAngle) * barbLen,
+              math.sin(perpAngle) * barbLen,
+            );
         canvas.drawLine(p, barbTip1, paint);
         canvas.drawLine(p, barbTip2, paint);
       }

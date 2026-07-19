@@ -7,7 +7,13 @@
 /// full control over line breaks and punctuation.
 class AppStrings {
   static const String defaultLocale = 'en';
-  static const List<String> supportedLocales = <String>['en', 'es', 'fr', 'de', 'pt'];
+  static const List<String> supportedLocales = <String>[
+    'en',
+    'es',
+    'fr',
+    'de',
+    'pt',
+  ];
 
   static String label(String code) {
     switch (code) {
@@ -46,13 +52,14 @@ class AppStrings {
     return bucket[key] ?? _tables[defaultLocale]![key] ?? key;
   }
 
-  static const Map<String, Map<String, String>> _tables = <String, Map<String, String>>{
-    'en': _en,
-    'es': _es,
-    'fr': _fr,
-    'de': _de,
-    'pt': _pt,
-  };
+  static const Map<String, Map<String, String>> _tables =
+      <String, Map<String, String>>{
+        'en': _en,
+        'es': _es,
+        'fr': _fr,
+        'de': _de,
+        'pt': _pt,
+      };
 
   // === English (canonical) ================================================
 
@@ -72,7 +79,8 @@ class AppStrings {
 
     // Home
     'home_greeting': 'Hi, I\'m Henrietta.',
-    'home_intro': 'A modern hen with 150 million years of family history. Ready to travel the timeline with me?',
+    'home_intro':
+        'A modern hen with 150 million years of family history. Ready to travel the timeline with me?',
     'home_cta_chapters': 'Read the Chronicles',
     'home_continue': 'Continue reading',
     'home_explore': 'Explore',
@@ -122,7 +130,8 @@ class AppStrings {
     'daily_subtitle': 'A new discovery every day.',
     'daily_claim': 'Reveal today\'s fact',
     'daily_already_title': 'You are all caught up',
-    'daily_already_body': 'Come back after midnight for the next revelation from Henrietta\'s notebook.',
+    'daily_already_body':
+        'Come back after midnight for the next revelation from Henrietta\'s notebook.',
     'daily_streak': 'Streak',
     'daily_days': 'days',
     'daily_reward_xp': '+{xp} XP',
@@ -151,7 +160,8 @@ class AppStrings {
     // Settings
     'settings_title': 'Settings',
     'settings_language': 'Language',
-    'settings_language_hint': 'The story is written in English. Interface labels are translated.',
+    'settings_language_hint':
+        'The story is written in English. Interface labels are translated.',
     'settings_reset': 'Reset progress',
     'settings_reset_hint': 'Erases XP, streaks and unlocked facts.',
     'settings_reset_confirm': 'Reset everything?',
@@ -159,7 +169,8 @@ class AppStrings {
     'settings_reset_confirm_yes': 'Yes, reset',
     'settings_reset_confirm_no': 'Cancel',
     'settings_about': 'About',
-    'settings_about_body': 'Egg Runner Adventure is a popular-science illustrated storybook about the 150-million-year journey of the humble chicken, narrated by Henrietta the hen.',
+    'settings_about_body':
+        'Egg Runner Adventure is a popular-science illustrated storybook about the 150-million-year journey of the humble chicken, narrated by Henrietta the hen.',
     'settings_version': 'Version 1.0.0',
     'settings_legal': 'Legal & Support',
     'settings_privacy': 'Privacy Policy',
@@ -172,209 +183,288 @@ class AppStrings {
     'chapter_meet_title': 'Meet Henrietta',
     'chapter_meet_period': 'Today',
     'chapter_meet_subtitle': 'A modern hen with an ancient family tree.',
-    'chapter_meet_p1': 'Hi, I\'m Henrietta Rex — a Rhode Island Red with a suspiciously grand middle name. Every rooster on the block calls me "the historian", and honestly, they\'re not wrong. I keep a leather notebook in the henhouse where I sketch feathers and jot down family stories.',
-    'chapter_meet_p2': 'Most folks look at me and see a friendly barnyard bird. But if you rewind the clock 150 million years, my great-great-great (imagine a hundred more of those) grandparents were terrifying, tooth-toting theropod dinosaurs. Yes, really.',
-    'chapter_meet_p3': 'Grab your favourite mug of tea. Over the next few chapters I\'ll walk you through eras of thunder, extinction, oceans, jungles, temples and factories — and how I somehow ended up laying eggs behind the compost bin.',
+    'chapter_meet_p1':
+        'Hi, I\'m Henrietta Rex — a Rhode Island Red with a suspiciously grand middle name. Every rooster on the block calls me "the historian", and honestly, they\'re not wrong. I keep a leather notebook in the henhouse where I sketch feathers and jot down family stories.',
+    'chapter_meet_p2':
+        'Most folks look at me and see a friendly barnyard bird. But if you rewind the clock 150 million years, my great-great-great (imagine a hundred more of those) grandparents were terrifying, tooth-toting theropod dinosaurs. Yes, really.',
+    'chapter_meet_p3':
+        'Grab your favourite mug of tea. Over the next few chapters I\'ll walk you through eras of thunder, extinction, oceans, jungles, temples and factories — and how I somehow ended up laying eggs behind the compost bin.',
 
     // Chapters — The Thunder Age
     'chapter_thunder_title': 'The Thunder Age',
     'chapter_thunder_period': '150 – 66 million years ago',
     'chapter_thunder_subtitle': 'How my dinosaur cousins invented feathers.',
-    'chapter_thunder_p1': 'The Mesozoic was loud. Volcanoes belched sulphur, ferns crowded every shoreline, and the biggest predators walked on two legs — a group called theropods. Modern genetics has confirmed the twist: I\'m a theropod too. My chest bone, wishbone and hollow leg bones are all identical in structure to the ones found in T. rex fossils.',
-    'chapter_thunder_p2': 'The star of this era, at least in our family album, is Archaeopteryx — a magpie-sized creature that fluttered through Bavarian lagoons around 150 million years ago. It had asymmetric flight feathers like me, but also sharp teeth and a bony tail. Half bird, half lizard, entirely legendary.',
-    'chapter_thunder_p3': 'Feathers didn\'t appear so my cousins could fly. They arrived long before flight, probably for warmth and display. Some theropods, like Anchiornis, sported striking black-and-orange plumage — the peacocks of the Jurassic.',
-    'chapter_thunder_p4': 'Small feathered dinosaurs scampered under the giants\' feet, ate insects, hoarded seeds, and learned to leap from branch to branch. That branch — literally — is where the family tree of every living bird begins.',
+    'chapter_thunder_p1':
+        'The Mesozoic was loud. Volcanoes belched sulphur, ferns crowded every shoreline, and the biggest predators walked on two legs — a group called theropods. Modern genetics has confirmed the twist: I\'m a theropod too. My chest bone, wishbone and hollow leg bones are all identical in structure to the ones found in T. rex fossils.',
+    'chapter_thunder_p2':
+        'The star of this era, at least in our family album, is Archaeopteryx — a magpie-sized creature that fluttered through Bavarian lagoons around 150 million years ago. It had asymmetric flight feathers like me, but also sharp teeth and a bony tail. Half bird, half lizard, entirely legendary.',
+    'chapter_thunder_p3':
+        'Feathers didn\'t appear so my cousins could fly. They arrived long before flight, probably for warmth and display. Some theropods, like Anchiornis, sported striking black-and-orange plumage — the peacocks of the Jurassic.',
+    'chapter_thunder_p4':
+        'Small feathered dinosaurs scampered under the giants\' feet, ate insects, hoarded seeds, and learned to leap from branch to branch. That branch — literally — is where the family tree of every living bird begins.',
 
     // Chapters — The Great Extinction
     'chapter_extinction_title': 'When the Sky Fell',
     'chapter_extinction_period': '66 million years ago',
-    'chapter_extinction_subtitle': 'The asteroid, the dark years, and a tiny survivor.',
-    'chapter_extinction_p1': 'One awful afternoon 66 million years ago, an asteroid roughly the size of Manhattan slammed into what is now the Yucatán Peninsula. The sky burned, then went dark for years. Global temperatures crashed. Three-quarters of every species on Earth vanished, including nearly all dinosaurs.',
-    'chapter_extinction_p2': 'But not all of them. A handful of small, feathered, seed-eating theropods squeezed through the bottleneck. Being tiny and beak-equipped turned out to be a survival superpower — you can crack a fallen seed even when the forest is ash.',
-    'chapter_extinction_p3': 'So next time somebody says "chickens are dinosaurs", they mean it in the most literal way possible. Every chicken alive today is a direct descendant of a survivor of that dark decade. I like to think of my ancient ancestor sitting on a smoking log, eating a spruce seed and refusing to give up.',
+    'chapter_extinction_subtitle':
+        'The asteroid, the dark years, and a tiny survivor.',
+    'chapter_extinction_p1':
+        'One awful afternoon 66 million years ago, an asteroid roughly the size of Manhattan slammed into what is now the Yucatán Peninsula. The sky burned, then went dark for years. Global temperatures crashed. Three-quarters of every species on Earth vanished, including nearly all dinosaurs.',
+    'chapter_extinction_p2':
+        'But not all of them. A handful of small, feathered, seed-eating theropods squeezed through the bottleneck. Being tiny and beak-equipped turned out to be a survival superpower — you can crack a fallen seed even when the forest is ash.',
+    'chapter_extinction_p3':
+        'So next time somebody says "chickens are dinosaurs", they mean it in the most literal way possible. Every chicken alive today is a direct descendant of a survivor of that dark decade. I like to think of my ancient ancestor sitting on a smoking log, eating a spruce seed and refusing to give up.',
 
     // Chapters — Cenozoic Feathers
     'chapter_cenozoic_title': 'A New Sky',
     'chapter_cenozoic_period': '60 – 25 million years ago',
     'chapter_cenozoic_subtitle': 'Birds inherit the Earth.',
-    'chapter_cenozoic_p1': 'With the giants gone, the survivors radiated wildly. Within a few million years, ancestors of ducks, pigeons, parrots and — most importantly for us — the order Galliformes appeared. Galliformes means "chicken-like": stout, ground-loving birds that would rather run than fly.',
-    'chapter_cenozoic_p2': 'These are the true great-great-grandparents of every partridge, turkey, pheasant, quail and — eventually — jungle fowl on Earth. If you look at my wide feet and my terrible flying skills, that history is written all over me.',
-    'chapter_cenozoic_p3': 'Fossilised Galliform bones show up on every continent except Antarctica. Wherever forests grew, the chicken-like birds followed, scratching leaf litter for insects and seeds — a habit I inherited without any training whatsoever.',
+    'chapter_cenozoic_p1':
+        'With the giants gone, the survivors radiated wildly. Within a few million years, ancestors of ducks, pigeons, parrots and — most importantly for us — the order Galliformes appeared. Galliformes means "chicken-like": stout, ground-loving birds that would rather run than fly.',
+    'chapter_cenozoic_p2':
+        'These are the true great-great-grandparents of every partridge, turkey, pheasant, quail and — eventually — jungle fowl on Earth. If you look at my wide feet and my terrible flying skills, that history is written all over me.',
+    'chapter_cenozoic_p3':
+        'Fossilised Galliform bones show up on every continent except Antarctica. Wherever forests grew, the chicken-like birds followed, scratching leaf litter for insects and seeds — a habit I inherited without any training whatsoever.',
 
     // Chapters — Junglefowl
     'chapter_jungle_title': 'The Red Junglefowl',
     'chapter_jungle_period': '~8 000 BCE, Southeast Asia',
     'chapter_jungle_subtitle': 'The direct ancestor of every chicken on Earth.',
-    'chapter_jungle_p1': 'Fast-forward to the Southeast Asian jungle around 10 000 years ago. In the bamboo thickets of what we now call Thailand, Vietnam and Malaysia, a bright-red bird with a metallic voice patrolled the forest floor. Meet Gallus gallus — the red junglefowl. That\'s my direct ancestor.',
-    'chapter_jungle_p2': 'Junglefowl males are stunning: emerald-green tail feathers, a scarlet comb and a call so piercing it can travel a kilometre through dense forest. Females are the colour of dry leaves — near-invisible on the forest floor while brooding.',
-    'chapter_jungle_p3': 'DNA studies published in 2020 pinned down the chicken\'s origin story to a specific subspecies, Gallus gallus spadiceus, and a specific region — northern Thailand and Myanmar. Every chicken from Alaska to Argentina traces its lineage there.',
-    'chapter_jungle_p4': 'Even after millennia of domestication, junglefowl DNA still shows up in me. It\'s why I dust-bathe, roost in trees when I can, and get thoroughly grumpy about strange sounds in the yard.',
+    'chapter_jungle_p1':
+        'Fast-forward to the Southeast Asian jungle around 10 000 years ago. In the bamboo thickets of what we now call Thailand, Vietnam and Malaysia, a bright-red bird with a metallic voice patrolled the forest floor. Meet Gallus gallus — the red junglefowl. That\'s my direct ancestor.',
+    'chapter_jungle_p2':
+        'Junglefowl males are stunning: emerald-green tail feathers, a scarlet comb and a call so piercing it can travel a kilometre through dense forest. Females are the colour of dry leaves — near-invisible on the forest floor while brooding.',
+    'chapter_jungle_p3':
+        'DNA studies published in 2020 pinned down the chicken\'s origin story to a specific subspecies, Gallus gallus spadiceus, and a specific region — northern Thailand and Myanmar. Every chicken from Alaska to Argentina traces its lineage there.',
+    'chapter_jungle_p4':
+        'Even after millennia of domestication, junglefowl DNA still shows up in me. It\'s why I dust-bathe, roost in trees when I can, and get thoroughly grumpy about strange sounds in the yard.',
 
     // Chapters — Indus Valley
     'chapter_indus_title': 'The First Farm',
     'chapter_indus_period': '~3200 BCE, Indus Valley',
     'chapter_indus_subtitle': 'A partnership begins.',
-    'chapter_indus_p1': 'Somewhere in the Indus Valley — likely in the Harappa or Mohenjo-daro region — humans and junglefowl began an unusual friendship. Archaeologists have unearthed clay figurines of roosters and painted seals showing chickens as early as 3200 BCE.',
-    'chapter_indus_p2': 'Curiously, the first "domesticated" chickens may not have been raised for eggs or meat at all. Evidence suggests they were kept for cockfighting and religious ritual first, with agriculture following centuries later.',
-    'chapter_indus_p3': 'From the Indus, chickens hopped along trade routes to Mesopotamia and eventually the Mediterranean. Every farmyard hen in the world can trace her family tree back to a South Asian ancestor with an appetite for rice grains and a fondness for humans who provided them.',
+    'chapter_indus_p1':
+        'Somewhere in the Indus Valley — likely in the Harappa or Mohenjo-daro region — humans and junglefowl began an unusual friendship. Archaeologists have unearthed clay figurines of roosters and painted seals showing chickens as early as 3200 BCE.',
+    'chapter_indus_p2':
+        'Curiously, the first "domesticated" chickens may not have been raised for eggs or meat at all. Evidence suggests they were kept for cockfighting and religious ritual first, with agriculture following centuries later.',
+    'chapter_indus_p3':
+        'From the Indus, chickens hopped along trade routes to Mesopotamia and eventually the Mediterranean. Every farmyard hen in the world can trace her family tree back to a South Asian ancestor with an appetite for rice grains and a fondness for humans who provided them.',
 
     // Chapters — Classical
     'chapter_classical_title': 'Sacred and Prophetic',
     'chapter_classical_period': '1500 – 500 BCE, Egypt, Greece, Rome',
     'chapter_classical_subtitle': 'When my ancestors were oracles.',
-    'chapter_classical_p1': 'The ancient Egyptians were the first to invent something extraordinary: the artificial incubator. Long clay ovens, warmed by fires and tended by masters called "the chicken doctors", could hatch tens of thousands of eggs at a time. This technology was so precious it stayed a state secret for two thousand years.',
-    'chapter_classical_p2': 'In Greece and Rome, chickens became oracles. Before every important battle, a priest would offer grain to sacred chickens; if the birds ate greedily, victory was assured. In 249 BCE, Roman consul Publius Claudius Pulcher famously threw the sacred chickens overboard when they refused to eat — and promptly lost the sea battle.',
-    'chapter_classical_p3': 'My distant relatives were also fashion icons. Wealthy Romans bred chickens for spectacular plumage, and Julius Caesar himself is credited with introducing chickens to Britain during his conquests around 55 BCE.',
+    'chapter_classical_p1':
+        'The ancient Egyptians were the first to invent something extraordinary: the artificial incubator. Long clay ovens, warmed by fires and tended by masters called "the chicken doctors", could hatch tens of thousands of eggs at a time. This technology was so precious it stayed a state secret for two thousand years.',
+    'chapter_classical_p2':
+        'In Greece and Rome, chickens became oracles. Before every important battle, a priest would offer grain to sacred chickens; if the birds ate greedily, victory was assured. In 249 BCE, Roman consul Publius Claudius Pulcher famously threw the sacred chickens overboard when they refused to eat — and promptly lost the sea battle.',
+    'chapter_classical_p3':
+        'My distant relatives were also fashion icons. Wealthy Romans bred chickens for spectacular plumage, and Julius Caesar himself is credited with introducing chickens to Britain during his conquests around 55 BCE.',
 
     // Chapters — Medieval
     'chapter_medieval_title': 'Medieval Farmyards',
     'chapter_medieval_period': '500 – 1500 CE',
     'chapter_medieval_subtitle': 'A quiet, essential millennium.',
-    'chapter_medieval_p1': 'The Middle Ages weren\'t glamorous for us. Chickens were the peasant\'s protein — cheap to keep, unfussy about food, and productive. A single hen might lay a hundred eggs a year (compare that to the 320+ a modern layer produces).',
-    'chapter_medieval_p2': 'Roosters, though, became powerful symbols. In the 9th century, Pope Nicholas I decreed that every church should be topped with a rooster weathervane, referencing the Gospel story of Peter\'s denial. That is why to this day so many old European churches wear a metal chicken on the spire.',
-    'chapter_medieval_p3': 'It was also during this era that specific breeds began to appear. Silky-feathered "silkies" arrived from China (probably brought back by Marco Polo, according to legend), while French farmers began selecting for the meaty Bresse hen, still one of the world\'s most prized breeds.',
+    'chapter_medieval_p1':
+        'The Middle Ages weren\'t glamorous for us. Chickens were the peasant\'s protein — cheap to keep, unfussy about food, and productive. A single hen might lay a hundred eggs a year (compare that to the 320+ a modern layer produces).',
+    'chapter_medieval_p2':
+        'Roosters, though, became powerful symbols. In the 9th century, Pope Nicholas I decreed that every church should be topped with a rooster weathervane, referencing the Gospel story of Peter\'s denial. That is why to this day so many old European churches wear a metal chicken on the spire.',
+    'chapter_medieval_p3':
+        'It was also during this era that specific breeds began to appear. Silky-feathered "silkies" arrived from China (probably brought back by Marco Polo, according to legend), while French farmers began selecting for the meaty Bresse hen, still one of the world\'s most prized breeds.',
 
     // Chapters — Colonial
     'chapter_colonial_title': 'The Voyage Age',
     'chapter_colonial_period': '1500 – 1800 CE',
     'chapter_colonial_subtitle': 'How my ancestors conquered the New World.',
-    'chapter_colonial_p1': 'When European ships crossed the Atlantic, chickens sailed with them. Christopher Columbus\'s second voyage in 1493 brought chickens to the Caribbean, but here\'s a plot twist: DNA evidence suggests Polynesian chickens may have reached Chile a century before Columbus arrived.',
-    'chapter_colonial_p2': 'By the 1700s, chickens had become the world\'s most cosmopolitan farm animal. Sailors kept them aboard for eggs; explorers traded them at every port; and each region began to develop its own breeds — the sturdy American Dominique, the massive Shanghai (later renamed Cochin), the tiny Serama of Malaysia.',
-    'chapter_colonial_p3': 'Chicken keeping became fashionable. Queen Victoria was famously gifted a flock of Cochin chickens in 1842 and started a "hen fever" that swept Britain and America — the Victorian era\'s Beanie Baby craze.',
+    'chapter_colonial_p1':
+        'When European ships crossed the Atlantic, chickens sailed with them. Christopher Columbus\'s second voyage in 1493 brought chickens to the Caribbean, but here\'s a plot twist: DNA evidence suggests Polynesian chickens may have reached Chile a century before Columbus arrived.',
+    'chapter_colonial_p2':
+        'By the 1700s, chickens had become the world\'s most cosmopolitan farm animal. Sailors kept them aboard for eggs; explorers traded them at every port; and each region began to develop its own breeds — the sturdy American Dominique, the massive Shanghai (later renamed Cochin), the tiny Serama of Malaysia.',
+    'chapter_colonial_p3':
+        'Chicken keeping became fashionable. Queen Victoria was famously gifted a flock of Cochin chickens in 1842 and started a "hen fever" that swept Britain and America — the Victorian era\'s Beanie Baby craze.',
 
     // Chapters — Industrial
     'chapter_industrial_title': 'Industrial Reinvention',
     'chapter_industrial_period': '1900 – 1960 CE',
     'chapter_industrial_subtitle': 'The chicken becomes a modern product.',
-    'chapter_industrial_p1': 'The twentieth century transformed us. In 1911, the "trap nest" was invented — a device that recorded which hens laid which eggs — allowing breeders to select for productivity with astonishing precision. A hen that laid 150 eggs a year in 1900 could lay 300 by 1960.',
-    'chapter_industrial_p2': 'In 1948, an American competition called "Chicken of Tomorrow" set out to design the ideal broiler. The winning cross became the ancestor of nearly every meat chicken alive today. Broiler chickens now reach market weight in six weeks — a quarter of the time it took in 1950.',
-    'chapter_industrial_p3': 'Not all industrial history is happy. The rise of factory farming during this period changed how humans relate to chickens, sparking modern welfare movements and, more recently, a global embrace of free-range and heritage breeds. My own flock is the barnyard kind — thankfully.',
+    'chapter_industrial_p1':
+        'The twentieth century transformed us. In 1911, the "trap nest" was invented — a device that recorded which hens laid which eggs — allowing breeders to select for productivity with astonishing precision. A hen that laid 150 eggs a year in 1900 could lay 300 by 1960.',
+    'chapter_industrial_p2':
+        'In 1948, an American competition called "Chicken of Tomorrow" set out to design the ideal broiler. The winning cross became the ancestor of nearly every meat chicken alive today. Broiler chickens now reach market weight in six weeks — a quarter of the time it took in 1950.',
+    'chapter_industrial_p3':
+        'Not all industrial history is happy. The rise of factory farming during this period changed how humans relate to chickens, sparking modern welfare movements and, more recently, a global embrace of free-range and heritage breeds. My own flock is the barnyard kind — thankfully.',
 
     // Chapters — Modern
     'chapter_modern_title': 'Twenty-Five Billion',
     'chapter_modern_period': 'Today',
-    'chapter_modern_subtitle': 'The most successful bird in the history of Earth.',
-    'chapter_modern_p1': 'At any given moment, roughly 25 billion chickens are alive on Earth — more than every other bird species combined. If we counted the total biomass of birds, chickens alone would outweigh all wild birds put together, by three times over.',
-    'chapter_modern_p2': 'We\'ve been to space. In 1989, a shuttle mission carried chicken embryos into orbit to study zero-gravity development. Astronaut John Glenn later called us "the most well-travelled birds in history".',
-    'chapter_modern_p3': 'We dream. Yes, seriously. Chickens have REM sleep, and studies with tiny EEG caps show that our brains produce dream-like activity, especially after a busy day of foraging. What do we dream of? Probably corn.',
-    'chapter_modern_p4': 'And we\'re not done. Geneticists are already sequencing every major breed, restoring endangered heritage lines, and studying the deep dinosaur genes that could — if switched on — give some future chicken descendant a fine tail of scales again. My family story, it turns out, is far from finished.',
+    'chapter_modern_subtitle':
+        'The most successful bird in the history of Earth.',
+    'chapter_modern_p1':
+        'At any given moment, roughly 25 billion chickens are alive on Earth — more than every other bird species combined. If we counted the total biomass of birds, chickens alone would outweigh all wild birds put together, by three times over.',
+    'chapter_modern_p2':
+        'We\'ve been to space. In 1989, a shuttle mission carried chicken embryos into orbit to study zero-gravity development. Astronaut John Glenn later called us "the most well-travelled birds in history".',
+    'chapter_modern_p3':
+        'We dream. Yes, seriously. Chickens have REM sleep, and studies with tiny EEG caps show that our brains produce dream-like activity, especially after a busy day of foraging. What do we dream of? Probably corn.',
+    'chapter_modern_p4':
+        'And we\'re not done. Geneticists are already sequencing every major breed, restoring endangered heritage lines, and studying the deep dinosaur genes that could — if switched on — give some future chicken descendant a fine tail of scales again. My family story, it turns out, is far from finished.',
 
     // Chapters — The Incredible Egg
     'chapter_egg_title': 'The Incredible Egg',
     'chapter_egg_period': 'Science spotlight',
     'chapter_egg_subtitle': 'The clever package that made it all possible.',
-    'chapter_egg_p1': 'Time for a science break! Before we meet the humans, let me show you my family\'s proudest invention: the egg. Animals were laying hard-shelled "amniotic" eggs for over 300 million years — long before the first dinosaur roared. That egg was a revolution: it let animals raise their young on dry land instead of in water.',
-    'chapter_egg_p2': 'An egg is a complete life-support pod. The yolk is the food pantry. The clear white (albumen) is a shock-absorbing water supply. A pocket of air at the blunt end gives the chick its first breath. And the shell? It looks solid, but it is dotted with up to 17,000 microscopic pores so oxygen can seep in and carbon dioxide can escape.',
-    'chapter_egg_p3': 'A hen turns her eggs gently and keeps them at a cosy 37.5°C. In just 21 days a single cell becomes a fully formed chick — with a heart, eyes, feathers and a special "egg tooth" to chip its way out. Not bad for something you can hold in one hand!',
+    'chapter_egg_p1':
+        'Time for a science break! Before we meet the humans, let me show you my family\'s proudest invention: the egg. Animals were laying hard-shelled "amniotic" eggs for over 300 million years — long before the first dinosaur roared. That egg was a revolution: it let animals raise their young on dry land instead of in water.',
+    'chapter_egg_p2':
+        'An egg is a complete life-support pod. The yolk is the food pantry. The clear white (albumen) is a shock-absorbing water supply. A pocket of air at the blunt end gives the chick its first breath. And the shell? It looks solid, but it is dotted with up to 17,000 microscopic pores so oxygen can seep in and carbon dioxide can escape.',
+    'chapter_egg_p3':
+        'A hen turns her eggs gently and keeps them at a cosy 37.5°C. In just 21 days a single cell becomes a fully formed chick — with a heart, eyes, feathers and a special "egg tooth" to chip its way out. Not bad for something you can hold in one hand!',
 
     // Chapters — The Silk Road
     'chapter_silkroad_title': 'A Long Journey',
     'chapter_silkroad_period': '1000 BCE – 500 CE, Asia',
-    'chapter_silkroad_subtitle': 'How my family clucked its way across a continent.',
-    'chapter_silkroad_p1': 'From the first farms of the Indus, my relatives became world travellers. Merchants discovered that a chicken was the perfect travelling companion: small, cheap to feed, and she produced fresh eggs along the way. Who needs a refrigerator?',
-    'chapter_silkroad_p2': 'Along the great trade routes — later nicknamed the Silk Road — chickens spread east into China and Korea and south across the islands of the Pacific. Polynesian voyagers even carried them thousands of kilometres by canoe to settle the most remote islands on Earth.',
-    'chapter_silkroad_p3': 'Everywhere they landed, people fell in love with them. Different lands shaped different birds: silky-feathered fowls in China, spirited game birds in Southeast Asia, tiny ornamental bantams. My family tree was branching out beautifully.',
+    'chapter_silkroad_subtitle':
+        'How my family clucked its way across a continent.',
+    'chapter_silkroad_p1':
+        'From the first farms of the Indus, my relatives became world travellers. Merchants discovered that a chicken was the perfect travelling companion: small, cheap to feed, and she produced fresh eggs along the way. Who needs a refrigerator?',
+    'chapter_silkroad_p2':
+        'Along the great trade routes — later nicknamed the Silk Road — chickens spread east into China and Korea and south across the islands of the Pacific. Polynesian voyagers even carried them thousands of kilometres by canoe to settle the most remote islands on Earth.',
+    'chapter_silkroad_p3':
+        'Everywhere they landed, people fell in love with them. Different lands shaped different birds: silky-feathered fowls in China, spirited game birds in Southeast Asia, tiny ornamental bantams. My family tree was branching out beautifully.',
 
     // Chapters — Darwin's Favourite Birds
     'chapter_darwin_title': 'Darwin\'s Favourite Birds',
     'chapter_darwin_period': '1850s, England',
     'chapter_darwin_subtitle': 'How chickens helped explain all of life.',
-    'chapter_darwin_p1': 'Here is one that makes me proud. When Charles Darwin was working out his theory of evolution, he did not only study finches on faraway islands — he studied chickens and pigeons right at home in England.',
-    'chapter_darwin_p2': 'The Victorians were mad for fancy breeds — a craze called "hen fever". Darwin noticed that by choosing which birds to breed, people could create wildly different chickens in just a few generations: giant Cochins, crested Polish, fluffy Silkies. If humans could reshape a bird so quickly, he reasoned, imagine what nature could do over millions of years.',
-    'chapter_darwin_p3': 'So my funny-looking cousins became living proof for one of the biggest ideas in all of science. Darwin wrote about domestic fowl in his famous books. Not bad for a barnyard bird, eh?',
+    'chapter_darwin_p1':
+        'Here is one that makes me proud. When Charles Darwin was working out his theory of evolution, he did not only study finches on faraway islands — he studied chickens and pigeons right at home in England.',
+    'chapter_darwin_p2':
+        'The Victorians were mad for fancy breeds — a craze called "hen fever". Darwin noticed that by choosing which birds to breed, people could create wildly different chickens in just a few generations: giant Cochins, crested Polish, fluffy Silkies. If humans could reshape a bird so quickly, he reasoned, imagine what nature could do over millions of years.',
+    'chapter_darwin_p3':
+        'So my funny-looking cousins became living proof for one of the biggest ideas in all of science. Darwin wrote about domestic fowl in his famous books. Not bad for a barnyard bird, eh?',
 
     // Chapters — The Dinosaur Within
     'chapter_future_title': 'The Dinosaur Within',
     'chapter_future_period': 'Tomorrow',
     'chapter_future_subtitle': 'Could a chicken become a dinosaur again?',
-    'chapter_future_p1': 'We have travelled 150 million years together — but my story is not over. Today scientists read my DNA to understand exactly how dinosaurs became birds. And some of them are asking a wild question: could we switch those ancient genes back on?',
-    'chapter_future_p2': 'It is real science. Researchers have already grown chicken embryos with more dinosaur-like snouts instead of beaks, and leg bones closer to those of Archaeopteryx. The playful nickname for this work is the "chickenosaurus". Do not worry — nobody is hatching raptors; it is simply a way to read the instructions hidden in my genes.',
-    'chapter_future_p3': 'Every time you crack an egg you are holding a living dinosaur descendant — one that survived an asteroid, crossed oceans, sat beside emperors and helped explain life itself. From a tiny survivor on a smoking log to 25 billion friends worldwide: what a journey. Thank you for walking the timeline with me. — Henrietta',
+    'chapter_future_p1':
+        'We have travelled 150 million years together — but my story is not over. Today scientists read my DNA to understand exactly how dinosaurs became birds. And some of them are asking a wild question: could we switch those ancient genes back on?',
+    'chapter_future_p2':
+        'It is real science. Researchers have already grown chicken embryos with more dinosaur-like snouts instead of beaks, and leg bones closer to those of Archaeopteryx. The playful nickname for this work is the "chickenosaurus". Do not worry — nobody is hatching raptors; it is simply a way to read the instructions hidden in my genes.',
+    'chapter_future_p3':
+        'Every time you crack an egg you are holding a living dinosaur descendant — one that survived an asteroid, crossed oceans, sat beside emperors and helped explain life itself. From a tiny survivor on a smoking log to 25 billion friends worldwide: what a journey. Thank you for walking the timeline with me. — Henrietta',
 
     // Facts
     'fact_trex_cousin_title': 'A T. rex Cousin',
-    'fact_trex_cousin_body': 'Molecular studies of collagen preserved in T. rex bones show chickens are its closest living relatives — closer than any living reptile.',
+    'fact_trex_cousin_body':
+        'Molecular studies of collagen preserved in T. rex bones show chickens are its closest living relatives — closer than any living reptile.',
 
     'fact_archaeopteryx_title': 'Meet Archaeopteryx',
-    'fact_archaeopteryx_body': 'Discovered in 1861 in Bavarian limestone, Archaeopteryx had feathers AND teeth. It is often called "the first bird", though scientists still debate whether it truly flew.',
+    'fact_archaeopteryx_body':
+        'Discovered in 1861 in Bavarian limestone, Archaeopteryx had feathers AND teeth. It is often called "the first bird", though scientists still debate whether it truly flew.',
 
     'fact_feathered_dinos_title': 'Feathers Before Flight',
-    'fact_feathered_dinos_body': 'Feathers evolved at least 25 million years before flight. Their original purpose was probably insulation and courtship display — think of them as dinosaur peacocks.',
+    'fact_feathered_dinos_body':
+        'Feathers evolved at least 25 million years before flight. Their original purpose was probably insulation and courtship display — think of them as dinosaur peacocks.',
 
     'fact_survivors_title': 'Beak Was the Key',
-    'fact_survivors_body': 'A 2022 study of the Chicxulub extinction concluded that having a beak (instead of teeth) let small dinosaurs eat hardy seeds during the years without sunlight. That single trait may be why birds exist today.',
+    'fact_survivors_body':
+        'A 2022 study of the Chicxulub extinction concluded that having a beak (instead of teeth) let small dinosaurs eat hardy seeds during the years without sunlight. That single trait may be why birds exist today.',
 
     'fact_galliformes_title': 'The Chicken Order',
-    'fact_galliformes_body': 'Chickens belong to the order Galliformes, along with turkeys, pheasants, grouse, quail and peacocks. Galliformes fossils appear on every continent except Antarctica.',
+    'fact_galliformes_body':
+        'Chickens belong to the order Galliformes, along with turkeys, pheasants, grouse, quail and peacocks. Galliformes fossils appear on every continent except Antarctica.',
 
     'fact_junglefowl_title': 'One Ancestor',
-    'fact_junglefowl_body': 'Every domestic chicken descends from the red junglefowl (Gallus gallus) of Southeast Asia. A 2020 study narrowed the origin further, to the subspecies Gallus gallus spadiceus.',
+    'fact_junglefowl_body':
+        'Every domestic chicken descends from the red junglefowl (Gallus gallus) of Southeast Asia. A 2020 study narrowed the origin further, to the subspecies Gallus gallus spadiceus.',
 
     'fact_species_count_title': 'Three Billion Genomes',
-    'fact_species_count_body': 'The chicken genome was fully sequenced in 2004 — the first bird ever. Chickens have about a billion base pairs, roughly a third of the human genome.',
+    'fact_species_count_body':
+        'The chicken genome was fully sequenced in 2004 — the first bird ever. Chickens have about a billion base pairs, roughly a third of the human genome.',
 
     'fact_first_farm_title': 'The Very First Coop',
-    'fact_first_farm_body': 'Clay figurines of roosters unearthed at Mohenjo-daro (Indus Valley) date to around 3200 BCE and represent some of the oldest evidence of chicken keeping.',
+    'fact_first_farm_body':
+        'Clay figurines of roosters unearthed at Mohenjo-daro (Indus Valley) date to around 3200 BCE and represent some of the oldest evidence of chicken keeping.',
 
     'fact_oracle_title': 'Sacred Chickens',
-    'fact_oracle_body': 'Roman commanders consulted sacred chickens before battle. The birds\' appetite predicted victory or defeat — a practice still commemorated on coins from the Republic.',
+    'fact_oracle_body':
+        'Roman commanders consulted sacred chickens before battle. The birds\' appetite predicted victory or defeat — a practice still commemorated on coins from the Republic.',
 
     'fact_egyptian_incubator_title': 'Ancient Incubators',
-    'fact_egyptian_incubator_body': 'Egyptians built massive clay incubators that could hatch 10 000 eggs at once, keeping the temperature within 0.5°C — using nothing but firewood and expertise. The technology stayed secret for 2 000 years.',
+    'fact_egyptian_incubator_body':
+        'Egyptians built massive clay incubators that could hatch 10 000 eggs at once, keeping the temperature within 0.5°C — using nothing but firewood and expertise. The technology stayed secret for 2 000 years.',
 
     'fact_rooster_cross_title': 'Rooster on the Steeple',
-    'fact_rooster_cross_body': 'In 826 CE, Pope Nicholas I ordered that every church be crowned with a rooster weather-vane — a reference to Peter\'s denial of Jesus at cock-crow.',
+    'fact_rooster_cross_body':
+        'In 826 CE, Pope Nicholas I ordered that every church be crowned with a rooster weather-vane — a reference to Peter\'s denial of Jesus at cock-crow.',
 
     'fact_new_world_title': 'Ocean-Going Chickens',
-    'fact_new_world_body': 'DNA from bones found in Chile suggests Polynesian sailors brought chickens to South America nearly a century before Columbus — a "chicken before the ship".',
+    'fact_new_world_body':
+        'DNA from bones found in Chile suggests Polynesian sailors brought chickens to South America nearly a century before Columbus — a "chicken before the ship".',
 
     'fact_leghorn_title': 'The Racing Layer',
-    'fact_leghorn_body': 'The Leghorn breed, imported to America from the port of Livorno (Leghorn in English) in the 1850s, is behind almost every commercial egg layer today.',
+    'fact_leghorn_body':
+        'The Leghorn breed, imported to America from the port of Livorno (Leghorn in English) in the 1850s, is behind almost every commercial egg layer today.',
 
     'fact_chicken_of_tomorrow_title': 'Chicken of Tomorrow',
-    'fact_chicken_of_tomorrow_body': 'A 1948 competition of the same name selected the parent stock for the modern broiler. Its winner grew twice as fast as its 1900 ancestor.',
+    'fact_chicken_of_tomorrow_body':
+        'A 1948 competition of the same name selected the parent stock for the modern broiler. Its winner grew twice as fast as its 1900 ancestor.',
 
     'fact_25_billion_title': 'The Most Common Bird',
-    'fact_25_billion_body': 'There are more chickens than any other bird on Earth — around 25 billion at any moment. Combined, they outweigh every wild bird species by a factor of three.',
+    'fact_25_billion_body':
+        'There are more chickens than any other bird on Earth — around 25 billion at any moment. Combined, they outweigh every wild bird species by a factor of three.',
 
     'fact_space_egg_title': 'Chickens in Orbit',
-    'fact_space_egg_body': 'In 1989 the STS-29 mission carried 32 fertilised chicken eggs into space to study embryonic development in microgravity.',
+    'fact_space_egg_body':
+        'In 1989 the STS-29 mission carried 32 fertilised chicken eggs into space to study embryonic development in microgravity.',
 
     'fact_dream_title': 'Chickens Dream',
-    'fact_dream_body': 'EEG recordings show that chickens have REM sleep — the phase where dreams occur in humans. What they dream of is anybody\'s guess (corn, probably).',
+    'fact_dream_body':
+        'EEG recordings show that chickens have REM sleep — the phase where dreams occur in humans. What they dream of is anybody\'s guess (corn, probably).',
 
     'fact_face_recognition_title': 'Face Memory',
-    'fact_face_recognition_body': 'Studies at the University of Bristol show that chickens can recognise more than 100 distinct human and chicken faces, and remember them for years.',
+    'fact_face_recognition_body':
+        'Studies at the University of Bristol show that chickens can recognise more than 100 distinct human and chicken faces, and remember them for years.',
 
     'fact_sounds_title': 'Thirty Words',
-    'fact_sounds_body': 'Chickens use at least 24-30 distinct calls with specific meanings, from "food found" to "there\'s a hawk overhead". They pass this vocabulary down to their chicks.',
+    'fact_sounds_body':
+        'Chickens use at least 24-30 distinct calls with specific meanings, from "food found" to "there\'s a hawk overhead". They pass this vocabulary down to their chicks.',
 
     'fact_pores_title': 'Breathing Shells',
-    'fact_pores_body': 'A chicken egg\'s shell has between 7 000 and 17 000 microscopic pores that let air in — critical for the developing embryo.',
+    'fact_pores_body':
+        'A chicken egg\'s shell has between 7 000 and 17 000 microscopic pores that let air in — critical for the developing embryo.',
 
     'fact_color_vision_title': 'Four-Colour Vision',
-    'fact_color_vision_body': 'Chickens are tetrachromats — they see red, green, blue AND ultraviolet. Their world is more colourful than ours.',
+    'fact_color_vision_body':
+        'Chickens are tetrachromats — they see red, green, blue AND ultraviolet. Their world is more colourful than ours.',
 
     'fact_math_title': 'Little Mathematicians',
-    'fact_math_body': 'Chicks as young as five days old have been shown to perform simple addition and subtraction in laboratory experiments.',
+    'fact_math_body':
+        'Chicks as young as five days old have been shown to perform simple addition and subtraction in laboratory experiments.',
 
     'fact_wishbone_title': 'Make a Wish',
-    'fact_wishbone_body': 'The wishbone you pull at dinner is the furcula — a fused collarbone. Predatory dinosaurs like Velociraptor had one too, and it helps power the wingbeat in birds.',
+    'fact_wishbone_body':
+        'The wishbone you pull at dinner is the furcula — a fused collarbone. Predatory dinosaurs like Velociraptor had one too, and it helps power the wingbeat in birds.',
 
     'fact_flight_record_title': 'The Longest Flight',
-    'fact_flight_record_body': 'Chickens can fly, just not far. The longest recorded chicken flight lasted 13 seconds and covered about 91 metres (301 feet).',
+    'fact_flight_record_body':
+        'Chickens can fly, just not far. The longest recorded chicken flight lasted 13 seconds and covered about 91 metres (301 feet).',
 
     'fact_comb_title': 'The Living Radiator',
-    'fact_comb_body': 'A chicken\'s comb and wattles aren\'t just for show — they shed body heat to keep her cool, and their bright red colour signals good health to the flock.',
+    'fact_comb_body':
+        'A chicken\'s comb and wattles aren\'t just for show — they shed body heat to keep her cool, and their bright red colour signals good health to the flock.',
 
     'fact_earlobe_title': 'Read the Earlobes',
-    'fact_earlobe_body': 'You can often guess an egg\'s shell colour from a hen\'s earlobes: white lobes usually mean white eggs, red lobes usually mean brown eggs.',
+    'fact_earlobe_body':
+        'You can often guess an egg\'s shell colour from a hen\'s earlobes: white lobes usually mean white eggs, red lobes usually mean brown eggs.',
 
     'fact_rooster_clock_title': 'A Clock Inside',
-    'fact_rooster_clock_body': 'A 2013 study showed roosters crow at dawn thanks to an internal circadian clock — even in constant dim light, they still crow roughly every 24 hours.',
+    'fact_rooster_clock_body':
+        'A 2013 study showed roosters crow at dawn thanks to an internal circadian clock — even in constant dim light, they still crow roughly every 24 hours.',
 
     'fact_pecking_order_title': 'The Real Pecking Order',
-    'fact_pecking_order_body': 'The phrase comes from real chicken society. Norwegian scientist Thorleif Schjelderup-Ebbe described the strict social ladder of a flock in the 1920s.',
+    'fact_pecking_order_body':
+        'The phrase comes from real chicken society. Norwegian scientist Thorleif Schjelderup-Ebbe described the strict social ladder of a flock in the 1920s.',
 
     // Achievements
     'ach_origin_title': 'Origin Story',
@@ -412,7 +502,8 @@ class AppStrings {
     'menu_trophies': 'Trofeos',
     'menu_settings': 'Ajustes',
     'home_greeting': 'Hola, soy Henrietta.',
-    'home_intro': 'Una gallina moderna con 150 millones de años de historia familiar. ¿Lista para viajar en el tiempo conmigo?',
+    'home_intro':
+        'Una gallina moderna con 150 millones de años de historia familiar. ¿Lista para viajar en el tiempo conmigo?',
     'home_cta_chapters': 'Leer las Crónicas',
     'home_cta_daily': 'Descubrir el dato del día',
     'home_cta_daily_done': 'Vuelve mañana',
@@ -445,7 +536,8 @@ class AppStrings {
     'daily_subtitle': 'Un descubrimiento nuevo cada día.',
     'daily_claim': 'Revelar el dato de hoy',
     'daily_already_title': 'Ya lo has visto',
-    'daily_already_body': 'Vuelve después de medianoche para la próxima revelación del cuaderno de Henrietta.',
+    'daily_already_body':
+        'Vuelve después de medianoche para la próxima revelación del cuaderno de Henrietta.',
     'daily_streak': 'Racha',
     'daily_days': 'días',
     'daily_reward_xp': '+{xp} PE',
@@ -468,7 +560,8 @@ class AppStrings {
     'rarity_legendary': 'Legendario',
     'settings_title': 'Ajustes',
     'settings_language': 'Idioma',
-    'settings_language_hint': 'La historia está escrita en inglés. La interfaz está traducida.',
+    'settings_language_hint':
+        'La historia está escrita en inglés. La interfaz está traducida.',
     'settings_reset': 'Reiniciar progreso',
     'settings_reset_hint': 'Borra PE, rachas y datos desbloqueados.',
     'settings_reset_confirm': '¿Reiniciar todo?',
@@ -476,7 +569,8 @@ class AppStrings {
     'settings_reset_confirm_yes': 'Sí, reiniciar',
     'settings_reset_confirm_no': 'Cancelar',
     'settings_about': 'Acerca de',
-    'settings_about_body': 'Orígenes con Plumas es un libro ilustrado de divulgación sobre 150 millones de años de la humilde gallina.',
+    'settings_about_body':
+        'Orígenes con Plumas es un libro ilustrado de divulgación sobre 150 millones de años de la humilde gallina.',
     'settings_version': 'Versión 1.0.0',
     'settings_legal': 'Legal y soporte',
     'settings_privacy': 'Política de privacidad',
@@ -497,7 +591,8 @@ class AppStrings {
     'menu_trophies': 'Trophées',
     'menu_settings': 'Réglages',
     'home_greeting': 'Salut, je suis Henrietta.',
-    'home_intro': 'Une poule moderne avec 150 millions d\'années d\'histoire familiale. Prêt·e à voyager dans le temps ?',
+    'home_intro':
+        'Une poule moderne avec 150 millions d\'années d\'histoire familiale. Prêt·e à voyager dans le temps ?',
     'home_cta_chapters': 'Lire les Chroniques',
     'home_cta_daily': 'Découvrir le fait du jour',
     'home_cta_daily_done': 'Revenez demain',
@@ -530,7 +625,8 @@ class AppStrings {
     'daily_subtitle': 'Une découverte par jour.',
     'daily_claim': 'Révéler le fait',
     'daily_already_title': 'Déjà vu aujourd\'hui',
-    'daily_already_body': 'Revenez après minuit pour la prochaine page du carnet d\'Henrietta.',
+    'daily_already_body':
+        'Revenez après minuit pour la prochaine page du carnet d\'Henrietta.',
     'daily_streak': 'Série',
     'daily_days': 'jours',
     'daily_reward_xp': '+{xp} XP',
@@ -553,7 +649,8 @@ class AppStrings {
     'rarity_legendary': 'Légendaire',
     'settings_title': 'Réglages',
     'settings_language': 'Langue',
-    'settings_language_hint': 'L\'histoire est en anglais. L\'interface est traduite.',
+    'settings_language_hint':
+        'L\'histoire est en anglais. L\'interface est traduite.',
     'settings_reset': 'Réinitialiser',
     'settings_reset_hint': 'Efface XP, séries et faits débloqués.',
     'settings_reset_confirm': 'Tout réinitialiser ?',
@@ -561,7 +658,8 @@ class AppStrings {
     'settings_reset_confirm_yes': 'Oui',
     'settings_reset_confirm_no': 'Annuler',
     'settings_about': 'À propos',
-    'settings_about_body': 'Origines à Plumes est un livre illustré sur 150 millions d\'années d\'évolution.',
+    'settings_about_body':
+        'Origines à Plumes est un livre illustré sur 150 millions d\'années d\'évolution.',
     'settings_version': 'Version 1.0.0',
     'settings_legal': 'Mentions & assistance',
     'settings_privacy': 'Politique de confidentialité',
@@ -582,7 +680,8 @@ class AppStrings {
     'menu_trophies': 'Trophäen',
     'menu_settings': 'Einstellungen',
     'home_greeting': 'Hallo, ich bin Henrietta.',
-    'home_intro': 'Eine moderne Henne mit 150 Millionen Jahren Familiengeschichte. Reisen wir gemeinsam durch die Zeit?',
+    'home_intro':
+        'Eine moderne Henne mit 150 Millionen Jahren Familiengeschichte. Reisen wir gemeinsam durch die Zeit?',
     'home_cta_chapters': 'Chroniken lesen',
     'home_cta_daily': 'Heutigen Fakt anzeigen',
     'home_cta_daily_done': 'Komm morgen wieder',
@@ -615,7 +714,8 @@ class AppStrings {
     'daily_subtitle': 'Jeden Tag eine neue Entdeckung.',
     'daily_claim': 'Heutigen Fakt enthüllen',
     'daily_already_title': 'Heute schon erhalten',
-    'daily_already_body': 'Nach Mitternacht wartet die nächste Seite in Henriettas Notizbuch.',
+    'daily_already_body':
+        'Nach Mitternacht wartet die nächste Seite in Henriettas Notizbuch.',
     'daily_streak': 'Streak',
     'daily_days': 'Tage',
     'daily_reward_xp': '+{xp} XP',
@@ -638,7 +738,8 @@ class AppStrings {
     'rarity_legendary': 'Legendär',
     'settings_title': 'Einstellungen',
     'settings_language': 'Sprache',
-    'settings_language_hint': 'Die Geschichte ist auf Englisch. Die Oberfläche ist übersetzt.',
+    'settings_language_hint':
+        'Die Geschichte ist auf Englisch. Die Oberfläche ist übersetzt.',
     'settings_reset': 'Zurücksetzen',
     'settings_reset_hint': 'Löscht XP, Streaks und Fakten.',
     'settings_reset_confirm': 'Alles zurücksetzen?',
@@ -646,7 +747,8 @@ class AppStrings {
     'settings_reset_confirm_yes': 'Ja',
     'settings_reset_confirm_no': 'Abbrechen',
     'settings_about': 'Über',
-    'settings_about_body': 'Gefiederte Ursprünge ist ein illustriertes Sachbuch über 150 Millionen Jahre Hühnergeschichte.',
+    'settings_about_body':
+        'Gefiederte Ursprünge ist ein illustriertes Sachbuch über 150 Millionen Jahre Hühnergeschichte.',
     'settings_version': 'Version 1.0.0',
     'settings_legal': 'Rechtliches & Support',
     'settings_privacy': 'Datenschutzrichtlinie',
@@ -667,7 +769,8 @@ class AppStrings {
     'menu_trophies': 'Troféus',
     'menu_settings': 'Ajustes',
     'home_greeting': 'Oi, sou a Henrietta.',
-    'home_intro': 'Uma galinha moderna com 150 milhões de anos de história familiar. Pronto para viajar comigo?',
+    'home_intro':
+        'Uma galinha moderna com 150 milhões de anos de história familiar. Pronto para viajar comigo?',
     'home_cta_chapters': 'Ler as Crônicas',
     'home_cta_daily': 'Descobrir o fato do dia',
     'home_cta_daily_done': 'Volte amanhã',
@@ -700,7 +803,8 @@ class AppStrings {
     'daily_subtitle': 'Uma descoberta por dia.',
     'daily_claim': 'Revelar o fato',
     'daily_already_title': 'Já visto hoje',
-    'daily_already_body': 'Volte após a meia-noite para a próxima página do caderno da Henrietta.',
+    'daily_already_body':
+        'Volte após a meia-noite para a próxima página do caderno da Henrietta.',
     'daily_streak': 'Sequência',
     'daily_days': 'dias',
     'daily_reward_xp': '+{xp} XP',
@@ -723,7 +827,8 @@ class AppStrings {
     'rarity_legendary': 'Lendário',
     'settings_title': 'Ajustes',
     'settings_language': 'Idioma',
-    'settings_language_hint': 'A história está em inglês. A interface é traduzida.',
+    'settings_language_hint':
+        'A história está em inglês. A interface é traduzida.',
     'settings_reset': 'Redefinir progresso',
     'settings_reset_hint': 'Apaga XP, sequências e fatos.',
     'settings_reset_confirm': 'Redefinir tudo?',
@@ -731,7 +836,8 @@ class AppStrings {
     'settings_reset_confirm_yes': 'Sim',
     'settings_reset_confirm_no': 'Cancelar',
     'settings_about': 'Sobre',
-    'settings_about_body': 'Origens Emplumadas é um livro ilustrado sobre 150 milhões de anos das galinhas.',
+    'settings_about_body':
+        'Origens Emplumadas é um livro ilustrado sobre 150 milhões de anos das galinhas.',
     'settings_version': 'Versão 1.0.0',
     'settings_legal': 'Legal e suporte',
     'settings_privacy': 'Política de Privacidade',

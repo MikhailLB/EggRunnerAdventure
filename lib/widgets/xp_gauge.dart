@@ -60,7 +60,9 @@ class XpGauge extends StatelessWidget {
                         value: store.levelProgress,
                         minHeight: 8,
                         backgroundColor: AppColors.divider,
-                        valueColor: const AlwaysStoppedAnimation(AppColors.sunrise),
+                        valueColor: const AlwaysStoppedAnimation(
+                          AppColors.sunrise,
+                        ),
                       ),
                     ),
                   ],
@@ -91,13 +93,21 @@ class _LevelBadge extends StatelessWidget {
         ),
         shape: BoxShape.circle,
         boxShadow: [
-          BoxShadow(color: AppColors.rust.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 3)),
+          BoxShadow(
+            color: AppColors.rust.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
         ],
       ),
       alignment: Alignment.center,
       child: Text(
         '$level',
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
+          fontSize: 18,
+        ),
       ),
     );
   }

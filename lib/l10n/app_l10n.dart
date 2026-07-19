@@ -31,7 +31,8 @@ class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
   const _AppL10nDelegate();
 
   @override
-  bool isSupported(Locale locale) => AppStrings.supportedLocales.contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      AppStrings.supportedLocales.contains(locale.languageCode);
 
   @override
   Future<AppL10n> load(Locale locale) => SynchronousFuture(AppL10n(locale));

@@ -27,7 +27,8 @@ class Achievement {
   final IconData icon;
   final AchievementRarity rarity;
 
-  double get percent => goal == 0 ? 0 : (progressGetter().clamp(0, goal) / goal).toDouble();
+  double get percent =>
+      goal == 0 ? 0 : (progressGetter().clamp(0, goal) / goal).toDouble();
   bool get unlocked => progressGetter() >= goal;
   int get current => progressGetter().clamp(0, goal);
 }

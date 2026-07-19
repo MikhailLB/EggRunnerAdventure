@@ -26,7 +26,7 @@ ThemeData buildAppTheme() {
       surface: AppColors.parchment,
     ),
     scaffoldBackgroundColor: AppColors.parchment,
-    fontFamily: 'Georgia',
+    fontFamily: 'Baloo2',
     useMaterial3: true,
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
@@ -37,17 +37,35 @@ ThemeData buildAppTheme() {
         color: AppColors.ink,
         fontSize: 20,
         fontWeight: FontWeight.w700,
-        fontFamily: 'Georgia',
+        fontFamily: 'Baloo2',
       ),
       iconTheme: IconThemeData(color: AppColors.ink),
     ),
     textTheme: const TextTheme(
-      displayLarge: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800),
-      displayMedium: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800),
-      displaySmall: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700),
-      headlineLarge: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800),
-      headlineMedium: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700),
-      headlineSmall: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700),
+      displayLarge: TextStyle(
+        color: AppColors.ink,
+        fontWeight: FontWeight.w800,
+      ),
+      displayMedium: TextStyle(
+        color: AppColors.ink,
+        fontWeight: FontWeight.w800,
+      ),
+      displaySmall: TextStyle(
+        color: AppColors.ink,
+        fontWeight: FontWeight.w700,
+      ),
+      headlineLarge: TextStyle(
+        color: AppColors.ink,
+        fontWeight: FontWeight.w800,
+      ),
+      headlineMedium: TextStyle(
+        color: AppColors.ink,
+        fontWeight: FontWeight.w700,
+      ),
+      headlineSmall: TextStyle(
+        color: AppColors.ink,
+        fontWeight: FontWeight.w700,
+      ),
       titleLarge: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w700),
       titleMedium: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600),
       titleSmall: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600),
@@ -83,7 +101,10 @@ ThemeData buildAppTheme() {
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: AppColors.ink,
-      contentTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+      contentTextStyle: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+      ),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ),

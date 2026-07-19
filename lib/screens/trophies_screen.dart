@@ -40,7 +40,10 @@ class TrophiesScreen extends StatelessWidget {
                   Text(
                     l10n.t('trophies_subtitle'),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: AppColors.muted, fontStyle: FontStyle.italic),
+                    style: const TextStyle(
+                      color: AppColors.muted,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   const XpGauge(),
@@ -79,7 +82,10 @@ class _Summary extends StatelessWidget {
           Expanded(
             child: Text(
               '$unlocked / $total',
-              style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.ink),
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                color: AppColors.ink,
+              ),
             ),
           ),
           SizedBox(
@@ -113,7 +119,10 @@ class _AchievementRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _rarityColor(a.rarity).withValues(alpha: 0.55), width: 1.4),
+        border: Border.all(
+          color: _rarityColor(a.rarity).withValues(alpha: 0.55),
+          width: 1.4,
+        ),
       ),
       child: Row(
         children: [
@@ -124,7 +133,10 @@ class _AchievementRow extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [_rarityColor(a.rarity), _rarityColor(a.rarity).withValues(alpha: 0.55)],
+                colors: [
+                  _rarityColor(a.rarity),
+                  _rarityColor(a.rarity).withValues(alpha: 0.55),
+                ],
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -141,18 +153,30 @@ class _AchievementRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         l10n.t(a.titleKey),
-                        style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.ink, fontSize: 15),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.ink,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: _rarityColor(a.rarity).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
                         l10n.t('rarity_${a.rarity.name}'),
-                        style: TextStyle(color: _rarityColor(a.rarity), fontWeight: FontWeight.w800, fontSize: 11, letterSpacing: 0.4),
+                        style: TextStyle(
+                          color: _rarityColor(a.rarity),
+                          fontWeight: FontWeight.w800,
+                          fontSize: 11,
+                          letterSpacing: 0.4,
+                        ),
                       ),
                     ),
                   ],
@@ -160,7 +184,11 @@ class _AchievementRow extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   l10n.t(a.descriptionKey),
-                  style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.35),
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 13,
+                    height: 1.35,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -172,7 +200,9 @@ class _AchievementRow extends StatelessWidget {
                           value: a.percent,
                           minHeight: 8,
                           backgroundColor: AppColors.divider,
-                          valueColor: AlwaysStoppedAnimation(_rarityColor(a.rarity)),
+                          valueColor: AlwaysStoppedAnimation(
+                            _rarityColor(a.rarity),
+                          ),
                         ),
                       ),
                     ),
@@ -182,7 +212,11 @@ class _AchievementRow extends StatelessWidget {
                         'current': a.current.toString(),
                         'goal': a.goal.toString(),
                       }),
-                      style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.w700, fontSize: 12),
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),

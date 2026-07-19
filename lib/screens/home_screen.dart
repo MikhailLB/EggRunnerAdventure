@@ -20,8 +20,15 @@ class HomeScreen extends StatelessWidget {
 
   void _continueReading(BuildContext context) {
     final store = ProgressStore.instance;
-    final idx = store.nextChapterIndex.clamp(0, ChaptersData.chapters.length - 1);
-    Navigator.pushNamed(context, Routes.reader, arguments: ChaptersData.chapters[idx].id);
+    final idx = store.nextChapterIndex.clamp(
+      0,
+      ChaptersData.chapters.length - 1,
+    );
+    Navigator.pushNamed(
+      context,
+      Routes.reader,
+      arguments: ChaptersData.chapters[idx].id,
+    );
   }
 
   @override
@@ -40,7 +47,11 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   _TopBar(l10n: l10n),
                   const SizedBox(height: 8),
-                  _HeroCard(l10n: l10n, store: store, onContinue: () => _continueReading(context)),
+                  _HeroCard(
+                    l10n: l10n,
+                    store: store,
+                    onContinue: () => _continueReading(context),
+                  ),
                   const SizedBox(height: 14),
                   const XpGauge(),
                   const SizedBox(height: 20),
@@ -59,7 +70,11 @@ class HomeScreen extends StatelessWidget {
                     color: AppColors.rust,
                     titleKey: 'menu_chapters',
                     subKey: 'menu_chapters_sub',
-                    trailing: _CountChip(text: '${store.readChapters.length}/${store.totalChapters}', color: AppColors.rust),
+                    trailing: _CountChip(
+                      text:
+                          '${store.readChapters.length}/${store.totalChapters}',
+                      color: AppColors.rust,
+                    ),
                     onTap: () => _go(1),
                   ),
                   const SizedBox(height: 12),
@@ -70,7 +85,10 @@ class HomeScreen extends StatelessWidget {
                     subKey: 'menu_daily_sub',
                     trailing: store.canClaimDaily
                         ? _DotChip(color: AppColors.rust, label: '1')
-                        : const Icon(Icons.chevron_right_rounded, color: AppColors.muted),
+                        : const Icon(
+                            Icons.chevron_right_rounded,
+                            color: AppColors.muted,
+                          ),
                     onTap: () => _go(2),
                   ),
                   const SizedBox(height: 12),
@@ -79,7 +97,10 @@ class HomeScreen extends StatelessWidget {
                     color: AppColors.meadow,
                     titleKey: 'menu_facts',
                     subKey: 'menu_facts_sub',
-                    trailing: _CountChip(text: '${store.unlockedFacts.length}/${store.totalFacts}', color: AppColors.meadow),
+                    trailing: _CountChip(
+                      text: '${store.unlockedFacts.length}/${store.totalFacts}',
+                      color: AppColors.meadow,
+                    ),
                     onTap: () => _go(3),
                   ),
                   const SizedBox(height: 12),
@@ -88,7 +109,10 @@ class HomeScreen extends StatelessWidget {
                     color: AppColors.sky,
                     titleKey: 'menu_trophies',
                     subKey: 'menu_trophies_sub',
-                    trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.muted),
+                    trailing: const Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.muted,
+                    ),
                     onTap: () => _go(4),
                   ),
                   const SizedBox(height: 20),
@@ -114,7 +138,11 @@ class _TopBar extends StatelessWidget {
         const Expanded(child: _HomeTitle()),
         IconButton(
           onPressed: () => Navigator.pushNamed(context, Routes.settings),
-          icon: const Icon(Icons.settings_rounded, size: 26, color: AppColors.ink),
+          icon: const Icon(
+            Icons.settings_rounded,
+            size: 26,
+            color: AppColors.ink,
+          ),
           tooltip: l10n.t('menu_settings'),
         ),
       ],
@@ -155,7 +183,11 @@ class _HomeTitle extends StatelessWidget {
 }
 
 class _HeroCard extends StatelessWidget {
-  const _HeroCard({required this.l10n, required this.store, required this.onContinue});
+  const _HeroCard({
+    required this.l10n,
+    required this.store,
+    required this.onContinue,
+  });
   final AppL10n l10n;
   final ProgressStore store;
   final VoidCallback onContinue;
@@ -171,7 +203,11 @@ class _HeroCard extends StatelessWidget {
           colors: [Color(0xFFFFE7A8), Color(0xFFFFC46B), Color(0xFFFF9F5A)],
         ),
         boxShadow: [
-          BoxShadow(color: AppColors.rust.withValues(alpha: 0.22), blurRadius: 20, offset: const Offset(0, 8)),
+          BoxShadow(
+            color: AppColors.rust.withValues(alpha: 0.22),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
         ],
       ),
       padding: const EdgeInsets.fromLTRB(20, 18, 10, 18),
@@ -184,29 +220,47 @@ class _HeroCard extends StatelessWidget {
               children: [
                 Text(
                   l10n.t('home_greeting'),
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: AppColors.ink),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.ink,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   l10n.t('home_intro'),
-                  style: const TextStyle(color: AppColors.ink, fontSize: 13.5, height: 1.35),
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 13.5,
+                    height: 1.35,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 FilledButton.icon(
                   onPressed: onContinue,
                   icon: const Icon(Icons.play_arrow_rounded),
-                  label: Text(l10n.t('home_continue'), overflow: TextOverflow.ellipsis),
+                  label: Text(
+                    l10n.t('home_continue'),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(Icons.local_fire_department_rounded, color: AppColors.rust, size: 18),
+                    const Icon(
+                      Icons.local_fire_department_rounded,
+                      color: AppColors.rust,
+                      size: 18,
+                    ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
                         '${store.dailyStreak} ${l10n.t('home_streak')}',
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.ink),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.ink,
+                        ),
                       ),
                     ),
                   ],
@@ -248,7 +302,8 @@ class _Mascot extends StatelessWidget {
             'assets/mascot/henrietta.png',
             width: 140,
             fit: BoxFit.contain,
-            errorBuilder: (_, _, _) => const Icon(Icons.egg_rounded, size: 90, color: Colors.white),
+            errorBuilder: (_, _, _) =>
+                const Icon(Icons.egg_rounded, size: 90, color: Colors.white),
           ),
         ],
       ),
@@ -287,7 +342,11 @@ class _ModeCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(22),
             border: Border.all(color: AppColors.divider),
             boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
             ],
           ),
           padding: const EdgeInsets.all(14),
@@ -304,7 +363,11 @@ class _ModeCard extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
-                    BoxShadow(color: color.withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 4)),
+                    BoxShadow(
+                      color: color.withValues(alpha: 0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
                   ],
                 ),
                 child: Icon(icon, color: Colors.white, size: 27),
@@ -316,14 +379,21 @@ class _ModeCard extends StatelessWidget {
                   children: [
                     Text(
                       l10n.t(titleKey),
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: AppColors.ink),
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.ink,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       l10n.t(subKey),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 13, color: AppColors.muted),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.muted,
+                      ),
                     ),
                   ],
                 ),
@@ -351,7 +421,14 @@ class _CountChip extends StatelessWidget {
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(text, style: TextStyle(color: color, fontWeight: FontWeight.w800, fontSize: 12)),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w800,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }
@@ -369,10 +446,19 @@ class _DotChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 8)],
+        boxShadow: [
+          BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 8),
+        ],
       ),
       alignment: Alignment.center,
-      child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 12)),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }
@@ -392,12 +478,21 @@ class _AuthorFootnote extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.format_quote_rounded, color: AppColors.rust, size: 30),
+          const Icon(
+            Icons.format_quote_rounded,
+            color: AppColors.rust,
+            size: 30,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               l10n.t('author_line'),
-              style: const TextStyle(color: AppColors.muted, fontStyle: FontStyle.italic, fontSize: 13.5, height: 1.35),
+              style: const TextStyle(
+                color: AppColors.muted,
+                fontStyle: FontStyle.italic,
+                fontSize: 13.5,
+                height: 1.35,
+              ),
             ),
           ),
         ],

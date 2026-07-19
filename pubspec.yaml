@@ -14,8 +14,21 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  shared_preferences: ^2.3.3
-  webview_flutter: ^4.10.0
+  shared_preferences: ^2.5.5
+  webview_flutter: ^4.14.1
+  appsflyer_sdk: ^6.18.0
+  app_tracking_transparency: ^2.0.7
+  firebase_core: ^4.12.1
+  firebase_messaging: ^16.4.3
+  firebase_app_check: ^0.4.5+2
+  # 7.1+ requires Xcode 26.1 for NWPath.isUltraConstrained.
+  connectivity_plus: '>=7.0.0 <7.1.0'
+  http: ^1.6.0
+  # 12.4+ calls an Xcode 26.1-only NSProcessInfo selector.
+  device_info_plus: 12.3.0
+  flutter_secure_storage: ^10.3.1
+  webview_flutter_wkwebview: ^3.26.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -33,11 +46,20 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  config:
+    enable-swift-package-manager: false
+
+  fonts:
+    - family: Baloo2
+      fonts:
+        - asset: assets/fonts/Baloo2.ttf
 
   assets:
+    - assets/fonts/Baloo2.ttf
     - assets/loading/loading_portrait.png
     - assets/loading/loading_landscape.png
     - assets/icon/app_icon.png
     - assets/branding/game_name.png
     - assets/mascot/henrietta.png
     - assets/chapters/
+    - assets/chicken_18_additional_assets/

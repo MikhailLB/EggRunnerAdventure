@@ -42,7 +42,8 @@ class ProgressStore extends ChangeNotifier {
     final raw = prefs.getString(_kPrefsKey);
     if (raw != null) {
       try {
-        final Map<String, dynamic> data = jsonDecode(raw) as Map<String, dynamic>;
+        final Map<String, dynamic> data =
+            jsonDecode(raw) as Map<String, dynamic>;
         instance.tutorialSeen = data['tutorialSeen'] as bool? ?? false;
         instance.readChapters = ((data['readChapters'] as List?) ?? const [])
             .map((e) => e.toString())
@@ -55,7 +56,8 @@ class ProgressStore extends ChangeNotifier {
         instance.lastDailyIso = data['lastDailyIso'] as String?;
         instance.languageCode = data['languageCode'] as String? ?? 'en';
         instance.launchCount = (data['launchCount'] as num?)?.toInt() ?? 0;
-        instance.readingSeconds = (data['readingSeconds'] as num?)?.toInt() ?? 0;
+        instance.readingSeconds =
+            (data['readingSeconds'] as num?)?.toInt() ?? 0;
         instance.chaptersOpenedCount =
             (data['chaptersOpenedCount'] as num?)?.toInt() ?? 0;
       } catch (_) {
@@ -161,7 +163,9 @@ class ProgressStore extends ChangeNotifier {
     // Rotate through fun facts deterministically by day-of-year so users
     // get a stable "fact of the day", while still surfacing new content on
     // each subsequent claim.
-    final doy = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
+    final doy = DateTime.now()
+        .difference(DateTime(DateTime.now().year, 1, 1))
+        .inDays;
     final fact = FactsData.facts[(doy + streak) % FactsData.count];
     unlockedFacts.add(fact.id);
 
@@ -211,7 +215,8 @@ class ProgressStore extends ChangeNotifier {
     return readChapters.contains(ChaptersData.chapters[index - 1].id);
   }
 
-  bool isChapterUnlocked(String id) => isChapterUnlockedAt(ChaptersData.indexOf(id));
+  bool isChapterUnlocked(String id) =>
+      isChapterUnlockedAt(ChaptersData.indexOf(id));
 
   /// 1-based position of the next chapter the reader should tackle.
   int get nextChapterIndex {
@@ -251,7 +256,11 @@ class ProgressStore extends ChangeNotifier {
 
 @immutable
 class DailyReward {
-  const DailyReward({required this.factId, required this.xp, required this.streak});
+  const DailyReward({
+    required this.factId,
+    required this.xp,
+    required this.streak,
+  });
   final String factId;
   final int xp;
   final int streak;
