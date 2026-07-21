@@ -10,7 +10,7 @@ workflows:
     environment:
       groups:
         - code-signing
-      flutter: 3.41.7
+      flutter: 3.44.7
       xcode: latest
       cocoapods: default
       vars:
