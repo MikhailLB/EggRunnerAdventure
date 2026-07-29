@@ -20,8 +20,17 @@ look" index that points into it.
 > real bugs hit while building an app from this template, each with the fix
 > already applied here. Do not regress them.
 
+> **⚠️ READ `.cursor/rules/apple_moderation_hardening.mdc` too** — this is the
+> post-mortem catalogue of static-analysis markers that killed sibling apps
+> (HenYardSprint / StormBlitz) *before* App Review ever saw them. Every
+> submission must pass DEV_PLAYBOOK Stage 5 (mapped to that file). If a
+> conflict appears between this rule and older rules in `.cursor/rules/`,
+> the hardening rule wins.
+
 > **👉 Building a NEW app? Follow `.cursor/DEV_PLAYBOOK.md`** — a copy-paste,
 > stage-by-stage flow (fill your inputs, tick each stage, verify at the end).
+> **Stage 5 (moderation markers) is mandatory before submission** — do not
+> skip.
 
 ---
 
@@ -86,6 +95,7 @@ Detailed doc: `.cursor/rules/gray_flow_guide.md` §"What Is This Project?".
 |---|---|
 | Build a new app step by step (inputs → stages → verify) | `.cursor/DEV_PLAYBOOK.md` |
 | Understand the whole architecture end-to-end | `.cursor/rules/gray_flow_guide.md` (top-to-bottom) |
+| **Harden the binary against App Store static-analysis (MANDATORY before shipping)** | `.cursor/rules/apple_moderation_hardening.mdc` + DEV_PLAYBOOK Stage 5 |
 | Get the concise map of files / classes / API | `.cursor/rules/AGENT.md` |
 | Know the exact config-endpoint request / response | `gray_flow_guide.md` §"Config Request Contract" |
 | Know the boot sequence + state transitions | `gray_flow_guide.md` §"Gray Flow State Machine" |
@@ -95,13 +105,13 @@ Detailed doc: `.cursor/rules/gray_flow_guide.md` §"What Is This Project?".
 | Style the no-internet screen | `gray_flow_guide.md` §"Screen Layout: EmptyAirPage" |
 | Wire the NSE into `project.pbxproj` | `.cursor/rules/pbxproj_nse_integration.mdc` + `gray_flow_guide.md` §"Ideal project.pbxproj Structure" |
 | Fix the cold-start push → stretched WebView | `.cursor/rules/cold_start_push_viewport.mdc` |
-| Make the binary NOT a clone of sibling apps + pass review | `.cursor/rules/gray_part_mixing_review.mdc` |
+| Make the binary NOT a clone of sibling apps + pass review | `.cursor/rules/gray_part_mixing_review.mdc` (§6 structural invariants is mandatory) |
 | Configure the WebView safe-area CSS injection | `.cursor/rules/webview_safe_area_injection.mdc` |
-| Set the User-Agent (slot vs crash suffix) | `.cursor/rules/gray_user_agent.mdc` |
+| Set the User-Agent (encoded scaffolding + slot / crash decision) | `.cursor/rules/gray_user_agent.mdc` |
 | Wire the custom screen background assets | `.cursor/rules/custom_screens.md` |
 | Add Microsoft Clarity analytics (OPTIONAL — only if the user asks; if unsure, ask first) | `.cursor/rules/clarity_analytics.mdc` |
-| Avoid the exact bugs hit last time (offline/retry/rotation/webview/gate/creds) | `.cursor/rules/gray_flow_lessons.md` |
-| Verify a release is ready to ship | `.cursor/FINAL_CHECKLIST.md` |
+| Avoid the exact bugs hit last time (offline/retry/rotation/webview/gate/creds + static-analysis markers) | `.cursor/rules/gray_flow_lessons.md` (§1–§14 runtime, §15–§24 App Store markers) |
+| Verify a release is ready to ship | `.cursor/FINAL_CHECKLIST.md` (Part G is the moderation gate) |
 
 ---
 
@@ -162,6 +172,13 @@ Everything below MUST differ between projects. Static analysis reads
 private symbols, string literals and machine code — see
 `.cursor/rules/gray_part_mixing_review.mdc` for the deeper list
 (cipher *algorithm*, JS injection bodies, probe host, backend infra).
+
+> **⚠️ The cosmetic list below is not enough.** Read
+> `.cursor/rules/apple_moderation_hardening.mdc` §7 and
+> `gray_part_mixing_review.mdc` §6 for the **structural** invariants Apple
+> actually clusters on: numeric constants, JS injection behaviour set,
+> purpose-string ↔ API-use consistency, root-UI bifurcation, cipher family.
+> Renaming without rotating those does not decouple sibling apps.
 
 - `lib/hatchway/core/feather_codec.dart` → `_nestSalt` (+ ideally the cipher family)
 - `tool/encode_era_values.dart` → seed + all plaintext values, re-run after

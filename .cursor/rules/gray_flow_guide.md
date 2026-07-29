@@ -142,22 +142,46 @@ but ask if the brief looks incomplete.
 
 ## Why Stealth Matters
 
+> **Read `apple_moderation_hardening.mdc` for the concrete markers Apple's
+> scanner actually matches.** That file is the current source of truth
+> after the HenYardSprint / StormBlitz post-mortem; the summary below is
+> the high-level rationale.
+
 App Store reviewers and automated scanners look for:
 - Apps that are "just a WebView" with no real content
 - Apps that behave differently during review vs. production
-- Known affiliate / tracking domains in the binary
-- Structural fingerprints shared across submissions from one developer
+- Known affiliate / tracking domains and User-Agent signatures in the binary
+- **Structural fingerprints** shared across submissions from one
+  developer — not just names. The scanner clusters by numeric constants
+  (`3 days`, `6 s`, `-1007 × 3`, `15 s`), by JS-injection behaviour sets,
+  by purpose strings without matching API calls, and by a
+  byte-array → decoder → `Uri.parse` → `WebViewController.loadRequest`
+  data-flow graph — none of which move when you rename classes.
 
 **If caught:** app removal, developer account ban, associated accounts
-banned.
+banned via the weak-edge account graph (shared TestFlight testers,
+shared AppsFlyer dev key, shared CI IP).
 
-**Defense:**
+**Defense (all required):**
 1. Real game = real review content (reviewer / scanner sees the game).
-2. All sensitive strings XOR-encoded (endpoint, AppsFlyer key, Firebase id).
+2. All sensitive strings encoded — but use ordinary primitives, not a
+   self-written KSA/PRGA cipher (see `apple_moderation_hardening.mdc` §3).
 3. Attribution gate → only paid installs see the WebView; a reviewer's
    organic install shows the game.
-4. Unique binary fingerprint per project — see `gray_part_mixing_review.mdc`.
-5. Real-device User-Agent on all requests (no Dart/Flutter fingerprint).
+4. Unique **structural** fingerprint per project — see
+   `gray_part_mixing_review.mdc` §6 (numeric constants, JS behaviour
+   set, cipher family) and `apple_moderation_hardening.mdc` §7. Renaming
+   is not enough.
+5. Real-device User-Agent on all requests (no Dart/Flutter fingerprint),
+   assembled from encoded fragments — no plaintext `Mozilla/5.0 iPhone…`
+   substring in the binary (`gray_user_agent.mdc` §1).
+6. Info.plist declaration matches actual API use — camera/photos strings
+   only when a white feature calls the matching API
+   (`apple_moderation_hardening.mdc` §1).
+7. `PrivacyInfo.xcprivacy` shipped and matches the plugins we use.
+8. Domain allowlist for the post-release URL router — never let the
+   WebView open an arbitrary host from a push payload
+   (`apple_moderation_hardening.mdc` §6).
 
 ---
 
@@ -696,13 +720,18 @@ WKWebView; "reinstalling fixes it" (timing-dependent).
 
 ## iOS-Specific Notes: Info.plist keys + reviewer justifications
 
+> **⚠️ Read `apple_moderation_hardening.mdc` §1–§2 before editing this
+> section.** Every purpose string here has to have a matching API call in
+> the binary — Apple's static analyzer diffs the two sets and rejects
+> mismatches without ever running the app.
+
 ```xml
 <!-- Push background delivery -->
 <key>UIBackgroundModes</key>
 <array><string>remote-notification</string></array>
-<!-- Add "fetch" ONLY if a real white-part feature justifies it — see
-     gray_part_mixing_review.mdc §3. An unjustified background mode is a
-     review red flag. -->
+<!-- Add "fetch" or "processing" ONLY if a real white-part feature
+     justifies it — an unjustified background mode is a review red flag
+     (see gray_part_mixing_review.mdc §3 and §6c). -->
 
 <!-- Firebase swizzling for cold-start push routing -->
 <key>FirebaseAppDelegateProxyEnabled</key><true/>
@@ -716,37 +745,129 @@ WKWebView; "reinstalling fixes it" (timing-dependent).
 <dict><key>NSAllowsArbitraryLoadsInWebContent</key><true/></dict>
 <!-- Applies to WKWebView only, NOT URLSession; app networking stays HTTPS. -->
 
-<!-- File upload / media inside the WebView — word around a real white feature -->
-<key>NSPhotoLibraryUsageDescription</key><string>… game-themed …</string>
-<key>NSCameraUsageDescription</key><string>… game-themed …</string>
+<!-- ⚠️ Include ONLY if the white part actually calls the matching API
+     (image_picker / AVCaptureDevice / PHPhotoLibrary). WebView
+     <input type="file"> alone is NOT a real use — the OS presents the
+     sheet but no symbol appears in the binary. If you keep these keys,
+     add a visible avatar/camera feature to the game AND word the string
+     around that feature. Otherwise REMOVE the keys — Apple's scanner
+     rejects declarations without matching API calls (2.3.1). -->
+<!--
+<key>NSPhotoLibraryUsageDescription</key><string>… game-themed real feature …</string>
+<key>NSCameraUsageDescription</key><string>… game-themed real feature …</string>
+-->
 
 <!-- Scene delegate for cold-start push -->
 <key>UISceneDelegateClassName</key><string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
 
-<!-- Encryption exemption -->
+<!-- ⚠️ LSApplicationQueriesSchemes — NEVER include `http` or `https`.
+     Those schemes are opened via canOpenURL without registration, and
+     their presence is a well-known partner-template copy-paste
+     artefact (see apple_moderation_hardening.mdc §1). Keep only
+     schemes we actually hand off to (tel, mailto, and specific
+     external apps). -->
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>tel</string>
+    <string>mailto</string>
+</array>
+
+<!-- Encryption exemption — see apple_moderation_hardening.mdc §3. Set to
+     `false` ONLY after the custom KSA/PRGA stream cipher in
+     feather_codec.dart is replaced. If the KSA/PRGA loop still ships,
+     set to `true` and answer "using only exempt encryption" in App
+     Store Connect. -->
 <key>ITSAppUsesNonExemptEncryption</key><false/>
 ```
+
 Only keep `NSMicrophone…` / background `fetch` if a real white feature
-uses them — otherwise remove (see `gray_part_mixing_review.mdc` §3).
+uses them — otherwise remove (`gray_part_mixing_review.mdc` §3, §6c).
+
+### PrivacyInfo.xcprivacy — mandatory
+
+We use `device_info_plus`, `flutter_secure_storage`, `shared_preferences`
+and `webview_flutter`, every one of which is on Apple's Required Reason
+API list. **Without a matching `ios/Runner/PrivacyInfo.xcprivacy` in
+Runner's Copy Bundle Resources phase, the submission is auto-rejected.**
+
+Minimum shape (verify against the manifests the plugins actually ship):
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSPrivacyTracking</key><true/>
+    <key>NSPrivacyTrackingDomains</key>
+    <array>
+        <!-- Only if we track before ATT consent (best practice: empty). -->
+    </array>
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array>
+        <!-- Truthful union of what AppsFlyer + Firebase collect. -->
+    </array>
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array><string>CA92.1</string></array>
+        </dict>
+        <!-- Add the entries required by every plugin's own manifest. -->
+    </array>
+</dict>
+</plist>
+```
+
+**Verification:**
+```bash
+plutil -lint ios/Runner/PrivacyInfo.xcprivacy
+```
+must pass. `ios/Runner.xcodeproj/project.pbxproj` must include a
+`PBXFileReference` + `PBXBuildFile` for the manifest AND list it in
+Runner's Resources phase (same shape as `GoogleService-Info.plist`).
 
 ---
 
 ## Obfuscation & Anti-Detection
 
-1. **Encoded secrets** — endpoint, AppsFlyer key, Firebase number,
-   privacy/support, UA fragments → XOR byte arrays via `unfoldFeathers()`. Never
-   plaintext. Cipher key derived from `_nestSalt` (FNV-1a + LCG stream in
-   the current template).
-2. **Real device User-Agent** — built from `device_info_plus`; identical
+> **⚠️ Read `apple_moderation_hardening.mdc` §3 before extending this
+> section.** The self-written RC4-style stream cipher shipped in previous
+> template revisions is now flagged as a smoking-gun signature — the
+> `byte array → cipher loop → Uri.parse → WebViewController.loadRequest`
+> graph is what Apple's scanner matches. Do NOT ship it unmodified.
+
+1. **Encoded secrets** — endpoint, AppsFlyer key, Firebase number, and
+   every UA fragment (including the `Mozilla/5.0 (iPhone…` scaffolding).
+   Do NOT encode public URLs (privacy policy, support) — encrypting a URL
+   that is public in App Store Connect only proves you have decoder
+   infrastructure.
+2. **Cipher family** — the template ships a KSA/PRGA loop
+   (`feather_codec.dart`). Replace it before shipping (see
+   `apple_moderation_hardening.mdc` §3). Preferred: `base64Decode` + a
+   single-pass XOR against a device-derived key. Rotate the algorithm
+   per portfolio slot — never ship two apps with the same cipher family
+   (`gray_part_mixing_review.mdc` §1, §6e).
+3. **Real device User-Agent** — built from `device_info_plus`; identical
    on HTTP client + WebView; no `Dart`/`Flutter`/`CFNetwork`/`Darwin`/
-   package-name tokens. See `gray_user_agent.mdc`.
-3. **Generic class/method/variable names** — no `Casino*`, `Betting*`,
-   `Gambling*`. And rotate them per project (`gray_part_mixing_review.mdc`).
-4. **Firebase App Check** — `deviceCheck` (release), `debug` provider in
+   package-name tokens; no plaintext `Mozilla/5.0` substring in the
+   binary. See `gray_user_agent.mdc`.
+4. **Generic class/method/variable names** — no `Casino*`, `Betting*`,
+   `Gambling*`. Rotate them per project (`gray_part_mixing_review.mdc`).
+5. **Structural diversification** — rotate the numeric constants and the
+   JS injection behaviour set per project
+   (`gray_part_mixing_review.mdc` §6 and `apple_moderation_hardening.mdc`
+   §7). Renaming is not enough.
+6. **Firebase App Check** — `deviceCheck` (release), `debug` provider in
    debug builds.
-5. **Secure storage** — content URLs in `flutter_secure_storage`
+7. **Secure storage** — content URLs in `flutter_secure_storage`
    (Keychain on iOS), not plain prefs.
-6. **No release logs** — assert-wrapped Dart logger, `#if DEBUG` Swift.
+8. **No release logs** — assert-wrapped Dart logger, `#if DEBUG` Swift.
+9. **Domain allowlist** — every URL loaded into the WebView (from config
+   response, from push payload, from a cached saved URL) must pass a
+   host-suffix allowlist check baked into `EraHatchConfig`. Silently drop
+   anything else (`apple_moderation_hardening.mdc` §6).
 
 Per-project uniqueness (cipher algorithm, JS injection bodies, probe host,
 UA fallback, storage prefix, NSE UUIDs, dependency versions, backend

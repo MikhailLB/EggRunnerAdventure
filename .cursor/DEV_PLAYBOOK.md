@@ -4,6 +4,17 @@
 проверку в Cursor. Идёшь по этапам сверху вниз, отмечаешь чекбоксы. Промпты
 даны в двух вариантах: **RU** и **EN** — копируй любой.
 
+> **⚠️ Обязательный порядок этапов:**
+> - **Этап 1** — генерация серой части.
+> - **Этап 2** — self-verify по модулям.
+> - **Этап 3** — прогон `gray_flow_lessons.md` (§1–§24, включая новые
+>   §15–§24 про статические маркеры Apple).
+> - **Этап 4** — финальный чек-лист + реальные запросы.
+> - **Этап 5** — **проверка на маркеры модерации App Store** (см. ниже).
+>   Пропускать нельзя: именно эти маркеры недавно похоронили HenYardSprint
+>   и StormBlitz до `In Review`. Источник — `@.cursor/rules/apple_moderation_hardening.mdc`.
+> - **Этап 6** — операционные проверки (аккаунты, TestFlight, инфра).
+
 > Как работать с Cursor эффективно:
 > - Один скоуп за проход. Не «сделай всё сразу».
 > - После вводных достаточно говорить **«идём дальше»** — агент сам берёт
@@ -224,4 +235,293 @@ curl -sS -o - -w "\n%{http_code}\n" -X POST "$CONFIG_URL" \
       бэкенд-домен, весь арт и иконка — отличаются от соседних апп
 - [ ] в релизе нет `Dart/Flutter/CFNetwork/Darwin/WebView` в UA (grep)
 - [ ] Аналитика (Clarity) добавлена ТОЛЬКО если её просили
+
+---
+
+## Этап 5 — Проверка на маркеры модерации App Store (ОБЯЗАТЕЛЬНО перед сабмишном)
+
+> **Этот этап отделён от 2.9 fingerprint-проверки специально.** Fingerprint
+> §4.4 разбирает *косметические* отличия (имена, соль, версии). Этот этап —
+> про *структурные* маркеры, которые Apple ловит статическим анализом IPA
+> ещё до `In Review`: покойное `Pending Termination Notice` семейства
+> HenYardSprint / StormBlitz прилетело именно по ним, не по ревьюеру.
+>
+> Источник правды — `@.cursor/rules/apple_moderation_hardening.mdc`.
+> Каждый пункт ниже мапится на его секцию.
+
+Гоняй по одному под-скоупу. Все грепы должны либо вернуть пусто (там, где
+это написано), либо конкретный ожидаемый результат. Если что-то не так —
+чинишь и запускаешь заново, пока не пройдёт.
+
+### 5.1 Info.plist соответствует реальному коду (`apple_moderation_hardening.mdc` §1)
+
+**RU промпт:**
+```text
+Этап 5.1. Пройди по @.cursor/rules/apple_moderation_hardening.mdc §1 и
+проверь ios/Runner/Info.plist:
+1) NSCameraUsageDescription / NSPhotoLibraryUsageDescription /
+   NSMicrophoneUsageDescription — для каждого объявленного ключа ДОКАЖИ,
+   что в белой части (lib/**/*.dart и ios/Runner/**/*.swift) есть реальный
+   вызов image_picker/AVCaptureDevice/PHPhotoLibraryImageSource.
+   Если вызова нет — УДАЛИ ключ. Если ключ нужен, добавь видимую фичу в
+   белой игре и переформулируй purpose string под неё (не под WebView).
+2) LSApplicationQueriesSchemes НЕ содержит "http"/"https" — если есть,
+   удали. Остаются только tel/mailto и явные внешние app-схемы.
+3) UIBackgroundModes содержит только remote-notification (fetch/processing
+   удали, если нет реальной фичи).
+4) NSUserTrackingUsageDescription сформулирован под игру.
+Выведи итог: список изменений или "OK, всё соответствует".
 ```
+
+- [ ] purpose strings ↔ реальные API вызовы сходятся, ни одного «пустого» ключа
+- [ ] `LSApplicationQueriesSchemes` без `http`/`https`
+- [ ] `UIBackgroundModes` — только оправданное
+
+### 5.2 PrivacyInfo.xcprivacy присутствует и валиден (`apple_moderation_hardening.mdc` §2)
+
+**RU промпт:**
+```text
+Этап 5.2. Проверь, что ios/Runner/PrivacyInfo.xcprivacy существует и
+включён в Copy Bundle Resources фазы Runner в
+ios/Runner.xcodeproj/project.pbxproj (по такой же схеме, как
+GoogleService-Info.plist — PBXFileReference + PBXBuildFile + запись в
+Resources phase).
+1) Если файла нет — создай его по шаблону из
+   @.cursor/rules/gray_flow_guide.md §"PrivacyInfo.xcprivacy" и подключи
+   в pbxproj.
+2) Пробеги `plutil -lint ios/Runner/PrivacyInfo.xcprivacy` — должно быть
+   "OK".
+3) Пройди по плагинам pubspec.yaml (device_info_plus, flutter_secure_storage,
+   shared_preferences, webview_flutter, appsflyer_sdk, firebase_*) — каждый
+   их манифест Required Reason API должен быть отражён в нашем
+   PrivacyInfo.xcprivacy. Перечисли, что добавил.
+```
+
+- [ ] `ios/Runner/PrivacyInfo.xcprivacy` существует, `plutil -lint` ok
+- [ ] запись в `Runner` PBXGroup + PBXFileReference + PBXBuildFile + Resources phase
+- [ ] Required Reason API покрыты для всех наших плагинов
+
+### 5.3 Custom cipher заменён / нейтрализован (`apple_moderation_hardening.mdc` §3)
+
+**RU промпт:**
+```text
+Этап 5.3. Открой lib/hatchway/core/feather_codec.dart. Если внутри есть
+KSA + PRGA цикл (state[cursor]/state[left]/state[right]) — это RC4-style
+stream cipher, который Apple палит по data-flow графу
+byte-array → cipher loop → Uri.parse → WebViewController.loadRequest.
+Действия по приоритету:
+1) ЛУЧШИЙ вариант: перенеси хост config-endpoint в удалённый signed
+   configuration file и грузи с certificate pinning'ом — тогда в бинарнике
+   вообще нет ни одной константной шифрованной строки.
+2) Иначе: замени KSA/PRGA на base64Decode + one-pass XOR против
+   device-derived key (bundle id + build number). Обнови feather_codec.dart
+   и tool/encode_era_values.dart соответственно, перегенерируй все
+   byte-массивы в era_hatch_config.dart, verify round-trip.
+3) НИ В КАКОМ СЛУЧАЕ не оставляй KSA/PRGA рядом с ITSAppUsesNonExemptEncryption=false.
+Дополнительно:
+- privacyUrl и supportUrl НЕ должны быть закодированы — это публичные
+  ссылки, которые есть в App Store Connect. Сделай их обычными const-строками.
+- Прогони: rg -n 'state\[cursor\]|state\[left\]|state\[right\]|_buildFeatherStream' lib/hatchway/core/
+  → должно быть пусто.
+Выведи, что заменил и почему.
+```
+
+- [ ] KSA/PRGA удалён; шифр — base64 + XOR ИЛИ remote signed config
+- [ ] `privacyUrl` и `supportUrl` — plaintext-константы, не закодированные
+- [ ] Cipher algorithm отличается от соседних апп
+- [ ] `ITSAppUsesNonExemptEncryption` соответствует реальности
+
+### 5.4 User-Agent — без plaintext scaffolding и `appid/appname` (`apple_moderation_hardening.mdc` §4, `gray_user_agent.mdc`)
+
+**RU промпт:**
+```text
+Этап 5.4. Проверь User-Agent по @.cursor/rules/gray_user_agent.mdc §1–§2.
+1) Прогони:
+   rg -n 'Mozilla/5\.0|iPhone; CPU iPhone OS|AppleWebKit|Mobile Safari|like Gecko' lib/
+   → должно быть пусто. Если что-то найдено — каждую подстроку перенеси в
+   отдельное закодированное поле в era_hatch_config.dart (например
+   uaProduct, uaPlatformPrefix, uaPlatformSuffix, uaEngine, uaMobileToken),
+   перегенерируй байт-массивы через tool/encode_era_values.dart, и в
+   roost_agent.dart собирай UA конкатенацией decoded фрагментов.
+2) Прогони:
+   rg -n "appid/|appname/" lib/
+   → должно быть пусто. Если игра slot и партнёр требует идентификатор:
+   а) сначала спроси user'а, можно ли перенести идентификатор в
+      X-Partner-App-Id/X-Partner-App-Name кастомные заголовки на POST config
+      (это лучший вариант — суффикс исчезает из бинарника);
+   б) если нельзя — закодируй сами токены "appid/" и "appname/" тоже.
+3) Убедись, что UA один и тот же на HTTP клиенте И на WebView.setUserAgent.
+Выведи собранный UA (в debug run) и результат обоих grep.
+```
+
+- [ ] `rg 'Mozilla/5\.0|iPhone; CPU iPhone OS|AppleWebKit|Mobile Safari|like Gecko' lib/` пусто
+- [ ] `rg "appid/|appname/" lib/` пусто
+- [ ] UA идентичен на HTTP client и WebView; собран из закодированных фрагментов
+
+### 5.5 Post-release URL router c allowlist'ом доменов (`apple_moderation_hardening.mdc` §6)
+
+**RU промпт:**
+```text
+Этап 5.5. Добавь и проверь домен-allowlist:
+1) В era_hatch_config.dart добавь константу allowedHostSuffixes (список
+   хвостов доменов, которые разрешено грузить в WebView; включает
+   хост config-endpoint и explicit партнёрские хосты). Значения —
+   plaintext-константы (нет смысла кодировать: они всё равно видны в
+   Info.plist / App Store Connect).
+2) В hatch_coordinator.dart:
+   - _returningNative: после получения reply.url — если host не
+     соответствует ни одному allowedHostSuffix, вернуть NativeNest вместо
+     PortalNest.
+   - _firstDecision и _returningPortal: аналогично, url из reply / cache
+     фильтровать через host-check.
+3) В launch_route_reader.dart: consume() читает URL, но перед возвратом
+   парсит Uri и проверяет host против allowedHostSuffixes; не совпал —
+   возвращает null.
+4) В roost_portal.dart NavigationDelegate.onNavigationRequest — доп проверка
+   allowlist'а на mainFrame навигациях.
+5) Добавь `savedUrlExpiryDays` (default 7): saved URL в nest_vault должен
+   иметь expires, и HatchCoordinator._returningPortal не должен грузить
+   protruded URL после срока.
+Прогони: rg -n 'allowedHostSuffixes|host\.endsWith' lib/hatchway/ →
+должно быть непустым.
+```
+
+- [ ] `allowedHostSuffixes` в конфиге; enforce во всех точках загрузки URL
+- [ ] `LaunchRouteReader.consume` фильтрует по allowlist
+- [ ] `savedUrl` имеет `expires`; expired URL не грузятся
+- [ ] `RoostPortal.onNavigationRequest` фильтрует mainFrame навигации
+
+### 5.6 Структурные инварианты — числа и JS-инъекции (`apple_moderation_hardening.mdc` §7, `gray_part_mixing_review.mdc` §6)
+
+**RU промпт:**
+```text
+Этап 5.6. Пройди по @.cursor/rules/gray_part_mixing_review.mdc §6a и §6b.
+
+Часть 1 — числовые константы. Возьми таблицу из §6a и для каждой
+константы:
+- pushSnoozeSeconds (era_hatch_config.dart) — НЕ 259200
+- organicRecheckSeconds (era_hatch_config.dart) — НЕ 6
+- Config POST timeout (hatch_exchange.dart) — НЕ 15 s
+- awaitSignals install timeout (hatch_coordinator.dart) — НЕ 5 s round
+- ATT prompt delay after first frame — НЕ 300 ms round
+- -1007 redirect retries (roost_portal.dart) — НЕ 3
+- APNs token poll × step (egg_signal_hub.dart) — НЕ 5 × 500 ms
+- Post-onPageFinished resize delay (roost_portal.dart) — НЕ 800 ms
+- _pokeReflow delays (roost_portal.dart) — НЕ [40,160,320,560,850]
+- Cold-viewport settle delay (roost_portal.dart) — НЕ 280 ms
+Поменяй каждую константу на project-unique значение из указанного
+диапазона. Обнови все места использования.
+
+Часть 2 — JS-инъекции. Открой lib/hatchway/pages/roost_portal.dart.
+Сейчас там шесть инъекций (_installInsetGuard, _installZoomLock,
+_installTapPolish, _installKeyboardLift, _installFocusScaleGuard,
+_installInlinePlayback). Выбери ОДНО:
+а) Убери одну инъекцию (например, _installInlinePlayback — вместо неё
+   поставь allowsInlineMediaPlayback=true и mediaTypesRequiringUserAction={}
+   на WebKitWebViewControllerCreationParams).
+б) Объедини все в один __initApp(){...} bundle, вызываемый один раз
+   в onPageFinished, с одним sentinel флагом window.__flag.
+в) Замени порядок вызовов и добавь одну project-specific безобидную
+   вещь (custom scrollbar colour или prefetch партнёрского asset'а).
+
+Прогони:
+rg -n '259200|organicRecheckSeconds|redirectAttempts < 3|Duration\(seconds: 15\)|Duration\(seconds: 5\)|milliseconds: 300|milliseconds: 800|milliseconds: 280' lib/
+→ должно быть пусто.
+
+Выведи, что изменил.
+```
+
+- [ ] все числовые константы из §6a перекручены на project-unique значения
+- [ ] набор JS-инъекций сокращён/объединён/переупорядочен
+- [ ] грепы дефолтных чисел пусты
+
+### 5.7 Root-UI: игра достижима из gray-shell (`apple_moderation_hardening.mdc` §5)
+
+**RU промпт:**
+```text
+Этап 5.7. Проверь бифуркацию root-UI. Сейчас Coordinator выбирает
+NestRoute.web ↔ NestRoute.native, две disjoint ветки. Задача — понизить
+сигнал disjoint-tree:
+1) Добавь в RoostPortal (или в его тонкую обёртку) видимый в шапке или
+   в углу элемент "Play offline" / "Menu" (для нашей игры — соответствующее
+   название), который делает Navigator.pushReplacementNamed на главный
+   экран белой игры.
+2) Убедись, что gray-часть НЕ грузит белые ассеты на своём пути (никаких
+   preload'ов игровых картинок, никакого init'а игровых сервисов на
+   портальной ветке).
+3) Проверь ratio размеров: белая часть не должна быть >3× веса gray-части
+   (или наоборот). Если так — сожми большую сторону (webp с высокой
+   компрессией, шрифты subset, лишние иконки удали).
+Покажи размеры двух веток в build (например через `flutter build ipa
+--analyze-size`).
+```
+
+- [ ] в WebView shell есть entry в игру → игра достижима из gray-ветки
+- [ ] gray-часть не preload'ит белые assets/plugins
+- [ ] соотношение размеров веток разумное
+
+### 5.8 Метаданные когерентны (`apple_moderation_hardening.mdc` §8)
+
+**RU промпт:**
+```text
+Этап 5.8. Приведи метаданные в единое:
+1) pubspec.yaml `name` — snake_case имя белой игры.
+2) pubspec.yaml `description` — 60–160 символов только про белую игру.
+   НЕ упоминает "gray flow", "template", "WebView", "partner".
+3) README.md — только про белую игру. Никаких упоминаний шаблона / gray.
+   Dev-заметки, если нужны, храни в .cursor/rules/ (уже agent-facing).
+4) ios/Runner/Info.plist CFBundleDisplayName + CFBundleName — маркетинговое
+   имя, совпадает с App Store Connect verbatim.
+5) tool/encode_era_values.dart — если содержит имя предыдущего проекта в
+   plaintext-плейсхолдерах, обнови.
+Прогони:
+rg -n '^description:|^name:' pubspec.yaml
+rg -n '^# ' README.md | head -n 3
+rg -n 'CFBundleName|CFBundleDisplayName' -A1 ios/Runner/Info.plist
+Выведи все три и убедись, что они описывают одну и ту же игру.
+```
+
+- [ ] `pubspec.yaml name` + `description` описывают белую игру
+- [ ] `README.md` — только про белую игру
+- [ ] `CFBundleName` + `CFBundleDisplayName` совпадают с App Store Connect
+- [ ] нет упоминаний "template" / "gray flow" / "WebView" ни в одном публичном месте
+
+### 5.9 Финальный self-verify (все грепы разом)
+
+**RU промпт:**
+```text
+Этап 5.9. Прогони ВСЕ команды из @.cursor/rules/apple_moderation_hardening.mdc §9
+одну за одной и выведи результат каждой. Условия прохождения:
+- 9.1, 9.2, 9.3, 9.6, 9.9 — ноль результатов
+- 9.4, 9.5, 9.7, 9.8, 9.10 — непустой и когерентный результат
+
+Если хотя бы одна проверка не прошла — вернись к соответствующему
+под-этапу 5.1–5.8, почини и запусти 5.9 заново.
+
+В конце — короткий "READY TO SUBMIT" отчёт: что было починено, что
+проверено, чему соответствует релиз (какие пункты
+apple_moderation_hardening.mdc и gray_flow_lessons.md §15-24 выполнены).
+```
+
+- [ ] все грепы §9 apple_moderation_hardening.mdc в правильном состоянии
+- [ ] отчёт "READY TO SUBMIT" получен от агента
+
+---
+
+## Этап 6 — Операционные (не-кодовые) проверки перед сабмишном
+
+Эти пункты агент проверить не может, но их пропускать нельзя — именно они
+дают weak-edge account graph, по которому Apple склеивает семейство
+приложений. См. `apple_moderation_hardening.mdc` §10.
+
+- [ ] TestFlight testers — другой набор email'ов, чем у соседних проектов
+      портфолио (нет общих личных / корпоративных email'ов)
+- [ ] AppsFlyer dev key — отдельный аккаунт (или хотя бы отдельное
+      приложение внутри одного аккаунта — тогда dev key другой)
+- [ ] Firebase project + service account — отдельный проект
+- [ ] Apple Developer Team — если несколько апп идёт с одного Team ID,
+      это hard edge; желательно разные Team'ы
+- [ ] Config-endpoint domain — своё WHOIS, свой регистратор (не тот же,
+      что у соседних апп)
+- [ ] CI machine / office IP — если у нескольких сабмишнов совпадает
+      IP выгрузки, это слабое, но реальное ребро

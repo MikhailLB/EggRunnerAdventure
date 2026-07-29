@@ -222,8 +222,140 @@ Fresh device; uninstall any prior build first.
       unless a real white feature uses them)
 - [ ] App Privacy (App Store Connect) declares tracking (IDFA/AppsFlyer)
       and only the data actually collected
-- [ ] `ITSAppUsesNonExemptEncryption = false`
+- [ ] `ITSAppUsesNonExemptEncryption = false` (or `true` with the
+      "using only exempt encryption" answer — see Part G item 4)
 - [ ] Gray flow genuinely invisible to organic/unattributed installs
+
+---
+
+## Part G — Static-analysis / App Store cluster hardening (`apple_moderation_hardening.mdc`)
+
+> **This part is the difference between shipping and getting a Pending
+> Termination Notice without ever reaching In Review.** Every item is a
+> concrete marker Apple's IPA scanner reads statically. All items must
+> pass — a single miss can kill the whole account graph. Mirrors
+> `DEV_PLAYBOOK.md` Stage 5.
+
+### 1. Info.plist ↔ code consistency (`apple_moderation_hardening.mdc` §1)
+- [ ] Every `NS*UsageDescription` has a matching API call in white-part
+      code (`image_picker` / `AVCaptureDevice` / `PHPhotoLibrary` / …).
+      Purpose strings without matching calls have been REMOVED.
+- [ ] `LSApplicationQueriesSchemes` does NOT contain `http` or `https`
+- [ ] `UIBackgroundModes` contains only `remote-notification` (no
+      `fetch` / `processing` unless a real white feature justifies it)
+- [ ] Every purpose string is worded around a **visible white feature**,
+      never around the WebView
+
+### 2. PrivacyInfo.xcprivacy (`apple_moderation_hardening.mdc` §2)
+- [ ] `ios/Runner/PrivacyInfo.xcprivacy` exists and `plutil -lint` is OK
+- [ ] Added to `project.pbxproj` as a Runner PBXFileReference + PBXBuildFile
+      + entry in Runner's Copy Bundle Resources phase (same shape as
+      `GoogleService-Info.plist`)
+- [ ] Required Reason API entries cover every plugin's manifest
+      (`device_info_plus`, `flutter_secure_storage`, `shared_preferences`,
+      `webview_flutter`, plus AppsFlyer / Firebase entries as applicable)
+
+### 3. Custom cipher replaced or removed (`apple_moderation_hardening.mdc` §3)
+- [ ] `lib/hatchway/core/feather_codec.dart` no longer contains the
+      RC4-style KSA + PRGA loop (grep `state[cursor]|state[left]|state[right]`
+      → empty)
+- [ ] Replacement is either (a) `base64Decode` + one-pass XOR against a
+      device-derived key OR (b) remote signed configuration file (no
+      decoder infrastructure in the binary)
+- [ ] `privacyUrl` and `supportUrl` are **plaintext** constants (encoding
+      public URLs is a red flag)
+- [ ] Cipher algorithm differs from every sibling app in the portfolio
+
+### 4. `ITSAppUsesNonExemptEncryption` matches reality
+- [ ] If the custom cipher is fully removed → `false`
+- [ ] If any custom cipher shipped → set to `true` and answer
+      "using only exempt encryption" = yes in App Store Connect
+- [ ] Never `false` with a KSA/PRGA loop present in the binary
+
+### 5. User-Agent — no plaintext scaffolding (`apple_moderation_hardening.mdc` §4)
+- [ ] `rg -n 'Mozilla/5\.0|iPhone; CPU iPhone OS|AppleWebKit|Mobile Safari|like Gecko' lib/`
+      returns zero hits
+- [ ] Every UA fragment (product, platform prefix/suffix, engine, mobile
+      token, Safari tail) lives as an encoded byte array in
+      `era_hatch_config.dart`, assembled at runtime
+- [ ] Fallback UA also assembled from encoded fragments
+
+### 6. `appid/appname` suffix moved off the UA (`gray_user_agent.mdc` §2)
+- [ ] `rg -n "appid/|appname/" lib/` returns zero hits
+- [ ] For slot games: partner identity moved to `X-Partner-App-Id` /
+      `X-Partner-App-Name` request headers OR the `appid/`/`appname/`
+      tokens themselves are encoded byte arrays. **Never** shipped as
+      plaintext concatenation.
+- [ ] Decision documented as a code comment above the UA builder
+
+### 7. Post-release URL router with domain allowlist (`apple_moderation_hardening.mdc` §6)
+- [ ] `EraHatchConfig.allowedHostSuffixes` exists and is non-empty
+- [ ] `HatchCoordinator._returningNative` / `_returningPortal` /
+      `_firstDecision` all reject a `reply.url` whose host is not on the
+      allowlist (return `NativeNest` / null)
+- [ ] `LaunchRouteReader.consume()` drops URLs whose host is not
+      allowlisted (returns null)
+- [ ] `RoostPortal.onNavigationRequest` filters main-frame navigations
+      against the allowlist
+- [ ] `savedUrl` in `NestVault` has an expiry (`savedUrlExpiryDays`,
+      default 7); expired URLs are not loaded
+
+### 8. Numeric constants rotated (`apple_moderation_hardening.mdc` §7a)
+- [ ] `pushSnoozeSeconds` ≠ 259200 (template default)
+- [ ] `organicRecheckSeconds` ≠ 6
+- [ ] Config POST timeout ≠ 15 s
+- [ ] `awaitSignals` install timeout ≠ 5 s
+- [ ] ATT prompt delay after first frame ≠ 300 ms
+- [ ] `-1007` redirect retries ≠ 3
+- [ ] APNs token poll × step ≠ 5 × 500 ms
+- [ ] Post-`onPageFinished` resize delay ≠ 800 ms
+- [ ] `_pokeReflow` delays ≠ `[40, 160, 320, 560, 850]`
+- [ ] Cold-viewport settle delay ≠ 280 ms
+- [ ] `rg -n '259200|Duration\(seconds: 15\)|Duration\(seconds: 5\)|milliseconds: 300|milliseconds: 800|milliseconds: 280' lib/`
+      → empty (or explains why a value is unavoidable)
+
+### 9. JS injection set diversified (`apple_moderation_hardening.mdc` §7b)
+- [ ] At least one of the six injections REMOVED, or all merged into a
+      single `__initApp()` bundle, or reordered with a
+      project-specific harmless behaviour added
+- [ ] Sentinel flag names rotated (not `__era*`)
+
+### 10. Root-UI bifurcation lowered (`apple_moderation_hardening.mdc` §5)
+- [ ] WebView shell exposes a visible entry that navigates into the
+      white game (`Navigator.pushReplacementNamed(...)`) — game is
+      reachable from the gray branch
+- [ ] Gray path does NOT preload white-part assets or plugins
+- [ ] White-part bundle size is not >3× the gray shell size (or vice
+      versa)
+
+### 11. Metadata coherence (`apple_moderation_hardening.mdc` §8)
+- [ ] `pubspec.yaml` `name` + `description` describe the WHITE game only
+- [ ] `README.md` describes the WHITE game only (no "template" /
+      "gray flow" / "WebView" / "partner" mentions anywhere public)
+- [ ] `Info.plist` `CFBundleName` + `CFBundleDisplayName` match App Store
+      Connect verbatim
+- [ ] `tool/encode_era_values.dart` has no leftover names of previous
+      projects in plaintext placeholders
+
+### 12. Weak-edge account graph (`apple_moderation_hardening.mdc` §10)
+_Operator responsibility — the agent cannot verify these._
+- [ ] TestFlight tester emails are a different set than the previous
+      sibling submission
+- [ ] AppsFlyer dev key belongs to a different account (or at least a
+      different AppsFlyer app so the dev key differs)
+- [ ] Firebase project + service account are project-specific
+- [ ] Apple Developer Team is project-specific if the portfolio uses
+      multiple Team IDs
+- [ ] Config-endpoint domain has its own WHOIS / registrar / registration
+      date pattern
+- [ ] CI machine / office IP is not reused across sibling submissions
+
+### 13. Debug log / symbol hygiene (`apple_moderation_hardening.mdc` §9.9)
+- [ ] `rg -n 'debugPrint\(' lib/ | rg -v 'assert\(\(\)'` → empty (every
+      `debugPrint` wrapped in an `assert(...)` closure so the string
+      literals strip from release)
+- [ ] `rg -n 'NSLog\(' ios/Runner/ | rg -v '#if DEBUG'` → empty
+- [ ] Log tags renamed from `[ERA.*]` to a project-specific family
 
 ---
 

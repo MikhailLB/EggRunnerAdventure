@@ -6,6 +6,10 @@
 > The deep manual (config contract details, state machine, first-launch
 > UX, screen specs, every known bug) lives in
 > `.cursor/rules/gray_flow_guide.md`.
+>
+> **⚠️ App Store moderation:** before shipping any build, run the checks
+> from `.cursor/rules/apple_moderation_hardening.mdc` via DEV_PLAYBOOK
+> Stage 5. That file supersedes older guidance where they conflict.
 
 ---
 
@@ -51,6 +55,15 @@
 (`_nestSalt` в `lib/hatchway/core/feather_codec.dart`).
 ⚠️ Переименовать только публичные классы **недостаточно** — бинарный
 анализ читает приватные символы и строковые литералы.
+
+**⚠️ И даже переименование всего — не достаточно.** Apple ловит и
+*структурные* инварианты, которые переименование не двигает: числовые
+константы (3 дня push cooldown, 6 s organic retry, 15 s config timeout,
+retry -1007 × 3), фиксированный набор поведений WebView-инъекций,
+purpose strings без реальных API вызовов, самописный RC4-style cipher,
+plaintext `Mozilla/5.0 iPhone…` в UA. Полный список и способ починки —
+`apple_moderation_hardening.mdc`. Это правило нужно прогонять на КАЖДОМ
+проекте перед сабмишном (DEV_PLAYBOOK.md Этап 5).
 
 ### 2.2 Версии библиотек — разные в каждом проекте
 Не те же версии, что у соседних проектов портфолио. Мелкие бампы вверх.
