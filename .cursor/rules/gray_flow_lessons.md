@@ -184,6 +184,23 @@ listing `NSUserDefaults`, disk-space, boot-time, etc.
 Runner's Copy Bundle Resources phase in `project.pbxproj`.
 Verification: `plutil -lint ios/Runner/PrivacyInfo.xcprivacy`.
 
+## 19a. ITMS-91064 — `NSPrivacyTracking` true with an empty domain list
+**Symptom:** App Store Connect rejects the upload before review:
+"ITMS-91064: Invalid tracking information … NSPrivacyTracking must be true
+if NSPrivacyTrackingDomains isn't empty." Hit ClumsyHenRace 1.0.3 (5).
+**Cause:** the e-mail text is the inverse of the real rule. Per TN3181,
+`NSPrivacyTracking = true` with an **empty** `NSPrivacyTrackingDomains`
+array is invalid — and this template's own guidance used to say "keep this
+list empty". `plutil -lint` passes on the broken file, so the §9.5 gate did
+not catch it.
+**Fix:** list AppsFlyer's dedicated tracking hosts —
+`att.attr` / `att.launches` / `att.conversions` / `att.dlsdk`
+`.appsflyersdk.com`. Never list the config endpoint, the partner WebView
+host or `onelink.me`: iOS fails requests to declared tracking domains when
+ATT is denied, which would kill the gray flow for those users. Do not
+"fix" it by flipping tracking to `false` while IDFA + ATT + AppsFlyer ship.
+Verification: `apple_moderation_hardening.mdc` §9.5a.
+
 ## 20. Self-written RC4-style stream cipher (KSA + PRGA) in the binary
 **Symptom:** the byte-array → cipher loop → `Uri.parse` →
 `WebViewController.loadRequest` data-flow is a known static signature

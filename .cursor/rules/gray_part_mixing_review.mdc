@@ -188,11 +188,6 @@ highest-signal structural marker still present in this template
 (chat_export.md §"Bifurcation of root UI"). It cannot be fully removed
 while keeping the gray flow — but we can lower the signal:
 
-- **Make the game reachable from the gray shell.** Add a "Play offline"
-  entry on the WebView chrome that calls
-  `Navigator.pushReplacementNamed('/menu')`. The scanner is looking for
-  *unreachable* game code from the picked (web) branch; making it
-  reachable reduces the disjoint-tree signal.
 - **Do not preload gray-only assets or plugins on the game path.**
 - **Keep the size ratio sane.** If the game bundle is more than 3× the
   gray shell (or vice versa), compress the larger side aggressively —

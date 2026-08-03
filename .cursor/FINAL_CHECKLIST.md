@@ -254,6 +254,13 @@ Fresh device; uninstall any prior build first.
 - [ ] Required Reason API entries cover every plugin's manifest
       (`device_info_plus`, `flutter_secure_storage`, `shared_preferences`,
       `webview_flutter`, plus AppsFlyer / Firebase entries as applicable)
+- [ ] **ITMS-91064:** `NSPrivacyTracking` is `true` AND
+      `NSPrivacyTrackingDomains` is **non-empty** (the four
+      `att.*.appsflyersdk.com` hosts). `plutil -lint` passes on the broken
+      combination — run §9.5a, not just the lint (`§2a`)
+- [ ] `NSPrivacyTrackingDomains` contains NO config-endpoint host, NO
+      partner WebView host, NO `onelink.me` — iOS blocks requests to
+      declared tracking domains when the user denies ATT
 
 ### 3. Custom cipher replaced or removed (`apple_moderation_hardening.mdc` §3)
 - [ ] `lib/hatchway/core/feather_codec.dart` no longer contains the
@@ -321,9 +328,6 @@ Fresh device; uninstall any prior build first.
 - [ ] Sentinel flag names rotated (not `__era*`)
 
 ### 10. Root-UI bifurcation lowered (`apple_moderation_hardening.mdc` §5)
-- [ ] WebView shell exposes a visible entry that navigates into the
-      white game (`Navigator.pushReplacementNamed(...)`) — game is
-      reachable from the gray branch
 - [ ] Gray path does NOT preload white-part assets or plugins
 - [ ] White-part bundle size is not >3× the gray shell size (or vice
       versa)

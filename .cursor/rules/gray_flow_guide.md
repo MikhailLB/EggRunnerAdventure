@@ -797,10 +797,18 @@ Minimum shape (verify against the manifests the plugins actually ship):
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- NEVER leave this array empty while NSPrivacyTracking is true —
+         that is ITMS-91064 (auto-reject), and `plutil -lint` still passes.
+         Never list the config endpoint or partner host here either: iOS
+         fails requests to declared tracking domains when ATT is denied.
+         Full rationale: apple_moderation_hardening.mdc §2a. -->
     <key>NSPrivacyTracking</key><true/>
     <key>NSPrivacyTrackingDomains</key>
     <array>
-        <!-- Only if we track before ATT consent (best practice: empty). -->
+        <string>att.attr.appsflyersdk.com</string>
+        <string>att.launches.appsflyersdk.com</string>
+        <string>att.conversions.appsflyersdk.com</string>
+        <string>att.dlsdk.appsflyersdk.com</string>
     </array>
     <key>NSPrivacyCollectedDataTypes</key>
     <array>
@@ -824,7 +832,10 @@ Minimum shape (verify against the manifests the plugins actually ship):
 ```bash
 plutil -lint ios/Runner/PrivacyInfo.xcprivacy
 ```
-must pass. `ios/Runner.xcodeproj/project.pbxproj` must include a
+must pass — but a lint pass is NOT sufficient. Also run
+`apple_moderation_hardening.mdc` §9.5a, which is the only check that catches
+the `NSPrivacyTracking = true` + empty-domains reject.
+`ios/Runner.xcodeproj/project.pbxproj` must include a
 `PBXFileReference` + `PBXBuildFile` for the manifest AND list it in
 Runner's Resources phase (same shape as `GoogleService-Info.plist`).
 

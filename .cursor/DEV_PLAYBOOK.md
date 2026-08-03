@@ -295,11 +295,20 @@ Resources phase).
    shared_preferences, webview_flutter, appsflyer_sdk, firebase_*) — каждый
    их манифест Required Reason API должен быть отражён в нашем
    PrivacyInfo.xcprivacy. Перечисли, что добавил.
+4) ITMS-91064: прогони §9.5a из @.cursor/rules/apple_moderation_hardening.mdc.
+   NSPrivacyTracking = true ОБЯЗАН идти с непустым NSPrivacyTrackingDomains
+   (четыре att.*.appsflyersdk.com). plutil -lint проходит и на битом файле —
+   одного линта НЕ достаточно.
+5) Убедись, что в NSPrivacyTrackingDomains НЕТ хоста config endpoint, хоста
+   партнёрского WebView и onelink.me — iOS блокирует запросы к заявленным
+   трекинг-доменам при отказе от ATT, это убьёт серый флоу.
 ```
 
 - [ ] `ios/Runner/PrivacyInfo.xcprivacy` существует, `plutil -lint` ok
 - [ ] запись в `Runner` PBXGroup + PBXFileReference + PBXBuildFile + Resources phase
 - [ ] Required Reason API покрыты для всех наших плагинов
+- [ ] §9.5a печатает `OK` — tracking true + непустой список доменов
+- [ ] в списке доменов только `att.*.appsflyersdk.com`, без config endpoint / партнёра
 
 ### 5.3 Custom cipher заменён / нейтрализован (`apple_moderation_hardening.mdc` §3)
 
@@ -442,14 +451,10 @@ rg -n '259200|organicRecheckSeconds|redirectAttempts < 3|Duration\(seconds: 15\)
 Этап 5.7. Проверь бифуркацию root-UI. Сейчас Coordinator выбирает
 NestRoute.web ↔ NestRoute.native, две disjoint ветки. Задача — понизить
 сигнал disjoint-tree:
-1) Добавь в RoostPortal (или в его тонкую обёртку) видимый в шапке или
-   в углу элемент "Play offline" / "Menu" (для нашей игры — соответствующее
-   название), который делает Navigator.pushReplacementNamed на главный
-   экран белой игры.
-2) Убедись, что gray-часть НЕ грузит белые ассеты на своём пути (никаких
+1) Убедись, что gray-часть НЕ грузит белые ассеты на своём пути (никаких
    preload'ов игровых картинок, никакого init'а игровых сервисов на
    портальной ветке).
-3) Проверь ratio размеров: белая часть не должна быть >3× веса gray-части
+2) Проверь ratio размеров: белая часть не должна быть >3× веса gray-части
    (или наоборот). Если так — сожми большую сторону (webp с высокой
    компрессией, шрифты subset, лишние иконки удали).
 Покажи размеры двух веток в build (например через `flutter build ipa
