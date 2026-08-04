@@ -256,3 +256,49 @@ game code describe something completely different.
 Connect metadata must all describe the WHITE game consistently. Never
 mention "template", "gray flow", "WebView" or "partner" in anything
 shipped or public. See `apple_moderation_hardening.mdc` §8.
+
+## 25. Attribution started before the reachability probe on a first launch
+**Symptom:** a non-organic install whose first launch had no route out
+lands in the white game permanently after the user restores the network
+and taps Retry. On the way there the ATT prompt appears on top of the
+offline screen.
+**Cause:** the attribution SDK was started ahead of the reachability
+check (to widen the deferred-deep-link window). Without a route out its
+conversion callback fires `{status: failure}`, the empty payload is
+cached in the process for good, and `start()` is memoized — so the Retry
+that follows reuses the poisoned state, posts a body with no attribution
+fields, and the gate answers "no data". A first-launch answer without an
+address commits the route to the game, and nothing revisits it.
+**Fix:** on the undecided route nothing network-dependent may run before
+both link checks pass — interface, then real reachability, and only then
+the push warmup and `awaitSignals()` (which opens the SDK, and with it
+the consent prompt). `HatchCoordinator._firstDecision` is the reference
+order. Note that this makes the SDK start ~1 s later on a healthy
+launch; that is the intended trade.
+**Related:** the offline screen's artwork must be warmed before handing
+over, or the hand-over paints a black frame first and reads as a crash.
+Do NOT hold the offline verdict for the full minimum splash time on top of
+that — a dead end that takes three seconds to admit it feels broken. A
+short floor (~0.7 s) is enough for the splash to be seen.
+
+## 26. ATT prompt lost for a whole run (memoized SDK start + inactive app)
+**Symptom:** the consent prompt never appears on the launch that should
+show it and turns up on the next cold start instead. Worst case on a
+first launch that began offline: the user retries, gets the content
+channel, and consent is asked for only on the launch after that.
+**Cause:** two mechanisms, usually together. (1) `requestTrackingAuthorization`
+returns the current status *without presenting anything* while the app is
+not frontmost, and the status stays `notDetermined` — a request fired
+during a route transition or while the app is still settling is simply
+lost. (2) The consent call lives inside the memoized `attribution.start()`,
+so once that future has completed the prompt is never attempted again in
+that process, no matter how many times the pipeline re-runs.
+**Fix:** give consent its own memoized future, separate from the SDK
+start, and call it explicitly from the pipeline right after reachability
+is confirmed (the SDK start awaits the same future, so nothing asks
+twice). Before requesting, wait until `WidgetsBinding.instance.lifecycleState`
+is `resumed` — treating `null` as frontmost, since the platform reports it
+late on a cold start — and if the returned status is still `notDetermined`,
+wait for frontmost and request once more. Warm APNs in parallel with the
+prompt instead of ahead of it: the prompt is what the user expects to see
+first, and registration has no reason to delay it.
