@@ -179,9 +179,9 @@ shared AppsFlyer dev key, shared CI IP).
    only when a white feature calls the matching API
    (`apple_moderation_hardening.mdc` §1).
 7. `PrivacyInfo.xcprivacy` shipped and matches the plugins we use.
-8. Domain allowlist for the post-release URL router — never let the
-   WebView open an arbitrary host from a push payload
-   (`apple_moderation_hardening.mdc` §6).
+8. Post-release URL router hardened **without** a host allowlist —
+   scheme-gate only, saved-URL expiry, one-shot push URL. Do not bake
+   partner hosts into the binary (`apple_moderation_hardening.mdc` §6).
 
 ---
 
@@ -875,10 +875,10 @@ Runner's Resources phase (same shape as `GoogleService-Info.plist`).
 7. **Secure storage** — content URLs in `flutter_secure_storage`
    (Keychain on iOS), not plain prefs.
 8. **No release logs** — assert-wrapped Dart logger, `#if DEBUG` Swift.
-9. **Domain allowlist** — every URL loaded into the WebView (from config
-   response, from push payload, from a cached saved URL) must pass a
-   host-suffix allowlist check baked into `EraHatchConfig`. Silently drop
-   anything else (`apple_moderation_hardening.mdc` §6).
+9. **No host allowlist for WebView URLs** — do not gate config / push /
+   saved URLs on a hardcoded host-suffix list. The partner host may change
+   via config after release. Keep scheme-gating + saved-URL expiry instead
+   (`apple_moderation_hardening.mdc` §6).
 
 Per-project uniqueness (cipher algorithm, JS injection bodies, probe host,
 UA fallback, storage prefix, NSE UUIDs, dependency versions, backend

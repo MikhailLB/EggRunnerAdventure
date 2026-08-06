@@ -367,38 +367,37 @@ byte-array → cipher loop → Uri.parse → WebViewController.loadRequest.
 - [ ] `rg "appid/|appname/" lib/` пусто
 - [ ] UA идентичен на HTTP client и WebView; собран из закодированных фрагментов
 
-### 5.5 Post-release URL router c allowlist'ом доменов (`apple_moderation_hardening.mdc` §6)
+### 5.5 Post-release URL router без host-allowlist (`apple_moderation_hardening.mdc` §6)
 
 **RU промпт:**
 ```text
-Этап 5.5. Добавь и проверь домен-allowlist:
-1) В era_hatch_config.dart добавь константу allowedHostSuffixes (список
-   хвостов доменов, которые разрешено грузить в WebView; включает
-   хост config-endpoint и explicit партнёрские хосты). Значения —
-   plaintext-константы (нет смысла кодировать: они всё равно видны в
-   Info.plist / App Store Connect).
-2) В hatch_coordinator.dart:
-   - _returningNative: после получения reply.url — если host не
-     соответствует ни одному allowedHostSuffix, вернуть NativeNest вместо
-     PortalNest.
-   - _firstDecision и _returningPortal: аналогично, url из reply / cache
-     фильтровать через host-check.
-3) В launch_route_reader.dart: consume() читает URL, но перед возвратом
-   парсит Uri и проверяет host против allowedHostSuffixes; не совпал —
-   возвращает null.
-4) В roost_portal.dart NavigationDelegate.onNavigationRequest — доп проверка
-   allowlist'а на mainFrame навигациях.
-5) Добавь `savedUrlExpiryDays` (default 7): saved URL в nest_vault должен
+Этап 5.5. Проверь post-release URL router по
+@.cursor/rules/apple_moderation_hardening.mdc §6.
+
+ВАЖНО: host / domain allowlist для URL WebView ЗАПРЕЩЁН. Config endpoint
+может сменить партнёрский хост после релиза — заранее неизвестно, какой;
+allowlist молча отбросит новую ссылку. Не добавляй allowedHostSuffixes /
+allowedHosts / domainAllowlist и не фильтруй host в HatchCoordinator,
+LaunchRouteReader или RoostPortal.onNavigationRequest.
+
+Сделай / проверь вместо этого:
+1) RoostPortal — scheme-gate на {http, https, about, data, blob}; drop
+   javascript: и неизвестные app-схемы; tel:/mailto: — через
+   launchUrl(mode: externalApplication). Это НЕ host-allowlist.
+2) Добавь `savedUrlExpiryDays` (default 7): saved URL в nest_vault должен
    иметь expires, и HatchCoordinator._returningPortal не должен грузить
-   protruded URL после срока.
-Прогони: rg -n 'allowedHostSuffixes|host\.endsWith' lib/hatchway/ →
-должно быть непустым.
+   просроченный URL после срока.
+3) Push URL остаётся one-shot (consume() очищает).
+4) В debug — лог mode-flip game ↔ web; в release — без логов.
+
+Прогони: rg -n 'allowedHosts|allowedHostSuffixes|domainAllowlist|host\.endsWith' lib/hatchway/ →
+должно быть ПУСТО.
 ```
 
-- [ ] `allowedHostSuffixes` в конфиге; enforce во всех точках загрузки URL
-- [ ] `LaunchRouteReader.consume` фильтрует по allowlist
+- [ ] нет host-allowlist (`allowedHostSuffixes` / `host.endsWith` и т.п. отсутствуют)
+- [ ] `RoostPortal` фильтрует только по scheme, не по host
 - [ ] `savedUrl` имеет `expires`; expired URL не грузятся
-- [ ] `RoostPortal.onNavigationRequest` фильтрует mainFrame навигации
+- [ ] push URL one-shot через `consume()`
 
 ### 5.6 Структурные инварианты — числа и JS-инъекции (`apple_moderation_hardening.mdc` §7, `gray_part_mixing_review.mdc` §6)
 
@@ -497,8 +496,8 @@ rg -n 'CFBundleName|CFBundleDisplayName' -A1 ios/Runner/Info.plist
 ```text
 Этап 5.9. Прогони ВСЕ команды из @.cursor/rules/apple_moderation_hardening.mdc §9
 одну за одной и выведи результат каждой. Условия прохождения:
-- 9.1, 9.2, 9.3, 9.6, 9.9 — ноль результатов
-- 9.4, 9.5, 9.7, 9.8, 9.10 — непустой и когерентный результат
+- 9.1, 9.2, 9.3, 9.6, 9.9, 9.10 — ноль результатов
+- 9.4, 9.5, 9.7, 9.8 — непустой и когерентный результат
 
 Если хотя бы одна проверка не прошла — вернись к соответствующему
 под-этапу 5.1–5.8, почини и запусти 5.9 заново.

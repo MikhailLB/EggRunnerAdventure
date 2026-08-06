@@ -227,12 +227,13 @@ changes its purpose after review".
 **Cause:** `HatchCoordinator._returningNative` can flip an existing
 game-mode install to WebView; `LaunchRouteReader.consume()` loads any URL
 from a push payload into the fullscreen WebView.
-**Fix:**
-- Domain allowlist baked into `EraHatchConfig`; every URL destined for
-  the WebView must pass a host-suffix check.
+**Fix (without a host allowlist):**
+- Do **not** add a host / domain allowlist — the config may replace the
+  partner URL with an unknown host after release; an allowlist would
+  silently break that swap. See `apple_moderation_hardening.mdc` §6.
+- Gate WebView navigations by **scheme** only (`http`/`https`/…).
 - Saved URL must expire (`EraHatchConfig.savedUrlExpiryDays`, default 7).
-- Push URL is one-shot AND must pass the same allowlist.
-See `apple_moderation_hardening.mdc` §6.
+- Push URL is one-shot (`consume()` clears it).
 
 ## 23. Structural invariants that survive renaming (numeric constants, JS set)
 **Symptom:** two apps with different names/salts/icons still cluster.

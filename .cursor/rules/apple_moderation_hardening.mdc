@@ -281,32 +281,40 @@ fully hidden while keeping the gray flow, but we can lower the signal:
 `HatchCoordinator._returningNative` can flip a returning user from
 `NestRoute.native` (game) to `NestRoute.portal` (WebView) whenever the
 server starts returning a URL. `LaunchRouteReader.consume()` loads the raw
-URL from a push payload into a fullscreen WebView with no domain check.
+URL from a push payload into a fullscreen WebView.
 
 Apple treats this as "the app changes its purpose after review". Even
 without malicious content, the *capability* is enough for reviewer-note
 scrutiny (Guideline 2.5.2 "downloading code that changes primary purpose"
 and 2.3.1 "hidden features").
 
-### Required mitigations
+### Do NOT ship a host / domain allowlist for WebView URLs
 
-- **Domain allowlist** — hardcode the accepted host suffix list in
-  `EraHatchConfig` (config endpoint host + explicit partner host(s)). Both
-  `HatchCoordinator._returningNative` and `LaunchRouteReader.consume` MUST
-  drop any URL whose host does not end in an allowlisted suffix. Drop
-  silently → return `NativeNest` / null.
+A hardcoded host-suffix allowlist (`allowedHostSuffixes`,
+`allowedHosts`, `domainAllowlist`, `host.endsWith(...)` gates on partner
+URLs) is **forbidden in this template**. The config endpoint may replace
+the WebView URL with a different partner host after release; that host is
+not known at build time, and an allowlist would silently drop the new
+link. Trust the config / push URL as returned by the backend.
+
+Do **not** add host checks in `HatchCoordinator`, `LaunchRouteReader`,
+or `RoostPortal.onNavigationRequest`. Verification §9.10 below asserts
+the opposite — those symbols must be absent.
+
+### Required mitigations (without a host allowlist)
+
 - **Deep-link scheme allowlist inside the WebView** — `RoostPortal`
   already gates on `{http, https, about, data, blob}`, keep that; add a
   drop for `javascript:` and unknown app-scheme URLs unless we specifically
   need `tel:` / `mailto:` (route those through
-  `launchUrl(mode: externalApplication)`).
+  `launchUrl(mode: externalApplication)`). Scheme gating ≠ host allowlist.
 - **Cold-start URL must expire.** The push URL is one-shot (already
   cleared by `consume()`), but the *saved* URL used by returning `web`
   users should expire after `EraHatchConfig.savedUrlExpiryDays` (7 days
   is reasonable). Do not let a URL from an old server response live
   forever in secure storage.
-- **Log every domain flip in debug builds** so QA sees when the router
-  swaps modes. Do NOT log in release (`gray_part_mixing_review.mdc` §2).
+- **Log every mode flip in debug builds** so QA sees when the router
+  swaps game ↔ web. Do NOT log in release (`gray_part_mixing_review.mdc` §2).
 
 ## 7. Structural invariants — the numbers and behaviours that survive renaming
 
@@ -433,12 +441,13 @@ rg -n 'CFBundleName|CFBundleDisplayName' -A1 ios/Runner/Info.plist
 rg -n 'debugPrint\(' lib/ | rg -v 'assert\(\(\)'
 rg -n 'NSLog\(' ios/Runner/ | rg -v '#if DEBUG'
 
-# 9.10 — Domain allowlist exists and is enforced.
-rg -n 'allowedHosts|domainAllowlist|host\.endsWith' lib/hatchway/
+# 9.10 — No host / domain allowlist for WebView URLs (must be absent).
+# Partner URL may change via config after release; do not gate on hosts.
+rg -n 'allowedHosts|allowedHostSuffixes|domainAllowlist|host\.endsWith' lib/hatchway/
 ```
 
 Every grep must return **zero** results in `9.1`, `9.2`, `9.3`, `9.5b`,
-`9.6`, `9.9`; non-empty and coherent in `9.4`, `9.5`, `9.7`, `9.8`, `9.10`.
+`9.6`, `9.9`, `9.10`; non-empty and coherent in `9.4`, `9.5`, `9.7`, `9.8`.
 `9.5a` must print `OK`.
 
 ## 10. Weak-edge account graph — what we cannot fix in code

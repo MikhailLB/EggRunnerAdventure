@@ -295,15 +295,15 @@ Fresh device; uninstall any prior build first.
       plaintext concatenation.
 - [ ] Decision documented as a code comment above the UA builder
 
-### 7. Post-release URL router with domain allowlist (`apple_moderation_hardening.mdc` §6)
-- [ ] `EraHatchConfig.allowedHostSuffixes` exists and is non-empty
-- [ ] `HatchCoordinator._returningNative` / `_returningPortal` /
-      `_firstDecision` all reject a `reply.url` whose host is not on the
-      allowlist (return `NativeNest` / null)
-- [ ] `LaunchRouteReader.consume()` drops URLs whose host is not
-      allowlisted (returns null)
-- [ ] `RoostPortal.onNavigationRequest` filters main-frame navigations
-      against the allowlist
+### 7. Post-release URL router — no host allowlist (`apple_moderation_hardening.mdc` §6)
+- [ ] No host / domain allowlist for WebView URLs — `rg -n
+      'allowedHosts|allowedHostSuffixes|domainAllowlist|host\.endsWith'
+      lib/hatchway/` returns zero hits (config may change partner host
+      after release)
+- [ ] `RoostPortal` gates navigations by scheme only
+      (`{http, https, about, data, blob}`); drops `javascript:` / unknown
+      app schemes; `tel:` / `mailto:` via `launchUrl(externalApplication)`
+- [ ] Push URL is one-shot (`LaunchRouteReader.consume()` clears it)
 - [ ] `savedUrl` in `NestVault` has an expiry (`savedUrlExpiryDays`,
       default 7); expired URLs are not loaded
 
