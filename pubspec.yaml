@@ -2,7 +2,7 @@ name: egg_runner_adventure
 description: "Egg Runner Adventure - The illustrated science story of chicken evolution."
 publish_to: 'none'
 
-version: 1.0.1+2
+version: 1.0.2+3
 
 environment:
   sdk: ^3.11.5
