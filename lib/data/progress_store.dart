@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -33,6 +34,12 @@ class ProgressStore extends ChangeNotifier {
   int readingSeconds = 0;
   int chaptersOpenedCount = 0;
 
+  /// Reader profile — the user's chosen name for the in-book Reader Card
+  /// and (optionally) a path to a photo they picked from camera / gallery.
+  /// Both are surfaced on Home, on the Daily-fact screen and in Settings.
+  String? readerName;
+  String? readerAvatarPath;
+
   // Session -----------------------------------------------------------------
   DateTime _sessionStart = DateTime.now();
 
@@ -60,6 +67,18 @@ class ProgressStore extends ChangeNotifier {
             (data['readingSeconds'] as num?)?.toInt() ?? 0;
         instance.chaptersOpenedCount =
             (data['chaptersOpenedCount'] as num?)?.toInt() ?? 0;
+        final rawName = (data['readerName'] as String?)?.trim();
+        instance.readerName = (rawName == null || rawName.isEmpty)
+            ? null
+            : rawName;
+        final rawAvatar = data['readerAvatarPath'] as String?;
+        if (rawAvatar != null &&
+            rawAvatar.isNotEmpty &&
+            File(rawAvatar).existsSync()) {
+          instance.readerAvatarPath = rawAvatar;
+        } else {
+          instance.readerAvatarPath = null;
+        }
       } catch (_) {
         // Corrupt payload — start fresh.
       }
@@ -82,6 +101,8 @@ class ProgressStore extends ChangeNotifier {
       'launchCount': launchCount,
       'readingSeconds': readingSeconds,
       'chaptersOpenedCount': chaptersOpenedCount,
+      'readerName': readerName,
+      'readerAvatarPath': readerAvatarPath,
     };
     await prefs.setString(_kPrefsKey, jsonEncode(payload));
   }
@@ -121,6 +142,41 @@ class ProgressStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Store / clear the reader's display name. Empty string clears it.
+  void setReaderName(String? name) {
+    final trimmed = name?.trim();
+    final value = (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+    if (readerName == value) return;
+    readerName = value;
+    _save();
+    notifyListeners();
+  }
+
+  /// Persist a new avatar file path. If [previousPath] is provided and
+  /// differs from the new one, the old file is deleted so the app documents
+  /// directory doesn't accumulate orphaned images.
+  void setReaderAvatarPath(String? path, {String? previousPath}) {
+    final value = (path == null || path.isEmpty) ? null : path;
+    if (readerAvatarPath == value) return;
+    readerAvatarPath = value;
+    if (previousPath != null &&
+        previousPath.isNotEmpty &&
+        previousPath != value) {
+      unawaited(_deleteFileQuietly(previousPath));
+    }
+    _save();
+    notifyListeners();
+  }
+
+  Future<void> _deleteFileQuietly(String path) async {
+    try {
+      final f = File(path);
+      if (await f.exists()) await f.delete();
+    } catch (_) {
+      // Best-effort cleanup: ignore filesystem errors.
+    }
+  }
+
   void addReadingSeconds(int seconds) {
     if (seconds <= 0) return;
     readingSeconds += seconds;
@@ -136,6 +192,12 @@ class ProgressStore extends ChangeNotifier {
     lastDailyIso = null;
     readingSeconds = 0;
     chaptersOpenedCount = 0;
+    final oldAvatar = readerAvatarPath;
+    readerName = null;
+    readerAvatarPath = null;
+    if (oldAvatar != null && oldAvatar.isNotEmpty) {
+      unawaited(_deleteFileQuietly(oldAvatar));
+    }
     _save();
     notifyListeners();
   }

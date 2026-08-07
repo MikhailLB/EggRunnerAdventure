@@ -9,4 +9,5 @@ class Routes {
   static const String codex = '/codex';
   static const String trophies = '/trophies';
   static const String settings = '/settings';
+  static const String profile = '/profile';
 }

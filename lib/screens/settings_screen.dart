@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../app/routes.dart';
 import '../app/theme.dart';
 import '../data/progress_store.dart';
 import '../hatchway/config/era_hatch_config.dart';
 import '../l10n/app_l10n.dart';
 import '../l10n/app_strings.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/reader_avatar.dart';
 import 'web_page_screen.dart';
 
 /// Settings hub: language switcher, reset progress, legal/support and About.
@@ -38,6 +40,61 @@ class SettingsScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 70, 20, 30),
             children: [
+              _SectionHeader(text: l10n.t('profile_title')),
+              const SizedBox(height: 8),
+              _Card(
+                child: AnimatedBuilder(
+                  animation: store,
+                  builder: (context, _) {
+                    final name = store.readerName;
+                    final subtitle = (name != null && name.isNotEmpty)
+                        ? name
+                        : l10n.t('profile_name_placeholder');
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () =>
+                          Navigator.pushNamed(context, Routes.profile),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            const ReaderAvatar(size: 52),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    subtitle,
+                                    style: const TextStyle(
+                                      color: AppColors.ink,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    l10n.t('profile_settings_hint'),
+                                    style: const TextStyle(
+                                      color: AppColors.muted,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Icons.chevron_right_rounded,
+                              color: AppColors.muted,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
               _SectionHeader(text: l10n.t('settings_language')),
               const SizedBox(height: 8),
               _Card(

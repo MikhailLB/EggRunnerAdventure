@@ -6,6 +6,7 @@ import '../data/chapters_data.dart';
 import '../data/progress_store.dart';
 import '../l10n/app_l10n.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/reader_avatar.dart';
 import '../widgets/xp_gauge.dart';
 
 /// Home hub: branding, a warm greeting from Henrietta, a "continue reading"
@@ -135,6 +136,13 @@ class _TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: ReaderAvatar(
+            size: 38,
+            onTap: () => Navigator.pushNamed(context, Routes.profile),
+          ),
+        ),
         const Expanded(child: _HomeTitle()),
         IconButton(
           onPressed: () => Navigator.pushNamed(context, Routes.settings),
@@ -219,7 +227,11 @@ class _HeroCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.t('home_greeting'),
+                  (store.readerName != null && store.readerName!.isNotEmpty)
+                      ? l10n.t('home_greeting_named', {
+                          'name': store.readerName!,
+                        })
+                      : l10n.t('home_greeting'),
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,

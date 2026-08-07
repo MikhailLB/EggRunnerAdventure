@@ -47,9 +47,9 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Egg Runner Adventure uses the camera when you choose to add a photo to your adventure.</string>
+	<string>Egg Runner Adventure uses the camera when you choose to take a Reader Profile photo shown in your in-app avatar.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Egg Runner Adventure lets you choose images to personalize and share your adventure.</string>
+	<string>Egg Runner Adventure lets you choose a photo from your library to use as your Reader Profile avatar.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Your device identifier helps us understand which Egg Runner Adventure campaigns bring players to the game.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

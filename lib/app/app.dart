@@ -8,6 +8,7 @@ import '../l10n/app_strings.dart';
 import '../screens/boot_screen.dart';
 import '../screens/chapter_reader_screen.dart';
 import '../screens/main_shell.dart';
+import '../screens/reader_profile_screen.dart';
 import '../screens/settings_screen.dart';
 import 'routes.dart';
 import 'theme.dart';
@@ -65,6 +66,8 @@ class _FeatheredOriginsAppState extends State<FeatheredOriginsApp> {
             page = ChapterReaderScreen(chapterId: id);
           case Routes.settings:
             page = SettingsScreen(localeController: _localeController);
+          case Routes.profile:
+            page = const ReaderProfileScreen();
           case Routes.boot:
           default:
             page = BootScreen(hatchCoordinator: widget.hatchCoordinator);

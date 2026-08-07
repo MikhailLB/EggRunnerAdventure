@@ -176,6 +176,27 @@ class AppStrings {
     'settings_privacy': 'Privacy Policy',
     'settings_support': 'Support',
 
+    // Reader profile
+    'profile_title': 'Reader Profile',
+    'profile_settings_hint':
+        'Name and photo shown across your adventure.',
+    'profile_avatar_hint':
+        'Tap the badge to snap a photo or pick one from your library.',
+    'profile_name_hint': 'How should Henrietta call you?',
+    'profile_name_placeholder': 'Add your name',
+    'profile_save': 'Save',
+    'profile_saved': 'Saved.',
+    'profile_change_avatar': 'Change reader photo',
+    'profile_take_photo': 'Take a photo',
+    'profile_pick_gallery': 'Choose from library',
+    'profile_remove_avatar': 'Remove photo',
+    'profile_cancel': 'Cancel',
+    'profile_camera_error': 'Could not open the camera.',
+    'profile_gallery_error': 'Could not open the photo library.',
+    'profile_privacy_note':
+        'Your name and photo are stored only on this device and are never uploaded.',
+    'home_greeting_named': 'Hi, {name}!',
+
     // Boot
     'boot_hint': 'Preparing timeline...',
 
@@ -575,6 +596,25 @@ class AppStrings {
     'settings_legal': 'Legal y soporte',
     'settings_privacy': 'Política de privacidad',
     'settings_support': 'Soporte',
+    'profile_title': 'Perfil de lector',
+    'profile_settings_hint':
+        'Nombre y foto que se muestran en toda tu aventura.',
+    'profile_avatar_hint':
+        'Toca el icono para tomar una foto o elegir una de tu galería.',
+    'profile_name_hint': '¿Cómo debe llamarte Henrietta?',
+    'profile_name_placeholder': 'Añade tu nombre',
+    'profile_save': 'Guardar',
+    'profile_saved': 'Guardado.',
+    'profile_change_avatar': 'Cambiar foto del lector',
+    'profile_take_photo': 'Hacer una foto',
+    'profile_pick_gallery': 'Elegir de la galería',
+    'profile_remove_avatar': 'Quitar foto',
+    'profile_cancel': 'Cancelar',
+    'profile_camera_error': 'No se pudo abrir la cámara.',
+    'profile_gallery_error': 'No se pudo abrir la galería.',
+    'profile_privacy_note':
+        'Tu nombre y foto se guardan solo en este dispositivo y nunca se suben.',
+    'home_greeting_named': '¡Hola, {name}!',
     'boot_hint': 'Preparando la línea del tiempo...',
   };
 
@@ -664,6 +704,25 @@ class AppStrings {
     'settings_legal': 'Mentions & assistance',
     'settings_privacy': 'Politique de confidentialité',
     'settings_support': 'Assistance',
+    'profile_title': 'Profil du lecteur',
+    'profile_settings_hint':
+        'Nom et photo affichés dans toute votre aventure.',
+    'profile_avatar_hint':
+        'Touchez le badge pour prendre une photo ou en choisir une.',
+    'profile_name_hint': 'Comment Henrietta doit-elle vous appeler ?',
+    'profile_name_placeholder': 'Ajoutez votre nom',
+    'profile_save': 'Enregistrer',
+    'profile_saved': 'Enregistré.',
+    'profile_change_avatar': 'Changer la photo du lecteur',
+    'profile_take_photo': 'Prendre une photo',
+    'profile_pick_gallery': 'Choisir dans la galerie',
+    'profile_remove_avatar': 'Supprimer la photo',
+    'profile_cancel': 'Annuler',
+    'profile_camera_error': 'Impossible d\'ouvrir l\'appareil photo.',
+    'profile_gallery_error': 'Impossible d\'ouvrir la galerie.',
+    'profile_privacy_note':
+        'Votre nom et votre photo restent sur cet appareil et ne sont jamais envoyés.',
+    'home_greeting_named': 'Bonjour {name} !',
     'boot_hint': 'Préparation de la chronologie...',
   };
 
@@ -753,6 +812,25 @@ class AppStrings {
     'settings_legal': 'Rechtliches & Support',
     'settings_privacy': 'Datenschutzrichtlinie',
     'settings_support': 'Support',
+    'profile_title': 'Leserprofil',
+    'profile_settings_hint':
+        'Name und Foto werden in deinem Abenteuer angezeigt.',
+    'profile_avatar_hint':
+        'Tippe auf das Symbol, um ein Foto zu machen oder eines auszuwählen.',
+    'profile_name_hint': 'Wie soll Henrietta dich nennen?',
+    'profile_name_placeholder': 'Deinen Namen hinzufügen',
+    'profile_save': 'Speichern',
+    'profile_saved': 'Gespeichert.',
+    'profile_change_avatar': 'Leserfoto ändern',
+    'profile_take_photo': 'Foto aufnehmen',
+    'profile_pick_gallery': 'Aus Galerie wählen',
+    'profile_remove_avatar': 'Foto entfernen',
+    'profile_cancel': 'Abbrechen',
+    'profile_camera_error': 'Kamera konnte nicht geöffnet werden.',
+    'profile_gallery_error': 'Galerie konnte nicht geöffnet werden.',
+    'profile_privacy_note':
+        'Name und Foto bleiben nur auf diesem Gerät und werden nie hochgeladen.',
+    'home_greeting_named': 'Hallo {name}!',
     'boot_hint': 'Zeitleiste wird vorbereitet...',
   };
 
@@ -842,6 +920,25 @@ class AppStrings {
     'settings_legal': 'Legal e suporte',
     'settings_privacy': 'Política de Privacidade',
     'settings_support': 'Suporte',
+    'profile_title': 'Perfil do leitor',
+    'profile_settings_hint':
+        'Nome e foto exibidos por toda a sua aventura.',
+    'profile_avatar_hint':
+        'Toque no ícone para tirar uma foto ou escolher da galeria.',
+    'profile_name_hint': 'Como a Henrietta deve te chamar?',
+    'profile_name_placeholder': 'Adicione seu nome',
+    'profile_save': 'Salvar',
+    'profile_saved': 'Salvo.',
+    'profile_change_avatar': 'Alterar foto do leitor',
+    'profile_take_photo': 'Tirar uma foto',
+    'profile_pick_gallery': 'Escolher da galeria',
+    'profile_remove_avatar': 'Remover foto',
+    'profile_cancel': 'Cancelar',
+    'profile_camera_error': 'Não foi possível abrir a câmera.',
+    'profile_gallery_error': 'Não foi possível abrir a galeria.',
+    'profile_privacy_note':
+        'Seu nome e foto ficam apenas neste dispositivo e nunca são enviados.',
+    'home_greeting_named': 'Olá, {name}!',
     'boot_hint': 'Preparando a linha do tempo...',
   };
 }
