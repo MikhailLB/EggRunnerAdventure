@@ -281,34 +281,46 @@ curl -sS -o - -w "\n%{http_code}\n" -X POST "$CONFIG_URL" \
 
 **RU промпт:**
 ```text
-Этап 5.2. Проверь, что ios/Runner/PrivacyInfo.xcprivacy существует и
-включён в Copy Bundle Resources фазы Runner в
-ios/Runner.xcodeproj/project.pbxproj (по такой же схеме, как
-GoogleService-Info.plist — PBXFileReference + PBXBuildFile + запись в
-Resources phase).
-1) Если файла нет — создай его по шаблону из
-   @.cursor/rules/gray_flow_guide.md §"PrivacyInfo.xcprivacy" и подключи
-   в pbxproj.
-2) Пробеги `plutil -lint ios/Runner/PrivacyInfo.xcprivacy` — должно быть
+Этап 5.2. `PrivacyInfo.xcprivacy` НЕ проектно-специфичный и НЕ fingerprint
+файл — он должен быть перенесён из темплейта дословно.
+
+1) ПЕРВЫМ ДЕЛОМ сверь текущий ios/Runner/PrivacyInfo.xcprivacy с файлом
+   из темплейта:
+     diff ios/Runner/PrivacyInfo.xcprivacy <template>/ios/Runner/PrivacyInfo.xcprivacy
+   Ожидание — пустой diff. Если различаются или файла нет — восстанови из
+   темплейта (`cp`), НЕ генерируй с нуля и НЕ пиши по памяти. Регрессии
+   ClumsyHenRace 1.0.3 (5) и CascadeChroma 1.0.1 (5) произошли ровно так:
+   агент восстанавливал файл вручную и поставил `<array/>`.
+2) Проверь, что PrivacyInfo.xcprivacy включён в Copy Bundle Resources фазы
+   Runner в ios/Runner.xcodeproj/project.pbxproj (та же схема, что у
+   GoogleService-Info.plist — PBXFileReference + PBXBuildFile + запись в
+   Resources phase).
+3) Пробеги `plutil -lint ios/Runner/PrivacyInfo.xcprivacy` — должно быть
    "OK".
-3) Пройди по плагинам pubspec.yaml (device_info_plus, flutter_secure_storage,
+4) Пройди по плагинам pubspec.yaml (device_info_plus, flutter_secure_storage,
    shared_preferences, webview_flutter, appsflyer_sdk, firebase_*) — каждый
    их манифест Required Reason API должен быть отражён в нашем
-   PrivacyInfo.xcprivacy. Перечисли, что добавил.
-4) ITMS-91064: прогони §9.5a из @.cursor/rules/apple_moderation_hardening.mdc.
-   NSPrivacyTracking = true ОБЯЗАН идти с непустым NSPrivacyTrackingDomains
-   (четыре att.*.appsflyersdk.com). plutil -lint проходит и на битом файле —
-   одного линта НЕ достаточно.
-5) Убедись, что в NSPrivacyTrackingDomains НЕТ хоста config endpoint, хоста
-   партнёрского WebView и onelink.me — iOS блокирует запросы к заявленным
-   трекинг-доменам при отказе от ATT, это убьёт серый флоу.
+   PrivacyInfo.xcprivacy. Если в темплейте не хватает записей для новых
+   зависимостей — добавь их, но НИКОГДА не трогай NSPrivacyTrackingDomains.
+5) ITMS-91064 + attribution: прогони §9.5a из
+   @.cursor/rules/apple_moderation_hardening.mdc. Он теперь проверяет три
+   условия одновременно:
+     - NSPrivacyTracking=true → NSPrivacyTrackingDomains не пуст;
+     - все четыре att.attr / att.launches / att.conversions / att.dlsdk
+       .appsflyersdk.com присутствуют;
+     - gcdsdk.appsflyer.com и onelink.me НЕ перечислены (иначе ATT-отказ
+       заблокирует наш прямой install-lookup / deep-link resolve).
+   plutil -lint проходит и на битом файле — одного линта НЕ достаточно.
+6) Убедись, что в NSPrivacyTrackingDomains НЕТ хоста config endpoint и
+   хоста партнёрского WebView.
 ```
 
+- [ ] `diff` c темплейтом пуст (или добавления только вне NSPrivacyTrackingDomains, за счёт новых плагинов)
 - [ ] `ios/Runner/PrivacyInfo.xcprivacy` существует, `plutil -lint` ok
 - [ ] запись в `Runner` PBXGroup + PBXFileReference + PBXBuildFile + Resources phase
 - [ ] Required Reason API покрыты для всех наших плагинов
-- [ ] §9.5a печатает `OK` — tracking true + непустой список доменов
-- [ ] в списке доменов только `att.*.appsflyersdk.com`, без config endpoint / партнёра
+- [ ] §9.5a печатает `OK` — tracking true, все 4 канонических `att.*.appsflyersdk.com`, без `gcdsdk.appsflyer.com` / `onelink.me`
+- [ ] в списке доменов только `att.*.appsflyersdk.com`, без config endpoint / партнёра / прямого lookup-хоста
 
 ### 5.3 Custom cipher заменён / нейтрализован (`apple_moderation_hardening.mdc` §3)
 

@@ -187,19 +187,30 @@ Verification: `plutil -lint ios/Runner/PrivacyInfo.xcprivacy`.
 ## 19a. ITMS-91064 — `NSPrivacyTracking` true with an empty domain list
 **Symptom:** App Store Connect rejects the upload before review:
 "ITMS-91064: Invalid tracking information … NSPrivacyTracking must be true
-if NSPrivacyTrackingDomains isn't empty." Hit ClumsyHenRace 1.0.3 (5).
+if NSPrivacyTrackingDomains isn't empty."
+**Regressions:** ClumsyHenRace 1.0.3 (5) — first hit. CascadeChroma
+1.0.1 (5) — Aug 2026, `.cursor/` folder not carried into the new project,
+the agent generating the manifest worked from memory and shipped
+`<array/>`.
 **Cause:** the e-mail text is the inverse of the real rule. Per TN3181,
 `NSPrivacyTracking = true` with an **empty** `NSPrivacyTrackingDomains`
-array is invalid — and this template's own guidance used to say "keep this
-list empty". `plutil -lint` passes on the broken file, so the §9.5 gate did
-not catch it.
-**Fix:** list AppsFlyer's dedicated tracking hosts —
-`att.attr` / `att.launches` / `att.conversions` / `att.dlsdk`
-`.appsflyersdk.com`. Never list the config endpoint, the partner WebView
-host or `onelink.me`: iOS fails requests to declared tracking domains when
-ATT is denied, which would kill the gray flow for those users. Do not
+array is invalid — `plutil -lint` passes on the broken file, so the §9.5
+gate did not catch it. The root failure is generating `PrivacyInfo.xcprivacy`
+from scratch instead of copying the template's file.
+**Fix:** `PrivacyInfo.xcprivacy` is NOT project-specific and NOT a
+fingerprint file — copy `ios/Runner/PrivacyInfo.xcprivacy` from the
+template verbatim into the new project. `diff` against the template must
+be empty. If it diverges, restore with `cp` before proceeding.
+Canonical hosts: `att.attr` / `att.launches` / `att.conversions` /
+`att.dlsdk` `.appsflyersdk.com` (four entries). Never list the config
+endpoint, the partner WebView host, `onelink.me`, or `gcdsdk.appsflyer.com`
+— iOS blocks requests to declared tracking domains under ATT denial and
+`gcdsdk.appsflyer.com` is the direct install-lookup host our code calls
+(`_lookupServerCopy`); adding it silently breaks attribution. Do not
 "fix" it by flipping tracking to `false` while IDFA + ATT + AppsFlyer ship.
-Verification: `apple_moderation_hardening.mdc` §9.5a.
+Verification: `apple_moderation_hardening.mdc` §9.5a — now also asserts the
+four `att.*` entries are present and `gcdsdk.appsflyer.com` / `onelink.me`
+are absent.
 
 ## 20. Self-written RC4-style stream cipher (KSA + PRGA) in the binary
 **Symptom:** the byte-array → cipher loop → `Uri.parse` →

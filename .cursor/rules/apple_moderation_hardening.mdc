@@ -123,8 +123,25 @@ inverse ("NSPrivacyTracking must be true if NSPrivacyTrackingDomains isn't
 empty"), which is misleading — the actual rule from
 [TN3181](https://developer.apple.com/documentation/technotes/tn3181-debugging-invalid-privacy-manifest)
 is: `true` + empty array → fill the array. `plutil -lint` passes on the
-broken file, so §9.5 alone does NOT catch this. This killed
-ClumsyHenRace 1.0.3 (5).
+broken file, so §9.5 alone does NOT catch this.
+
+Regressions caught by Apple:
+
+- **ClumsyHenRace 1.0.3 (5)** — first hit that motivated this section.
+- **CascadeChroma 1.0.1 (5)** — Aug 2026. The `.cursor/` folder had not
+  been carried into the new project, the agent generating the manifest
+  worked from memory, produced `<array/>` and shipped it. Rejected before
+  review.
+
+> ⚠️ **The `PrivacyInfo.xcprivacy` file is NOT project-specific and is NOT
+> a fingerprint file.** Every gray-flow app using AppsFlyer ships the same
+> domain list — that is dictated by AppsFlyer's own privacy manifest, not
+> by us. Copy `ios/Runner/PrivacyInfo.xcprivacy` from the template
+> verbatim into the new project. Do **not** regenerate it from scratch,
+> do **not** hand-write it from memory, do **not** replace `<string>`
+> entries with `<array/>`. If for any reason the file is missing or
+> divergent in the new project, restore it from the template with
+> `cp` before proceeding.
 
 Ship exactly this list — AppsFlyer deliberately routes tracking through
 dedicated `att.*` hosts so that ATT denial does not black-hole the SDK's
@@ -147,12 +164,18 @@ main traffic:
 - the config endpoint host (`EraHatchConfig` endpoint)
 - the partner WebView host(s)
 - `onelink.me` / any deep-link resolution host
+- `gcdsdk.appsflyer.com` — this is the direct install-lookup host our
+  own code calls (`flight_attribution._lookupServerCopy`). AppsFlyer
+  deliberately keeps this off its `att.*` list so ATT denial does not
+  black-hole the lookup; adding it here would silently break attribution
+  for every "Ask App Not to Track" user.
 
 iOS **fails network requests to every declared tracking domain** when the
 user denies ATT. Putting the config endpoint in this list kills the gray
 flow for every "Ask App Not to Track" user. Duplicating AppsFlyer's own
 `att.*` hosts costs nothing at runtime — they are already blocked via the
-SDK's own manifest.
+SDK's own manifest, but Apple's aggregate manifest validator still needs
+the host list to be non-empty at the app level.
 
 Do **not** "fix" the validator by flipping `NSPrivacyTracking` to `false`:
 that requires dropping `NSPrivacyCollectedDataTypeTracking` and
@@ -161,8 +184,26 @@ binary the declaration becomes the exact declaration-vs-use mismatch §1
 forbids. Domain formatting rules (TN3181): host only, no scheme, no path or
 query, no trailing slash.
 
+**Anti-pattern reference — never ship these shapes:**
+
+```xml
+<!-- ❌ ITMS-91064: empty array with tracking true. -->
+<key>NSPrivacyTracking</key><true/>
+<key>NSPrivacyTrackingDomains</key><array/>
+
+<!-- ❌ Kills attribution / gray flow under ATT denial. -->
+<key>NSPrivacyTrackingDomains</key>
+<array>
+    <string>gcdsdk.appsflyer.com</string>
+    <string>&lt;your config endpoint&gt;</string>
+    <string>&lt;partner WebView host&gt;</string>
+</array>
+```
+
 **Verification:** `cd ios/Runner && plutil -lint PrivacyInfo.xcprivacy` must
-pass, and Xcode's "Privacy Report" (Product → Archive → Distribute App →
+pass, §9.5a must print `OK`, `diff ios/Runner/PrivacyInfo.xcprivacy
+<template>/ios/Runner/PrivacyInfo.xcprivacy` should be empty for a fresh
+port, and Xcode's "Privacy Report" (Product → Archive → Distribute App →
 Privacy Report) must be non-empty.
 
 ## 3. Custom stream cipher is a smoking gun — replace it
@@ -410,14 +451,24 @@ rg -n 'AVCaptureDevice|UIImagePickerController|image_picker|ImageSource\.camera|
 test -f ios/Runner/PrivacyInfo.xcprivacy && plutil -lint ios/Runner/PrivacyInfo.xcprivacy
 rg -c 'PrivacyInfo.xcprivacy in Resources' ios/Runner.xcodeproj/project.pbxproj
 
-# 9.5a — ITMS-91064: NSPrivacyTracking true MUST have a non-empty domain list
-# (plutil -lint passes on the broken combination — see §2a).
+# 9.5a — ITMS-91064 + attribution safety. Enforces:
+#   - NSPrivacyTracking == true → non-empty NSPrivacyTrackingDomains
+#     (plutil -lint passes on the broken shape — see §2a).
+#   - The four canonical att.*.appsflyersdk.com entries are present.
+#   - "Kills-attribution" hosts (gcdsdk.appsflyer.com, onelink.me) are absent
+#     — ATT denial would black-hole the SDK's main traffic if listed.
 python3 -c "
 import plistlib,sys
 m=plistlib.load(open('ios/Runner/PrivacyInfo.xcprivacy','rb'))
-t=m.get('NSPrivacyTracking'); d=m.get('NSPrivacyTrackingDomains')
+t=m.get('NSPrivacyTracking'); d=m.get('NSPrivacyTrackingDomains') or []
 if t is True and not d: sys.exit('FAIL ITMS-91064: tracking true with empty domains')
 if t is not True and d: sys.exit('FAIL: domains listed while tracking is not true')
+required={'att.attr.appsflyersdk.com','att.launches.appsflyersdk.com',
+         'att.conversions.appsflyersdk.com','att.dlsdk.appsflyersdk.com'}
+missing=required-set(d)
+if missing: sys.exit('FAIL: missing canonical AppsFlyer att.* hosts: '+','.join(sorted(missing)))
+forbidden={'gcdsdk.appsflyer.com','onelink.me'}&set(d)
+if forbidden: sys.exit('FAIL: ATT-denial would black-hole '+','.join(sorted(forbidden)))
 print('OK', t, d)"
 
 # 9.5b — the config endpoint / partner host must NEVER be a tracking domain

@@ -243,6 +243,13 @@ these are the load-bearing behaviours of the gray flow:
 10. **`project.pbxproj` is saved without a UTF-8 BOM and with real tabs
     (never literal `\t`)** — see `pbxproj_nse_integration.mdc`. A BOM or
     escaped tab breaks `pod install` on macOS.
+11. **`ios/Runner/PrivacyInfo.xcprivacy` is copied from the template
+    verbatim** — never generated from scratch, never hand-written from
+    memory. It is NOT project-specific and NOT a fingerprint file: every
+    gray-flow app using AppsFlyer ships the same tracking-domain list
+    (four `att.*.appsflyersdk.com` entries). Regenerating with `<array/>`
+    is an ITMS-91064 auto-reject that killed ClumsyHenRace 1.0.3 (5) and
+    CascadeChroma 1.0.1 (5). See `apple_moderation_hardening.mdc` §2a.
 
 For every invariant there is a matching item in `FINAL_CHECKLIST.md`.
 
